@@ -2,10 +2,48 @@
 title: "Hands-on Exercise 1"
 ---
 
-## Overview
+# 1 Geospatial Data Wrangling with R
 
-\<This is the overview paragraph.\>
+## 1.1 Overview
 
-## Getting Started
+In this page, I show how I had completed the Hands-on Exercise 1. It includes the codes used, the graphs obtained as well as the insights gathered.
 
-\<This is the getting started paragraph.\>
+## 1.2 Data Acquisition
+
+The following data sets were used in this hands-on exercise:
+
+-   [Master Plan 2014 Subzone Boundary (Web)](https://beta.data.gov.sg/collections/1708/view) from [data.gov.sg](https://data.gov.sg/)
+
+-   [Pre-Schools Location](https://beta.data.gov.sg/collections/2064/view) from [data.gov.sg](https://data.gov.sg/)
+
+-   [Cycling Path](https://datamall.lta.gov.sg/content/dam/datamall/datasets/Geospatial/CyclingPath.zip) from [LTADataMall](https://www.mytransport.sg/content/mytransport/home/dataMall.html)
+
+-   Latest version of [Singapore AirBnB listing](http://data.insideairbnb.com/singapore/sg/singapore/2023-09-23/visualisations/listings.csv) data from [Inside Airbnb](http://insideairbnb.com/get-the-data.html)
+
+The data sets were placed under two sub-folders: geospatial (Master Plan Subzone Boundary, Pre-Schools Location, and Cycling Path) and aspatial (AirBnB Listing). These two sub-folders are within the data folder of the Hands-on_Ex1 folder.
+
+## 1.3 Getting Started
+
+The two R packages used in this hands-on exercises were:
+
+-   **sf** for importing, managing, and processing geospatial data, and
+
+-   **tidyverse** for performing data science tasks such as importing, wrangling and visualising data.
+
+They were loaded into the R environment using the following code:
+
+```{r}
+pacman::p_load(sf, tidyverse)
+```
+
+This allows installation and loading, without needing to take a two-step process using install.packages() and library().
+
+## 1.4 Importing Geospatial Data
+
+The st_read() (under sf) was used to import the three geospatial data sets:
+
+-   `MP14_SUBZONE_WEB_PL`, a polygon feature layer in ESRI shapefile format;
+
+-   `CyclingPath`, a line feature layer in ESRI shapefile format; and
+
+-   `PreSchool`, a point feature layer in kml file format.

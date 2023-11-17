@@ -18,20 +18,34 @@
     "href": "Hands-on_Ex1.html",
     "title": "Hands-on Exercise 1",
     "section": "",
-    "text": "&lt;This is the overview paragraph.&gt;"
+    "text": "In this page, I show how I had completed the Hands-on Exercise 1. It includes the codes used, the graphs obtained as well as the insights gathered.\n\n\n\nThe following data sets were used in this hands-on exercise:\n\nMaster Plan 2014 Subzone Boundary (Web) from data.gov.sg\nPre-Schools Location from data.gov.sg\nCycling Path from LTADataMall\nLatest version of Singapore AirBnB listing data from Inside Airbnb\n\nThe data sets were placed under two sub-folders: geospatial (Master Plan Subzone Boundary, Pre-Schools Location, and Cycling Path) and aspatial (AirBnB Listing). These two sub-folders are within the data folder of the Hands-on_Ex1 folder.\n\n\n\nThe two R packages used in this hands-on exercises were:\n\nsf for importing, managing, and processing geospatial data, and\ntidyverse for performing data science tasks such as importing, wrangling and visualising data.\n\nThey were loaded into the R environment using the following code:\n\npacman::p_load(sf, tidyverse)\n\nThis allows installation and loading, without needing to take a two-step process using install.packages() and library().\n\n\n\nThe st_read() (under sf) was used to import the three geospatial data sets:\n\nMP14_SUBZONE_WEB_PL, a polygon feature layer in ESRI shapefile format;\nCyclingPath, a line feature layer in ESRI shapefile format; and\nPreSchool, a point feature layer in kml file format."
   },
   {
     "objectID": "Hands-on_Ex1.html#overview",
     "href": "Hands-on_Ex1.html#overview",
     "title": "Hands-on Exercise 1",
     "section": "",
-    "text": "&lt;This is the overview paragraph.&gt;"
+    "text": "In this page, I show how I had completed the Hands-on Exercise 1. It includes the codes used, the graphs obtained as well as the insights gathered."
   },
   {
     "objectID": "Hands-on_Ex1.html#getting-started",
     "href": "Hands-on_Ex1.html#getting-started",
     "title": "Hands-on Exercise 1",
-    "section": "Getting Started",
-    "text": "Getting Started\n&lt;This is the getting started paragraph.&gt;"
+    "section": "",
+    "text": "The two R packages used in this hands-on exercises were:\n\nsf for importing, managing, and processing geospatial data, and\ntidyverse for performing data science tasks such as importing, wrangling and visualising data.\n\nThey were loaded into the R environment using the following code:\n\npacman::p_load(sf, tidyverse)\n\nThis allows installation and loading, without needing to take a two-step process using install.packages() and library()."
+  },
+  {
+    "objectID": "Hands-on_Ex1.html#data-acquisition",
+    "href": "Hands-on_Ex1.html#data-acquisition",
+    "title": "Hands-on Exercise 1",
+    "section": "",
+    "text": "The following data sets were used in this hands-on exercise:\n\nMaster Plan 2014 Subzone Boundary (Web) from data.gov.sg\nPre-Schools Location from data.gov.sg\nCycling Path from LTADataMall\nLatest version of Singapore AirBnB listing data from Inside Airbnb\n\nThe data sets were placed under two sub-folders: geospatial (Master Plan Subzone Boundary, Pre-Schools Location, and Cycling Path) and aspatial (AirBnB Listing). These two sub-folders are within the data folder of the Hands-on_Ex1 folder."
+  },
+  {
+    "objectID": "Hands-on_Ex1.html#importing-geospatial-data",
+    "href": "Hands-on_Ex1.html#importing-geospatial-data",
+    "title": "Hands-on Exercise 1",
+    "section": "",
+    "text": "The st_read() (under sf) was used to import the three geospatial data sets:\n\nMP14_SUBZONE_WEB_PL, a polygon feature layer in ESRI shapefile format;\nCyclingPath, a line feature layer in ESRI shapefile format; and\nPreSchool, a point feature layer in kml file format."
   }
 ]
