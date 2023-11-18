@@ -106,48 +106,47 @@ ggplot(data=mpsz3414,
 
 
 
-
-
-mpsz3414$`PreSch Count` = lengths(st_intersects(mpsz3414, preschool3414))
-summary(mpsz3414$`PreSch Count`)
+# EDA for AirBnB Listings
+mpsz3414$`AirBnB Count` = lengths(st_intersects(mpsz3414, listings_sf))
+summary(mpsz3414$`AirBnB Count`)
 """
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-   0.00    0.00    4.00    7.09   10.00   72.00 
+   0.00    0.00    2.00   10.78    9.00  243.00 
 """
-top_n(mpsz3414, 1, `PreSch Count`)
-# Tampines East
+top_n(mpsz3414, 1, `AirBnB Count`)
+# Kallang planning area - Lavender subzone
 
 mpsz3414$Area = mpsz3414 %>% st_area()
 mpsz3414 = mpsz3414 %>%
-  mutate(`PreSch Density` = `PreSch Count`/Area * 1000000)
-summary(mpsz3414$`PreSch Density`)
+  mutate(`AirBnB Density` = `AirBnB Count`/Area * 1000000)
+summary(mpsz3414$`AirBnB Density`)
 """
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  0.000   0.000   5.154   6.449  10.908  35.602 
+  0.000   0.000   2.328  24.073   8.996 504.614 
 """
-top_n(mpsz3414, 1, `PreSch Density`)
-# Downtown Core
+top_n(mpsz3414, 1, `AirBnB Density`)
+# Outram planning area - People's Park subzone
 
 # Exploratory Data Analysis (EDA)
-hist(mpsz3414$`PreSch Density`)
+hist(mpsz3414$`AirBnB Density`)
 
 ggplot(data=mpsz3414, 
-       aes(x= as.numeric(`PreSch Density`))) +
+       aes(x= as.numeric(`AirBnB Density`))) +
   geom_histogram(bins=20, 
                  color="black", 
                  fill="light blue") +
-  labs(title = "Are pre-school even distributed in Singapore?",
-       subtitle= "There are many planning sub-zones with a single pre-school, on the other hand, \nthere are two planning sub-zones with at least 20 pre-schools",
-       x = "Pre-school density (per km sq)",
+  labs(title = "Are AirBnB listings even distributed in Singapore?",
+       subtitle= "There are many planning sub-zones with less than 50 listings, on the other hand, \nthere are some planning sub-zones with more than 200 listings per square-km",
+       x = "AirBnB density (per km sq)",
        y = "Frequency")
 
 ggplot(data=mpsz3414, 
-       aes(y = `PreSch Count`, 
-           x= as.numeric(`PreSch Density`)))+
+       aes(y = `AirBnB Count`, 
+           x= as.numeric(`AirBnB Density`)))+
   geom_point(color="black", 
              fill="light blue") +
   xlim(0, 40) +
   ylim(0, 40) +
   labs(title = "",
-       x = "Pre-school density (per km sq)",
-       y = "Pre-school count")
+       x = "AirBnB density (per km sq)",
+       y = "AirBnB count")

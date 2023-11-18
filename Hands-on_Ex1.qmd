@@ -28,7 +28,7 @@ The two R packages used in this hands-on exercises were:
 
 -   **sf** for importing, managing, and processing geospatial data, and
 
--   **tidyverse** for performing data science tasks such as importing, wrangling and visualising data.
+-   **tidyverse** for performing data science tasks such as importing, wrangling, and visualising data.
 
 They were loaded into the R environment using the following code:
 
@@ -40,7 +40,7 @@ pacman::p_load(sf, tidyverse)
 
 ## 1.4 Importing Geospatial Data
 
-The st_read() (under sf package) was used to import the three geospatial data sets:
+The **st_read()** (under sf package) was used to import the three geospatial data sets:
 
 -   `MP14_SUBZONE_WEB_PL`, a polygon feature layer in ESRI shapefile format;
 
@@ -719,7 +719,7 @@ top_n(mpsz3414, 1, `PreSch Density`)
 
 Answer:
 
-The new PreSch Density column shows the number of preschools per square-metres in each planning subzone. The Cecil subzone in the Downtown Core planning area has the highest density of preschools, 35.6019 per square-metres.
+The new PreSch Density column shows the number of preschools per square-kilometres in each planning subzone. The Cecil subzone in the Downtown Core planning area has the highest density of preschools, 35.6019 per square-kilometres.
 
 ```         
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    
@@ -740,9 +740,91 @@ Bounding box:  xmin: 29501.64 ymin: 28623.75 xmax: 29976.93 ymax: 29362.03 Proje
 1 196619.9 [m^2] 35.60169 [1/m^2]
 ```
 
+### 1.9.3 Point-in-Polygon Count for AirBnB Listings
+
+Scenario:
+
+Find out the number of AirBnB listings in each Planning Subzone.
+
+Solution:
+
+The st_intersects identify AirBnB listings in `listings_sf` that are in each planning subzone of `mpsz3414`. The **length()** (under Base R) is used to count the number of listings in each planning subzone. The **top_n()** (under dplyr) is used to obtain details of the planning subzone with the most number of listings.
+
+```{r}
+mpsz3414$`AirBnB Count` = lengths(st_intersects(mpsz3414, listings_sf))  
+
+summary(mpsz3414$`AirBnB Count`)
+
+top_n(mpsz3414, 1, `AirBnB Count`) 
+```
+
+Answer:
+
+The new AirBnB Count column shows the number of preschools in each planning subzone. The Lavender subzone in Kallang planning area has the most number of listings, a total of 243.
+
+```         
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.     
+   0.00    0.00    2.00   10.78    9.00  243.00
+```
+
+```         
+Simple feature collection with 1 feature and 19 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 30342.65 ymin: 32035.6 xmax: 31453.96 ymax: 33233.11
+Projected CRS: SVY21 / Singapore TM
+  OBJECTID SUBZONE_NO SUBZONE_N SUBZONE_C CA_IND PLN_AREA_N PLN_AREA_C       REGION_N REGION_C
+1      126          6  LAVENDER    KLSZ06      N    KALLANG         KL CENTRAL REGION       CR
+           INC_CRC FMEL_UPD_D   X_ADDR   Y_ADDR SHAPE_Leng SHAPE_Area                       geometry
+1 A7A07F328A38B6EF 2014-12-05 30874.41 32569.53    3609.15   757907.6 MULTIPOLYGON (((31389.56 32...
+  PreSch Count           Area   PreSch Density AirBnB Count
+1            6 757907.6 [m^2] 7.916532 [1/m^2]          243
+```
+
+Scenario:
+
+Find the density of AirBnb listings by planning subzone.
+
+Solution:
+
+The **st_area()** is used to derive the area of each planning subzone. Then, the **mutate()** (under dplyr) is used to compute the density.
+
+```{r}
+mpsz3414$Area = mpsz3414 %>% st_area()  
+
+mpsz3414 = mpsz3414 %>%   
+  mutate(`PreSch Density` = `PreSch Count`/Area * 1000000)  
+
+summary(mpsz3414$`PreSch Density`)  
+
+top_n(mpsz3414, 1, `PreSch Density`)
+```
+
+Answer:
+
+The new AirBnB Density column shows the number of listings per square-kilometres in each planning subzone. The People's Park subzone in the Outram planning area has the highest density of listings, 504.6143 per square-kilometres.
+
+```         
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    
+   0.000   0.000   2.328  24.073   8.996 504.614 
+```
+
+```         
+Simple feature collection with 1 feature and 20 fields 
+Geometry type: MULTIPOLYGON 
+Dimension:     XY 
+Bounding box:  xmin: 28532.73 ymin: 29140.08 xmax: 29116.96 ymax: 29688.52 Projected CRS: SVY21 / Singapore TM   
+OBJECTID SUBZONE_NO     SUBZONE_N SUBZONE_C CA_IND PLN_AREA_N PLN_AREA_C       REGION_N REGION_C 
+1       34          2 PEOPLE'S PARK    OTSZ02      Y     OUTRAM         OT CENTRAL REGION       CR            
+            INC_CRC FMEL_UPD_D   X_ADDR   Y_ADDR SHAPE_Leng SHAPE_Area                       geometry 
+1 B4120D23006C932A 2014-12-05 28831.78 29419.65   1822.193   93140.44 MULTIPOLYGON (((29099.02 29...   
+  PreSch Count           Area PreSch Density AirBnB Count   AirBnB Density 
+1            0 93140.44 [m^2]      0 [1/m^2]           47 504.6143 [1/m^2]
+```
+
 ## 1.10 Exploratory Data Analysis (EDA)
 
-The ggplot2 functions can be used to create useful statistical graphs for exploratory data anslysis.
+The ggplot2 functions can be used to create useful statistical graphs for exploratory data analysis.
 
 ### 1.10.1 Histograms of Frequency of Pre-Schools Density
 
@@ -768,7 +850,7 @@ ggplot(data=mpsz3414,
 
 *Student Note*: Based on both histograms, the density of pre-schools is right-skewed, with outliers at values above 20.
 
-### 1.10.2 Scatterplot of Pre-School Density versus Pre-School Count
+### 1.10.2 Scatterplot of Pre-Schools Density versus Pre-Schools Count
 
 ```{r}
 ggplot(data=mpsz3414, 
@@ -785,4 +867,49 @@ ggplot(data=mpsz3414,
 
 ![](Hands-on_Ex1/EDA3)
 
-[**\~\~\~ End of Hands-on Exercise 1 \~\~\~**]{.smallcaps}
+*Student Note*: There appears to be a positive correlation between pre-school count and pre-school density.
+
+### 1.10.3 Histograms of Frequency of AirBnB Listings Density
+
+```{r}
+hist(mpsz3414$`AirBnB Density`)
+```
+
+![](Hands-on_Ex1/EDA4)
+
+```{r}
+ggplot(data=mpsz3414, 
+       aes(x= as.numeric(`AirBnB Density`))) +
+  geom_histogram(bins=20, 
+                 color="black", 
+                 fill="light blue") +
+  labs(title = "Are AirBnB listings even distributed in Singapore?",
+       subtitle= "There are many planning sub-zones with less than 50 listings, on the other hand, \nthere are some planning sub-zones with more than 200 listings per square-km",
+       x = "AirBnB density (per km sq)",
+       y = "Frequency")
+```
+
+![](Hands-on_Ex1/EDA5)
+
+*Student Note*: Based on both histograms, the density of AirBnB listings is right-skewed, with outliers at values above 200.
+
+### 1.10.2 Scatterplot of AirBnB Listings Density versus AirBnB Listings Count
+
+```{r}
+ggplot(data=mpsz3414, 
+       aes(y = `AirBnB Count`, 
+           x= as.numeric(`AirBnB Density`)))+
+  geom_point(color="black", 
+             fill="light blue") +
+  xlim(0, 40) +
+  ylim(0, 40) +
+  labs(title = "",
+       x = "AirBnB density (per km sq)",
+       y = "AirBnB count")
+```
+
+![](Hands-on_Ex1/EDA6)
+
+*Student Note*: There appears to be a positive correlation between AirBnB listing count and AirBnB listing density.
+
+[**\~\~\~ End of Hands-on Exercise 1A \~\~\~**]{.smallcaps}
