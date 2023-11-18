@@ -872,43 +872,20 @@ ggplot(data=mpsz3414,
 ### 1.10.3 Histograms of Frequency of AirBnB Listings Density
 
 ```{r}
-hist(mpsz3414$`AirBnB Density`)
-```
 
-![](Hands-on_Ex1/EDA4)
+```
 
 ```{r}
-ggplot(data=mpsz3414, 
-       aes(x= as.numeric(`AirBnB Density`))) +
-  geom_histogram(bins=20, 
-                 color="black", 
-                 fill="light blue") +
-  labs(title = "Are AirBnB listings even distributed in Singapore?",
-       subtitle= "There are many planning sub-zones with less than 50 listings, on the other hand, \nthere are some planning sub-zones with more than 200 listings per square-km",
-       x = "AirBnB density (per km sq)",
-       y = "Frequency")
-```
 
-![](Hands-on_Ex1/EDA5)
+```
 
 *Student Note*: Based on both histograms, the density of AirBnB listings is right-skewed, with outliers at values above 200.
 
 ### 1.10.2 Scatterplot of AirBnB Listings Density versus AirBnB Listings Count
 
 ```{r}
-ggplot(data=mpsz3414, 
-       aes(y = `AirBnB Count`, 
-           x= as.numeric(`AirBnB Density`)))+
-  geom_point(color="black", 
-             fill="light blue") +
-  xlim(0, 40) +
-  ylim(0, 40) +
-  labs(title = "",
-       x = "AirBnB density (per km sq)",
-       y = "AirBnB count")
-```
 
-![](Hands-on_Ex1/EDA6)
+```
 
 *Student Note*: There appears to be a positive correlation between AirBnB listing count and AirBnB listing density.
 

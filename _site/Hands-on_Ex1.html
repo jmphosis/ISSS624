@@ -124,6 +124,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="./Hands-on_Ex1.html" rel="" target="">
  <span class="dropdown-text">Hands-on Exercise 1</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="./Hands-on_Ex2.html" rel="" target="">
+ <span class="dropdown-text">Hands-on Exercise 2</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-in-class-exercise" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">In-class Exercise</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-in-class-exercise">    
+        <li>
+    <a class="dropdown-item" href="./In-class_Ex/In-class_Ex1/In-class_Ex1.html" rel="" target="">
+ <span class="dropdown-text">In-class Exercise 1</span></a>
+  </li>  
+        <li class="dropdown-header">In-class Exercise 2</li>
     </ul>
   </li>
 </ul>
@@ -181,11 +197,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#buffer-for-cycling-path" id="toc-buffer-for-cycling-path" class="nav-link" data-scroll-target="#buffer-for-cycling-path">1.9.1 Buffer for Cycling Path</a></li>
   <li><a href="#point-in-polygon-count-for-pre-schools" id="toc-point-in-polygon-count-for-pre-schools" class="nav-link" data-scroll-target="#point-in-polygon-count-for-pre-schools">1.9.2 Point-in-Polygon Count for Pre-Schools</a></li>
+  <li><a href="#point-in-polygon-count-for-airbnb-listings" id="toc-point-in-polygon-count-for-airbnb-listings" class="nav-link" data-scroll-target="#point-in-polygon-count-for-airbnb-listings">1.9.3 Point-in-Polygon Count for AirBnB Listings</a></li>
   </ul></li>
   <li><a href="#exploratory-data-analysis-eda" id="toc-exploratory-data-analysis-eda" class="nav-link" data-scroll-target="#exploratory-data-analysis-eda">1.10 Exploratory Data Analysis (EDA)</a>
   <ul class="collapse">
   <li><a href="#histograms-of-frequency-of-pre-schools-density" id="toc-histograms-of-frequency-of-pre-schools-density" class="nav-link" data-scroll-target="#histograms-of-frequency-of-pre-schools-density">1.10.1 Histograms of Frequency of Pre-Schools Density</a></li>
-  <li><a href="#scatterplot-of-pre-school-density-versus-pre-school-count" id="toc-scatterplot-of-pre-school-density-versus-pre-school-count" class="nav-link" data-scroll-target="#scatterplot-of-pre-school-density-versus-pre-school-count">1.10.2 Scatterplot of Pre-School Density versus Pre-School Count</a></li>
+  <li><a href="#scatterplot-of-pre-schools-density-versus-pre-schools-count" id="toc-scatterplot-of-pre-schools-density-versus-pre-schools-count" class="nav-link" data-scroll-target="#scatterplot-of-pre-schools-density-versus-pre-schools-count">1.10.2 Scatterplot of Pre-Schools Density versus Pre-Schools Count</a></li>
+  <li><a href="#histograms-of-frequency-of-airbnb-listings-density" id="toc-histograms-of-frequency-of-airbnb-listings-density" class="nav-link" data-scroll-target="#histograms-of-frequency-of-airbnb-listings-density">1.10.3 Histograms of Frequency of AirBnB Listings Density</a></li>
+  <li><a href="#scatterplot-of-airbnb-listings-density-versus-airbnb-listings-count" id="toc-scatterplot-of-airbnb-listings-density-versus-airbnb-listings-count" class="nav-link" data-scroll-target="#scatterplot-of-airbnb-listings-density-versus-airbnb-listings-count">1.10.2 Scatterplot of AirBnB Listings Density versus AirBnB Listings Count</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -233,7 +252,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The two R packages used in this hands-on exercises were:</p>
 <ul>
 <li><p><strong>sf</strong> for importing, managing, and processing geospatial data, and</p></li>
-<li><p><strong>tidyverse</strong> for performing data science tasks such as importing, wrangling and visualising data.</p></li>
+<li><p><strong>tidyverse</strong> for performing data science tasks such as importing, wrangling, and visualising data.</p></li>
 </ul>
 <p>They were loaded into the R environment using the following code:</p>
 <div class="cell">
@@ -243,7 +262,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="importing-geospatial-data" class="level2">
 <h2 class="anchored" data-anchor-id="importing-geospatial-data">1.4 Importing Geospatial Data</h2>
-<p>The st_read() (under sf package) was used to import the three geospatial data sets:</p>
+<p>The <strong>st_read()</strong> (under sf package) was used to import the three geospatial data sets:</p>
 <ul>
 <li><p><code>MP14_SUBZONE_WEB_PL</code>, a polygon feature layer in ESRI shapefile format;</p></li>
 <li><p><code>CyclingPath</code>, a line feature layer in ESRI shapefile format; and</p></li>
@@ -1204,7 +1223,7 @@ Projected CRS: SVY21 / Singapore TM
 </div>
 </div>
 <p>Answer:</p>
-<p>The new PreSch Density column shows the number of preschools per square-metres in each planning subzone. The Cecil subzone in the Downtown Core planning area has the highest density of preschools, 35.6019 per square-metres.</p>
+<p>The new PreSch Density column shows the number of preschools per square-kilometres in each planning subzone. The Cecil subzone in the Downtown Core planning area has the highest density of preschools, 35.6019 per square-kilometres.</p>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    
    0.000   0.000   5.154   6.449  10.908  35.602 </code></pre>
 <pre><code>Simple feature collection with 1 feature and 18 fields 
@@ -1219,58 +1238,160 @@ Bounding box:  xmin: 29501.64 ymin: 28623.75 xmax: 29976.93 ymax: 29362.03 Proje
 1   2116.095   196619.9 MULTIPOLYGON (((29808.18 28...            7                            Area   PreSch Density 
 1 196619.9 [m^2] 35.60169 [1/m^2]</code></pre>
 </section>
+<section id="point-in-polygon-count-for-airbnb-listings" class="level3">
+<h3 class="anchored" data-anchor-id="point-in-polygon-count-for-airbnb-listings">1.9.3 Point-in-Polygon Count for AirBnB Listings</h3>
+<p>Scenario:</p>
+<p>Find out the number of AirBnB listings in each Planning Subzone.</p>
+<p>Solution:</p>
+<p>The st_intersects identify AirBnB listings in <code>listings_sf</code> that are in each planning subzone of <code>mpsz3414</code>. The <strong>length()</strong> (under Base R) is used to count the number of listings in each planning subzone. The <strong>top_n()</strong> (under dplyr) is used to obtain details of the planning subzone with the most number of listings.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb99"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a>mpsz3414<span class="sc">$</span><span class="st">`</span><span class="at">AirBnB Count</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">lengths</span>(<span class="fu">st_intersects</span>(mpsz3414, listings_sf))  </span>
+<span id="cb99-2"><a href="#cb99-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb99-3"><a href="#cb99-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mpsz3414<span class="sc">$</span><span class="st">`</span><span class="at">AirBnB Count</span><span class="st">`</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.00    0.00    2.00   10.78    9.00  243.00 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb101"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="fu">top_n</span>(mpsz3414, <span class="dv">1</span>, <span class="st">`</span><span class="at">AirBnB Count</span><span class="st">`</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 1 feature and 19 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 30342.65 ymin: 32035.6 xmax: 31453.96 ymax: 33233.11
+Projected CRS: SVY21 / Singapore TM
+  OBJECTID SUBZONE_NO SUBZONE_N SUBZONE_C CA_IND PLN_AREA_N PLN_AREA_C
+1      126          6  LAVENDER    KLSZ06      N    KALLANG         KL
+        REGION_N REGION_C          INC_CRC FMEL_UPD_D   X_ADDR   Y_ADDR
+1 CENTRAL REGION       CR A7A07F328A38B6EF 2014-12-05 30874.41 32569.53
+  SHAPE_Leng SHAPE_Area                       geometry PreSch Count
+1    3609.15   757907.6 MULTIPOLYGON (((31389.56 32...            6
+            Area   PreSch Density AirBnB Count
+1 757907.6 [m^2] 7.916532 [1/m^2]          243</code></pre>
+</div>
+</div>
+<p>Answer:</p>
+<p>The new AirBnB Count column shows the number of preschools in each planning subzone. The Lavender subzone in Kallang planning area has the most number of listings, a total of 243.</p>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.     
+   0.00    0.00    2.00   10.78    9.00  243.00</code></pre>
+<pre><code>Simple feature collection with 1 feature and 19 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 30342.65 ymin: 32035.6 xmax: 31453.96 ymax: 33233.11
+Projected CRS: SVY21 / Singapore TM
+  OBJECTID SUBZONE_NO SUBZONE_N SUBZONE_C CA_IND PLN_AREA_N PLN_AREA_C       REGION_N REGION_C
+1      126          6  LAVENDER    KLSZ06      N    KALLANG         KL CENTRAL REGION       CR
+           INC_CRC FMEL_UPD_D   X_ADDR   Y_ADDR SHAPE_Leng SHAPE_Area                       geometry
+1 A7A07F328A38B6EF 2014-12-05 30874.41 32569.53    3609.15   757907.6 MULTIPOLYGON (((31389.56 32...
+  PreSch Count           Area   PreSch Density AirBnB Count
+1            6 757907.6 [m^2] 7.916532 [1/m^2]          243</code></pre>
+<p>Scenario:</p>
+<p>Find the density of AirBnb listings by planning subzone.</p>
+<p>Solution:</p>
+<p>The <strong>st_area()</strong> is used to derive the area of each planning subzone. Then, the <strong>mutate()</strong> (under dplyr) is used to compute the density.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb105"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a>mpsz3414<span class="sc">$</span>Area <span class="ot">=</span> mpsz3414 <span class="sc">%&gt;%</span> <span class="fu">st_area</span>()  </span>
+<span id="cb105-2"><a href="#cb105-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb105-3"><a href="#cb105-3" aria-hidden="true" tabindex="-1"></a>mpsz3414 <span class="ot">=</span> mpsz3414 <span class="sc">%&gt;%</span>   </span>
+<span id="cb105-4"><a href="#cb105-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">PreSch Density</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">PreSch Count</span><span class="st">`</span><span class="sc">/</span>Area <span class="sc">*</span> <span class="dv">1000000</span>)  </span>
+<span id="cb105-5"><a href="#cb105-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb105-6"><a href="#cb105-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mpsz3414<span class="sc">$</span><span class="st">`</span><span class="at">PreSch Density</span><span class="st">`</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  0.000   0.000   5.154   6.449  10.908  35.602 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="fu">top_n</span>(mpsz3414, <span class="dv">1</span>, <span class="st">`</span><span class="at">PreSch Density</span><span class="st">`</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 1 feature and 19 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 29501.64 ymin: 28623.75 xmax: 29976.93 ymax: 29362.03
+Projected CRS: SVY21 / Singapore TM
+  OBJECTID SUBZONE_NO SUBZONE_N SUBZONE_C CA_IND    PLN_AREA_N PLN_AREA_C
+1       27          8     CECIL    DTSZ08      Y DOWNTOWN CORE         DT
+        REGION_N REGION_C          INC_CRC FMEL_UPD_D  X_ADDR   Y_ADDR
+1 CENTRAL REGION       CR 65AA82AF6F4D925D 2014-12-05 29730.2 29011.33
+  SHAPE_Leng SHAPE_Area                       geometry PreSch Count
+1   2116.095   196619.9 MULTIPOLYGON (((29808.18 28...            7
+            Area   PreSch Density AirBnB Count
+1 196619.9 [m^2] 35.60169 [1/m^2]           23</code></pre>
+</div>
+</div>
+<p>Answer:</p>
+<p>The new AirBnB Density column shows the number of listings per square-kilometres in each planning subzone. The People’s Park subzone in the Outram planning area has the highest density of listings, 504.6143 per square-kilometres.</p>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    
+   0.000   0.000   2.328  24.073   8.996 504.614 </code></pre>
+<pre><code>Simple feature collection with 1 feature and 20 fields 
+Geometry type: MULTIPOLYGON 
+Dimension:     XY 
+Bounding box:  xmin: 28532.73 ymin: 29140.08 xmax: 29116.96 ymax: 29688.52 Projected CRS: SVY21 / Singapore TM   
+OBJECTID SUBZONE_NO     SUBZONE_N SUBZONE_C CA_IND PLN_AREA_N PLN_AREA_C       REGION_N REGION_C 
+1       34          2 PEOPLE'S PARK    OTSZ02      Y     OUTRAM         OT CENTRAL REGION       CR            
+            INC_CRC FMEL_UPD_D   X_ADDR   Y_ADDR SHAPE_Leng SHAPE_Area                       geometry 
+1 B4120D23006C932A 2014-12-05 28831.78 29419.65   1822.193   93140.44 MULTIPOLYGON (((29099.02 29...   
+  PreSch Count           Area PreSch Density AirBnB Count   AirBnB Density 
+1            0 93140.44 [m^2]      0 [1/m^2]           47 504.6143 [1/m^2]</code></pre>
+</section>
 </section>
 <section id="exploratory-data-analysis-eda" class="level2">
 <h2 class="anchored" data-anchor-id="exploratory-data-analysis-eda">1.10 Exploratory Data Analysis (EDA)</h2>
-<p>The ggplot2 functions can be used to create useful statistical graphs for exploratory data anslysis.</p>
+<p>The ggplot2 functions can be used to create useful statistical graphs for exploratory data analysis.</p>
 <section id="histograms-of-frequency-of-pre-schools-density" class="level3">
 <h3 class="anchored" data-anchor-id="histograms-of-frequency-of-pre-schools-density">1.10.1 Histograms of Frequency of Pre-Schools Density</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb99"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(mpsz3414<span class="sc">$</span><span class="st">`</span><span class="at">PreSch Density</span><span class="st">`</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb111"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(mpsz3414<span class="sc">$</span><span class="st">`</span><span class="at">PreSch Density</span><span class="st">`</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="Hands-on_Ex1_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid" width="672"></p>
+<p><img src="Hands-on_Ex1_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p><img src="Hands-on_Ex1/EDA1.png" class="img-fluid"></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>mpsz3414, </span>
-<span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x=</span> <span class="fu">as.numeric</span>(<span class="st">`</span><span class="at">PreSch Density</span><span class="st">`</span>))) <span class="sc">+</span></span>
-<span id="cb100-3"><a href="#cb100-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">20</span>, </span>
-<span id="cb100-4"><a href="#cb100-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">color=</span><span class="st">"black"</span>, </span>
-<span id="cb100-5"><a href="#cb100-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fill=</span><span class="st">"light blue"</span>) <span class="sc">+</span></span>
-<span id="cb100-6"><a href="#cb100-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Are pre-school even distributed in Singapore?"</span>,</span>
-<span id="cb100-7"><a href="#cb100-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle=</span> <span class="st">"There are many planning sub-zones with a single pre-school, on the other hand, </span><span class="sc">\n</span><span class="st">there are two planning sub-zones with at least 20 pre-schools"</span>,</span>
-<span id="cb100-8"><a href="#cb100-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">"Pre-school density (per km sq)"</span>,</span>
-<span id="cb100-9"><a href="#cb100-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">"Frequency"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>mpsz3414, </span>
+<span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x=</span> <span class="fu">as.numeric</span>(<span class="st">`</span><span class="at">PreSch Density</span><span class="st">`</span>))) <span class="sc">+</span></span>
+<span id="cb112-3"><a href="#cb112-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins=</span><span class="dv">20</span>, </span>
+<span id="cb112-4"><a href="#cb112-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">color=</span><span class="st">"black"</span>, </span>
+<span id="cb112-5"><a href="#cb112-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fill=</span><span class="st">"light blue"</span>) <span class="sc">+</span></span>
+<span id="cb112-6"><a href="#cb112-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Are pre-school even distributed in Singapore?"</span>,</span>
+<span id="cb112-7"><a href="#cb112-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle=</span> <span class="st">"There are many planning sub-zones with a single pre-school, on the other hand, </span><span class="sc">\n</span><span class="st">there are two planning sub-zones with at least 20 pre-schools"</span>,</span>
+<span id="cb112-8"><a href="#cb112-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">"Pre-school density (per km sq)"</span>,</span>
+<span id="cb112-9"><a href="#cb112-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">"Frequency"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="Hands-on_Ex1_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid" width="672"></p>
+<p><img src="Hands-on_Ex1_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p><img src="Hands-on_Ex1/EDA2.png" class="img-fluid"></p>
 <p><em>Student Note</em>: Based on both histograms, the density of pre-schools is right-skewed, with outliers at values above 20.</p>
 </section>
-<section id="scatterplot-of-pre-school-density-versus-pre-school-count" class="level3">
-<h3 class="anchored" data-anchor-id="scatterplot-of-pre-school-density-versus-pre-school-count">1.10.2 Scatterplot of Pre-School Density versus Pre-School Count</h3>
+<section id="scatterplot-of-pre-schools-density-versus-pre-schools-count" class="level3">
+<h3 class="anchored" data-anchor-id="scatterplot-of-pre-schools-density-versus-pre-schools-count">1.10.2 Scatterplot of Pre-Schools Density versus Pre-Schools Count</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb101"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>mpsz3414, </span>
-<span id="cb101-2"><a href="#cb101-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">y =</span> <span class="st">`</span><span class="at">PreSch Count</span><span class="st">`</span>, </span>
-<span id="cb101-3"><a href="#cb101-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">x=</span> <span class="fu">as.numeric</span>(<span class="st">`</span><span class="at">PreSch Density</span><span class="st">`</span>)))<span class="sc">+</span></span>
-<span id="cb101-4"><a href="#cb101-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color=</span><span class="st">"black"</span>, </span>
-<span id="cb101-5"><a href="#cb101-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">fill=</span><span class="st">"light blue"</span>) <span class="sc">+</span></span>
-<span id="cb101-6"><a href="#cb101-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">40</span>) <span class="sc">+</span></span>
-<span id="cb101-7"><a href="#cb101-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">40</span>) <span class="sc">+</span></span>
-<span id="cb101-8"><a href="#cb101-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">""</span>,</span>
-<span id="cb101-9"><a href="#cb101-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Pre-school density (per km sq)"</span>,</span>
-<span id="cb101-10"><a href="#cb101-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Pre-school count"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb113"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>mpsz3414, </span>
+<span id="cb113-2"><a href="#cb113-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">y =</span> <span class="st">`</span><span class="at">PreSch Count</span><span class="st">`</span>, </span>
+<span id="cb113-3"><a href="#cb113-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">x=</span> <span class="fu">as.numeric</span>(<span class="st">`</span><span class="at">PreSch Density</span><span class="st">`</span>)))<span class="sc">+</span></span>
+<span id="cb113-4"><a href="#cb113-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color=</span><span class="st">"black"</span>, </span>
+<span id="cb113-5"><a href="#cb113-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">fill=</span><span class="st">"light blue"</span>) <span class="sc">+</span></span>
+<span id="cb113-6"><a href="#cb113-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">40</span>) <span class="sc">+</span></span>
+<span id="cb113-7"><a href="#cb113-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">40</span>) <span class="sc">+</span></span>
+<span id="cb113-8"><a href="#cb113-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">""</span>,</span>
+<span id="cb113-9"><a href="#cb113-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Pre-school density (per km sq)"</span>,</span>
+<span id="cb113-10"><a href="#cb113-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Pre-school count"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 2 rows containing missing values (`geom_point()`).</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="Hands-on_Ex1_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid" width="672"></p>
+<p><img src="Hands-on_Ex1_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p><img src="Hands-on_Ex1/EDA3.png" class="img-fluid"></p>
-<p><span class="smallcaps"><strong>~~~ End of Hands-on Exercise 1 ~~~</strong></span></p>
+<p><em>Student Note</em>: There appears to be a positive correlation between pre-school count and pre-school density.</p>
+</section>
+<section id="histograms-of-frequency-of-airbnb-listings-density" class="level3">
+<h3 class="anchored" data-anchor-id="histograms-of-frequency-of-airbnb-listings-density">1.10.3 Histograms of Frequency of AirBnB Listings Density</h3>
+<p><em>Student Note</em>: Based on both histograms, the density of AirBnB listings is right-skewed, with outliers at values above 200.</p>
+</section>
+<section id="scatterplot-of-airbnb-listings-density-versus-airbnb-listings-count" class="level3">
+<h3 class="anchored" data-anchor-id="scatterplot-of-airbnb-listings-density-versus-airbnb-listings-count">1.10.2 Scatterplot of AirBnB Listings Density versus AirBnB Listings Count</h3>
+<p><em>Student Note</em>: There appears to be a positive correlation between AirBnB listing count and AirBnB listing density.</p>
+<p><span class="smallcaps"><strong>~~~ End of Hands-on Exercise 1A ~~~</strong></span></p>
 
 
 </section>
