@@ -1,12 +1,19 @@
 ---
-title: "Hands-on Exercise 2"
+title: "Hands-on Exercise 1B"
+date: "17 November 2023"
+format: html
+execute: 
+  echo: true #shows the code
+  eval: true #shows the outcomes of the code
+  warning: false #does not show the warnings
+editor: visual
 ---
 
-# 2 **Choropleth Mapping with R**
+# 2 Choropleth Mapping with R
 
 ## 2.1 Overview
 
-In this page, I show how I had completed the Hands-on Exercise 2, on plotting choropleth maps using the **tmap** package. It includes the codes used, the graphs obtained as well as the insights gathered.
+In this page, I show how I had completed the Hands-on Exercise 1B, on plotting choropleth maps using the **tmap** package. It includes the codes used, the graphs obtained as well as the insights gathered.
 
 Choropleth mapping involves the symbolisation of enumeration units, such as countries, provinces, states, counties or census units, using area patterns or graduated colors.
 
@@ -26,7 +33,7 @@ They were loaded into the R environment using the following code:
 pacman::p_load(sf, tmap, tidyverse)
 ```
 
-*Student Note*: This allowed for loading of multiple packages in one line of code.
+***Student Note***: This allowed for loading of multiple packages in one line of code.
 
 ## 2.3 Importing Data
 
@@ -36,38 +43,31 @@ The following data sets were used in this hands-on exercise:
 
 -   [Singapore Residents by Planning Area / Subzone, Age Group, Sex and Type of Dwelling, June 2011-2020](https://www.singstat.gov.sg/find-data/search-by-theme/population/geographic-distribution/latest-data) from the [Department of Statistics Singapore](https://www.singstat.gov.sg/).
 
-The data sets were placed under two sub-folders: geospatial (Master Plan Subzone Boundary) and aspatial (Residents). These two sub-folders are within the data folder of my Hands-on_Ex2 folder.
+The data sets were placed under two sub-folders:
+
+-   geospatial (Master Plan Subzone Boundary), and
+
+-   aspatial (Residents).
+
+These two sub-folders are within the data folder of my Hands-on_Ex1B folder.
 
 ### 2.3.1 Importing Geospatial Data
 
 The **st_read()** (under sf package) was used to import the geospatial data set: `MP14_SUBZONE_WEB_PL`, a polygon feature layer in ESRI shapefile format.
 
 ```{r}
-mpsz = st_read(dsn = "Hands-on_Ex2/data/geospatial", 
+mpsz = st_read(dsn = "data/geospatial", 
                 layer = "MP14_SUBZONE_WEB_PL")
 ```
 
-Outcome:
-
-```         
-Reading layer `MP14_SUBZONE_WEB_PL' from data source    
-  `C:\jmphosis\ISSS624\Hands-on_Ex2\data\geospatial'    
-  using driver `ESRI Shapefile' 
-Simple feature collection with 323 features and 15 fields 
-Geometry type: MULTIPOLYGON 
-Dimension:     XY 
-Bounding box:  xmin: 2667.538 ymin: 15748.72 xmax: 56396.44 ymax: 50256.33 
-Projected CRS: SVY21
-```
-
-*Student Note*: The geospatial objects are multipolygon features. There are a total of **323 features and 15 fields** in `mpsz` simple feature data frame. `mpsz` is in **svy21 projected coordinate system**. The bounding box provides the x extend and y extend of the data.
+***Student Note***: The geospatial objects are multipolygon features. There are a total of **323 features and 15 fields** in `mpsz` simple feature data frame. `mpsz` is in **svy21 projected coordinate system**. The bounding box provides the x extend and y extend of the data.
 
 ### 2.3.2 Importing Attribute Data
 
 The **read_csv()** (under readr package) was used to import the aspatial data set: `respopagsex2000to2018`, a csv file with PA and SZ fields that can be used as unique identifiers to geocode to the `MP14_SUBZONE_WEB_PL` shapefile.
 
 ```{r}
-popdata = read_csv("Hands-on_Ex2/data/aspatial/respopagesextod2011to2020.csv")
+popdata = read_csv("data/aspatial/respopagesextod2011to2020.csv")
 ```
 
 ### 2.3.3 Data Preparation
@@ -122,7 +122,7 @@ The geographical data and attribute table were then joined using **left_join()**
 mpsz_pop2020 = left_join(mpsz, popdata2020,
                           by = c("SUBZONE_N" = "SZ"))
 
-write_rds(mpsz_pop2020, "Hands-on_Ex2/data/mpszpop2020.rds")
+write_rds(mpsz_pop2020, "data/mpszpop2020.rds")
 ```
 
 ## 2.4 Choropleth Mapping Geospatial Data Using tmap
@@ -139,7 +139,7 @@ qtm(mpsz_pop2020,
 
 ### 2.4.2 Creating A Choropleth Map Using tmap's Elements
 
-The tmap package is used to draw a high quality cartographic choropleth map.
+The **tmap** package is used to draw a high quality cartographic choropleth map.
 
 ```{r}
 tm_shape(mpsz_pop2020)+
@@ -186,7 +186,7 @@ tm_shape(mpsz_pop2020)+
 
 Using **tm_fill()** and **tm_borders()**:
 
-*Student Note*: The combined use of tm_fill() and tm_borders() is the equivalent of using tm_polygons().
+***Student Note***: The combined use of **tm_fill()** and **tm_borders()** is the equivalent of using **tm_polygons()**.
 
 ```{r}
 tm_shape(mpsz_pop2020)+
@@ -194,7 +194,7 @@ tm_shape(mpsz_pop2020)+
   tm_borders(lwd = 0.1,  alpha = 1)
 ```
 
-Using the style argument of tm_fill() or tm_polygons():
+Using the style argument of **tm_fill()** or **tm_polygons()**:
 
 ```{r}
 
@@ -213,7 +213,9 @@ tm_shape(mpsz_pop2020)+
   tm_borders(alpha = 0.5)
 ```
 
-### 2.4.3 DIY Choropleth Maps Using Different Classification Methods
+### 2.4.3 \[*Extra!*\] Choropleth Maps Using Different Classification Methods
+
+Using different **styles**:
 
 ```{r}
 tm_shape(mpsz_pop2020)+
@@ -283,6 +285,8 @@ tm_shape(mpsz_pop2020)+
   tm_borders(alpha = 0.5)
 ```
 
+Using different number of **bins**:
+
 ```{r}
 tm_shape(mpsz_pop2020)+
   tm_fill("DEPENDENCY",
@@ -331,7 +335,7 @@ tm_shape(mpsz_pop2020)+
 
 ### 2.4.4 Colour Scheme
 
-Using ColourBrewer palette:
+Using **ColourBrewer** palette:
 
 ```{r}
 tm_shape(mpsz_pop2020)+
@@ -352,7 +356,7 @@ tm_shape(mpsz_pop2020)+
 
 ### 2.4.5 Map Layouts
 
-Map Legend:
+Including **map legend**:
 
 ```{r}
 tm_shape(mpsz_pop2020)+
@@ -373,7 +377,7 @@ tm_shape(mpsz_pop2020)+
   tm_borders(alpha = 0.5)
 ```
 
-Map Style:
+Changing **map style**:
 
 ```{r}
 tm_shape(mpsz_pop2020)+
@@ -406,6 +410,20 @@ tm_shape(mpsz_pop2020)+
 
 ### 2.4.6 Facet Maps
 
+Facet maps, are composed of many maps arrange side-by-side, and sometimes stacked vertically. Small multiple maps enable the visualisation of how spatial relationships change with respect to another variable, such as time.
+
+In **tmap**, small multiple maps can be plotted in three ways:
+
+-   by assigning multiple values to at least one of the asthetic arguments,
+
+-   by defining a group-by variable in **tm_facets()**, and
+
+-   by creating multiple stand-alone maps with **tmap_arrange()**.
+
+[Maps of distribution of young and aged populations using tm_fill() and tmap_arrange()]{.underline}
+
+***Student Note***: The Northeast region more of the young, and less of the aged. This reflects the demographies of new towns like Punggol and Sengkang.
+
 ```{r}
 tm_shape(mpsz_pop2020)+
   tm_fill(c("YOUNG", "AGED"),
@@ -414,14 +432,35 @@ tm_shape(mpsz_pop2020)+
   tm_layout(legend.position = c("right", "bottom")) +
   tm_borders(alpha = 0.5) +
   tmap_style("white")
+```
 
+```{r}
+youngmap = tm_shape(mpsz_pop2020)+ 
+  tm_polygons("YOUNG", 
+              style = "quantile", 
+              palette = "Blues")
+
+agedmap = tm_shape(mpsz_pop2020)+ 
+  tm_polygons("AGED", 
+              style = "quantile", 
+              palette = "Blues")
+
+tmap_arrange(youngmap, agedmap, asp=1, ncol=2)
+```
+
+[Maps of distribution of aged populations and dependency ratios]{.underline}
+
+***Student Note***: Even though the distribution of the aged varies across different subzones, the dependency levels are generally the same. The exception is Loyang West which has a very high dependency ratio.
+
+```{r}
 tm_shape(mpsz_pop2020)+ 
   tm_polygons(c("DEPENDENCY","AGED"),
               style = c("equal", "quantile"), 
               palette = list("Blues","Greens")) +
   tm_layout(legend.position = c("right", "bottom"))
+```
 
-
+```{r}
 tm_shape(mpsz_pop2020) +
   tm_fill("DEPENDENCY",
           style = "quantile",
@@ -434,20 +473,9 @@ tm_shape(mpsz_pop2020) +
             title.position = c("center", "center"), 
             title.size = 20) +
   tm_borders(alpha = 0.5)
+```
 
-youngmap = tm_shape(mpsz_pop2020)+ 
-  tm_polygons("YOUNG", 
-              style = "quantile", 
-              palette = "Blues")
-
-agedmap = tm_shape(mpsz_pop2020)+ 
-  tm_polygons("AGED", 
-              style = "quantile", 
-              palette = "Blues")
-
-tmap_arrange(youngmap, agedmap, asp=1, ncol=2)
-
-
+```{r}
 tm_shape(mpsz_pop2020[mpsz_pop2020$REGION_N=="CENTRAL REGION", ])+
   tm_fill("DEPENDENCY", 
           style = "quantile", 
