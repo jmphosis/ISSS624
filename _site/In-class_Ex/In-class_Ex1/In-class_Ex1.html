@@ -165,15 +165,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#getting-started" id="toc-getting-started" class="nav-link active" data-scroll-target="#getting-started">Getting Started</a></li>
-  <li><a href="#preparing-the-flow-data" id="toc-preparing-the-flow-data" class="nav-link" data-scroll-target="#preparing-the-flow-data">Preparing the Flow Data</a>
+  <li><a href="#getting-started" id="toc-getting-started" class="nav-link active" data-scroll-target="#getting-started">1 Getting Started</a></li>
+  <li><a href="#preparing-the-flow-data" id="toc-preparing-the-flow-data" class="nav-link" data-scroll-target="#preparing-the-flow-data">2 Preparing the Flow Data</a>
   <ul class="collapse">
-  <li><a href="#importing-the-origin-destination-data" id="toc-importing-the-origin-destination-data" class="nav-link" data-scroll-target="#importing-the-origin-destination-data">Importing the Origin-Destination Data</a></li>
+  <li><a href="#importing-the-origin-destination-data" id="toc-importing-the-origin-destination-data" class="nav-link" data-scroll-target="#importing-the-origin-destination-data">2.1 Importing the Origin-Destination Data</a></li>
   </ul></li>
-  <li><a href="#extracting-the-study-data" id="toc-extracting-the-study-data" class="nav-link" data-scroll-target="#extracting-the-study-data">Extracting the Study Data</a></li>
-  <li><a href="#working-with-geospatial-data" id="toc-working-with-geospatial-data" class="nav-link" data-scroll-target="#working-with-geospatial-data">Working with Geospatial Data</a>
+  <li><a href="#extracting-the-study-data" id="toc-extracting-the-study-data" class="nav-link" data-scroll-target="#extracting-the-study-data">2.2 Extracting the Study Data</a></li>
+  <li><a href="#working-with-geospatial-data" id="toc-working-with-geospatial-data" class="nav-link" data-scroll-target="#working-with-geospatial-data">3 Working with Geospatial Data</a>
   <ul class="collapse">
-  <li><a href="#importing-geospatial-data" id="toc-importing-geospatial-data" class="nav-link" data-scroll-target="#importing-geospatial-data">Importing Geospatial Data</a></li>
+  <li><a href="#importing-geospatial-data" id="toc-importing-geospatial-data" class="nav-link" data-scroll-target="#importing-geospatial-data">3.1 Importing Geospatial Data</a></li>
   </ul></li>
   <li><a href="#geospatial-data-wrangling" id="toc-geospatial-data-wrangling" class="nav-link" data-scroll-target="#geospatial-data-wrangling">Geospatial Data Wrangling</a></li>
   <li><a href="#combining-busstop-and-mpsz" id="toc-combining-busstop-and-mpsz" class="nav-link" data-scroll-target="#combining-busstop-and-mpsz">Combining Busstop and mpsz</a></li>
@@ -214,24 +214,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
+<p><strong><em>Student Note</em></strong>: Delayed upload due to issues in linkage between R Studio and Github.</p>
 <section id="getting-started" class="level2">
-<h2 class="anchored" data-anchor-id="getting-started">Getting Started</h2>
+<h2 class="anchored" data-anchor-id="getting-started">1 Getting Started</h2>
 <p>The code chunk below loads the following packages:</p>
 <ul>
-<li><p>tmap: for thematic mapping;</p></li>
-<li><p>sf: for geospatial data handling; and</p></li>
-<li><p>tidyverse: for non-spatial data handling.</p></li>
+<li><p><strong>tmap</strong>: for thematic mapping;</p></li>
+<li><p><strong>sf</strong>: for geospatial data handling; and</p></li>
+<li><p><strong>tidyverse</strong>: for non-spatial data handling.</p></li>
 </ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tmap, sf, tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><em>Student Note</em>: This allowed for loading of multiple packages in one line of code (and installation if not already installed). Also, by calling pacman via “pacman::”, it means that we are calling it dynamically, without having it installed in R Studio.</p>
+<p><strong><em>Student Note</em></strong>: This allowed for loading of multiple packages in one line of code (and installation if not already installed). Also, by calling pacman via “pacman::”, it means that we are calling it dynamically, without having it installed in R Studio.</p>
 </section>
 <section id="preparing-the-flow-data" class="level2">
-<h2 class="anchored" data-anchor-id="preparing-the-flow-data">Preparing the Flow Data</h2>
+<h2 class="anchored" data-anchor-id="preparing-the-flow-data">2 Preparing the Flow Data</h2>
 <section id="importing-the-origin-destination-data" class="level3">
-<h3 class="anchored" data-anchor-id="importing-the-origin-destination-data">Importing the Origin-Destination Data</h3>
-<p>Firstly, we will import the <em>Passenger Volume by Origin Destination Bus Stops</em> dataset downloaded from LTA DataMall by using <code>read_csv()</code> of <strong>readr</strong> package.</p>
+<h3 class="anchored" data-anchor-id="importing-the-origin-destination-data">2.1 Importing the Origin-Destination Data</h3>
+<p>The <em>Passenger Volume by Origin Destination Bus Stops</em> dataset is downloaded from LTA DataMall by using <code>read_csv()</code> of <strong>readr</strong> package.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>odbus <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/origin_destination_bus_202308.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -241,6 +242,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>odbus<span class="sc">$</span>DESTINATION_PT_CODE <span class="ot">=</span> <span class="fu">as.factor</span>(odbus<span class="sc">$</span>DESTINATION_PT_CODE)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+</section>
+<section id="extracting-the-study-data" class="level2">
+<h2 class="anchored" data-anchor-id="extracting-the-study-data">2.2 Extracting the Study Data</h2>
+<p>The filter() is applied to extract the data for weekday 7:00-9:59am.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>origtrip_7_9 <span class="ot">=</span> odbus <span class="sc">%&gt;%</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(DAY_TYPE <span class="sc">==</span> <span class="st">"WEEKDAY"</span>) <span class="sc">%&gt;%</span></span>
@@ -249,15 +255,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">TRIPS =</span> <span class="fu">sum</span>(TOTAL_TRIPS))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-</section>
-<section id="extracting-the-study-data" class="level2">
-<h2 class="anchored" data-anchor-id="extracting-the-study-data">Extracting the Study Data</h2>
-<p>For the purpose of</p>
-</section>
 <section id="working-with-geospatial-data" class="level2">
-<h2 class="anchored" data-anchor-id="working-with-geospatial-data">Working with Geospatial Data</h2>
+<h2 class="anchored" data-anchor-id="working-with-geospatial-data">3 Working with Geospatial Data</h2>
 <section id="importing-geospatial-data" class="level3">
-<h3 class="anchored" data-anchor-id="importing-geospatial-data">Importing Geospatial Data</h3>
+<h3 class="anchored" data-anchor-id="importing-geospatial-data">3.1 Importing Geospatial Data</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>busstop <span class="ot">=</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/geospatial"</span>,</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">layer =</span> <span class="st">"BusStop"</span>) <span class="sc">%&gt;%</span></span>

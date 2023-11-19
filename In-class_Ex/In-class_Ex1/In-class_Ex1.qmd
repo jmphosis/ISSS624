@@ -12,27 +12,29 @@ background-color: lightgrey;
 font-family:  Palatino Linotype;
 ---
 
-## Getting Started
+***Student Note***: Delayed upload due to issues in linkage between R Studio and Github.
+
+## 1 Getting Started
 
 The code chunk below loads the following packages:
 
--   tmap: for thematic mapping;
+-   **tmap**: for thematic mapping;
 
--   sf: for geospatial data handling; and
+-   **sf**: for geospatial data handling; and
 
--   tidyverse: for non-spatial data handling.
+-   **tidyverse**: for non-spatial data handling.
 
 ```{r}
 pacman::p_load(tmap, sf, tidyverse)
 ```
 
-*Student Note*: This allowed for loading of multiple packages in one line of code (and installation if not already installed). Also, by calling pacman via "pacman::", it means that we are calling it dynamically, without having it installed in R Studio.
+***Student Note***: This allowed for loading of multiple packages in one line of code (and installation if not already installed). Also, by calling pacman via "pacman::", it means that we are calling it dynamically, without having it installed in R Studio.
 
-## Preparing the Flow Data
+## 2 Preparing the Flow Data
 
-### Importing the Origin-Destination Data
+### 2.1 Importing the Origin-Destination Data
 
-Firstly, we will import the *Passenger Volume by Origin Destination Bus Stops* dataset downloaded from LTA DataMall by using `read_csv()` of **readr** package.
+The *Passenger Volume by Origin Destination Bus Stops* dataset is downloaded from LTA DataMall by using `read_csv()` of **readr** package.
 
 ```{r}
 odbus = read_csv("data/aspatial/origin_destination_bus_202308.csv")
@@ -46,6 +48,10 @@ odbus$ORIGIN_PT_CODE = as.factor(odbus$ORIGIN_PT_CODE)
 odbus$DESTINATION_PT_CODE = as.factor(odbus$DESTINATION_PT_CODE)
 ```
 
+## 2.2 Extracting the Study Data
+
+The filter() is applied to extract the data for weekday 7:00-9:59am.
+
 ```{r}
 origtrip_7_9 = odbus %>%
   filter(DAY_TYPE == "WEEKDAY") %>%
@@ -54,13 +60,9 @@ origtrip_7_9 = odbus %>%
   summarise(TRIPS = sum(TOTAL_TRIPS))
 ```
 
-## Extracting the Study Data
+## 3 Working with Geospatial Data
 
-For the purpose of
-
-## Working with Geospatial Data
-
-### Importing Geospatial Data
+### 3.1 Importing Geospatial Data
 
 ```{r}
 busstop = st_read(dsn = "data/geospatial",
