@@ -1,6 +1,8 @@
 ---
 title: "ISSS624: Applied Geospatial Analytics"
 author: "Janet Toa"
+background-color: lightgrey;
+font-family:  Palatino Linotype;
 ---
 
 Welcome to ISSS624 Applied Geospatial Analytics!
@@ -9,4 +11,4 @@ In this webpage, I am going to share my geospatial analytics learning journey.
 
 ![](images/UrbanMobility.jpg){fig-align="center"}
 
-Credit: VectorStock
+*Credit: VectorStock*

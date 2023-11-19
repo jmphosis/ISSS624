@@ -7,6 +7,8 @@ execute:
   eval: true #shows the outcomes of the code
   warning: false #does not show the warnings
 editor: visual
+background-color: lightgrey;
+font-family:  Palatino Linotype;
 ---
 
 # 2 Choropleth Mapping with R
