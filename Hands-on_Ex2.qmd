@@ -26,7 +26,7 @@ They were loaded into the R environment using the following code:
 pacman::p_load(sf, tmap, tidyverse)
 ```
 
-*Student Note*: This allowed for installation and loading, without needing to take a two-step process using install.packages() and library().
+*Student Note*: This allowed for loading of multiple packages in one line of code.
 
 ## 2.3 Importing Data
 

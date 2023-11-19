@@ -1,3 +1,81 @@
 ---
 title: "In-class Exercise 1"
+date: "18 November 2023"
+date-modified: "last-modified" #allows for updating to the latest date
+format: html
+execute: 
+  echo: true #shows the code
+  eval: true #shows the outcomes of the code
+  warning: false #does not show the warnings
+editor: visual
 ---
+
+## Getting Started
+
+The code chunk below loads the following packages:
+
+-   tmap: for thematic mapping;
+
+-   sf: for geospatial data handling; and
+
+-   tidyverse: for non-spatial data handling.
+
+```{r}
+pacman::p_load(tmap, sf, tidyverse)
+```
+
+*Student Note*: This allowed for loading of multiple packages in one line of code (and installation if not already installed). Also, by calling pacman via "pacman::", it means that we are calling it dynamically, without having it installed in R Studio.
+
+## Preparing the Flow Data
+
+### Importing the Origin-Destination Data
+
+Firstly, we will import the *Passenger Volume by Origin Destination Bus Stops* dataset downloaded from LTA DataMall by using `read_csv()` of **readr** package.
+
+```{r}
+odbus = read_csv("data/aspatial/origin_destination_bus_202308.csv")
+```
+
+The following code chunk changes the bus stop fields from the numerical data type to the factor data type.
+
+```{r}
+odbus$ORIGIN_PT_CODE = as.factor(odbus$ORIGIN_PT_CODE)
+
+odbus$DESTINATION_PT_CODE = as.factor(odbus$DESTINATION_PT_CODE)
+```
+
+```{r}
+origtrip_7_9 = odbus %>%
+  filter(DAY_TYPE == "WEEKDAY") %>%
+  filter(TIME_PER_HOUR >= 7 & TIME_PER_HOUR <=9) %>%
+  group_by(ORIGIN_PT_CODE) %>%
+  summarise(TRIPS = sum(TOTAL_TRIPS))
+```
+
+## Extracting the Study Data
+
+For the purpose of
+
+## Working with Geospatial Data
+
+### Importing Geospatial Data
+
+```{r}
+busstop = st_read(dsn = "data/geospatial",
+                  layer = "BusStop") %>%
+  st_transform(crs = 3414)
+```
+
+```{r}
+mpsz = st_read(dsn = "data/geospatial",
+               layer = "MPSZ-2019") %>%
+  st_transform(crs = 3414)
+```
+
+## Geospatial Data Wrangling
+
+## Combining Busstop and mpsz
+
+## Visualising the Geospatial Data
+
+## Viewing the Subzone Spatial File

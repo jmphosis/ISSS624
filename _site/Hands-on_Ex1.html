@@ -258,7 +258,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><em>Student Note</em>: This allowed for installation and loading, without needing to take a two-step process using install.packages() and library().</p>
+<p><em>Student Note</em>: This allowed for loading of multiple packages in one line of code.</p>
 </section>
 <section id="importing-geospatial-data" class="level2">
 <h2 class="anchored" data-anchor-id="importing-geospatial-data">1.4 Importing Geospatial Data</h2>
@@ -723,21 +723,18 @@ all</code></pre>
 <p><img src="Hands-on_Ex1_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p><img src="Hands-on_Ex1/MPSZ1.png" class="img-fluid"></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(mpsz))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Hands-on_Ex1_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p><img src="Hands-on_Ex1/MPSZ2.png" class="img-fluid"></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mpsz[<span class="st">"PLN_AREA_N"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Hands-on_Ex1_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p><img src="Hands-on_Ex1/MPSZ3.png" class="img-fluid"></p>
 </section>
 <section id="cycling-path-1" class="level3">
 <h3 class="anchored" data-anchor-id="cycling-path-1">1.6.2 Cycling Path</h3>
@@ -747,14 +744,12 @@ all</code></pre>
 <p><img src="Hands-on_Ex1_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p><img src="Hands-on_Ex1/CP1.png" class="img-fluid"></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cyclingpath[<span class="st">"PLANNING_1"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Hands-on_Ex1_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p><img src="Hands-on_Ex1/CP2.png" class="img-fluid"></p>
 </section>
 <section id="pre-schools-location-1" class="level3">
 <h3 class="anchored" data-anchor-id="pre-schools-location-1">1.6.3 Pre-Schools Location</h3>
@@ -764,14 +759,12 @@ all</code></pre>
 <p><img src="Hands-on_Ex1_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p><img src="Hands-on_Ex1/PS1.png" class="img-fluid"></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(preschool))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Hands-on_Ex1_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p><img src="Hands-on_Ex1/PS2.png" class="img-fluid"></p>
 </section>
 </section>
 <section id="working-with-projection" class="level2">
@@ -856,7 +849,7 @@ PROJCRS["SVY21",
             ORDER[1],
             LENGTHUNIT["metre",1,
                 ID["EPSG",9001]]],
-        AXIS["(N)",north,
+        AXIS["(N)",north
             ORDER[2], 
             LENGTHUNIT["metre",1,
                 ID["EPSG",9001]]]]</code></pre>
@@ -1343,7 +1336,6 @@ OBJECTID SUBZONE_NO     SUBZONE_N SUBZONE_C CA_IND PLN_AREA_N PLN_AREA_C       R
 <p><img src="Hands-on_Ex1_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p><img src="Hands-on_Ex1/EDA1.png" class="img-fluid"></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>mpsz3414, </span>
 <span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x=</span> <span class="fu">as.numeric</span>(<span class="st">`</span><span class="at">PreSch Density</span><span class="st">`</span>))) <span class="sc">+</span></span>
@@ -1358,7 +1350,6 @@ OBJECTID SUBZONE_NO     SUBZONE_N SUBZONE_C CA_IND PLN_AREA_N PLN_AREA_C       R
 <p><img src="Hands-on_Ex1_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p><img src="Hands-on_Ex1/EDA2.png" class="img-fluid"></p>
 <p><em>Student Note</em>: Based on both histograms, the density of pre-schools is right-skewed, with outliers at values above 20.</p>
 </section>
 <section id="scatterplot-of-pre-schools-density-versus-pre-schools-count" class="level3">
@@ -1381,7 +1372,6 @@ OBJECTID SUBZONE_NO     SUBZONE_N SUBZONE_C CA_IND PLN_AREA_N PLN_AREA_C       R
 <p><img src="Hands-on_Ex1_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p><img src="Hands-on_Ex1/EDA3.png" class="img-fluid"></p>
 <p><em>Student Note</em>: There appears to be a positive correlation between pre-school count and pre-school density.</p>
 </section>
 <section id="histograms-of-frequency-of-airbnb-listings-density" class="level3">

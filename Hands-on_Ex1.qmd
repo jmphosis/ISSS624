@@ -36,7 +36,7 @@ They were loaded into the R environment using the following code:
 pacman::p_load(sf, tidyverse)
 ```
 
-*Student Note*: This allowed for installation and loading, without needing to take a two-step process using install.packages() and library().
+*Student Note*: This allowed for loading of multiple packages in one line of code.
 
 ## 1.4 Importing Geospatial Data
 
@@ -373,19 +373,13 @@ The **plot()** (under R graphics) was used to visualise the geospatial features 
 plot(mpsz)
 ```
 
-![](Hands-on_Ex1/MPSZ1)
-
 ```{r}
 plot(st_geometry(mpsz))
 ```
 
-![](Hands-on_Ex1/MPSZ2)
-
 ```{r}
 plot(mpsz["PLN_AREA_N"])
 ```
-
-![](Hands-on_Ex1/MPSZ3)
 
 ### 1.6.2 Cycling Path
 
@@ -393,13 +387,9 @@ plot(mpsz["PLN_AREA_N"])
 plot(st_geometry(cyclingpath))
 ```
 
-![](Hands-on_Ex1/CP1)
-
 ```{r}
 plot(cyclingpath["PLANNING_1"])
 ```
-
-![](Hands-on_Ex1/CP2)
 
 ### 1.6.3 Pre-Schools Location
 
@@ -407,13 +397,9 @@ plot(cyclingpath["PLANNING_1"])
 plot(preschool)
 ```
 
-![](Hands-on_Ex1/PS1)
-
 ```{r}
 plot(st_geometry(preschool))
 ```
-
-![](Hands-on_Ex1/PS2)
 
 ## 1.7 Working with Projection
 
@@ -460,7 +446,7 @@ PROJCRS["SVY21",
             ORDER[1],
             LENGTHUNIT["metre",1,
                 ID["EPSG",9001]]],
-        AXIS["(N)",north,
+        AXIS["(N)",north
             ORDER[2], 
             LENGTHUNIT["metre",1,
                 ID["EPSG",9001]]]]
@@ -832,8 +818,6 @@ The ggplot2 functions can be used to create useful statistical graphs for explor
 hist(mpsz3414$`PreSch Density`)
 ```
 
-![](Hands-on_Ex1/EDA1)
-
 ```{r}
 ggplot(data=mpsz3414, 
        aes(x= as.numeric(`PreSch Density`))) +
@@ -845,8 +829,6 @@ ggplot(data=mpsz3414,
       x = "Pre-school density (per km sq)",
       y = "Frequency")
 ```
-
-![](Hands-on_Ex1/EDA2)
 
 *Student Note*: Based on both histograms, the density of pre-schools is right-skewed, with outliers at values above 20.
 
@@ -864,8 +846,6 @@ ggplot(data=mpsz3414,
        x = "Pre-school density (per km sq)",
        y = "Pre-school count")
 ```
-
-![](Hands-on_Ex1/EDA3)
 
 *Student Note*: There appears to be a positive correlation between pre-school count and pre-school density.
 
