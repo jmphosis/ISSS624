@@ -33,7 +33,7 @@ The objectives are:
 
 -   Compute Local Indicator of Spatial Association (LISA) statistics for detecting clusters and outliers using appropriate functions **spdep** package;
 
--   Compute Getis-Ord\'s Gi statistics for detecting hot spot or/and cold spot area using appropriate functions of **spdep** package; and
+-   Compute Getis-Ord's Gi statistics for detecting hot spot or/and cold spot area using appropriate functions of **spdep** package; and
 
 -   Visualise the analysis output using **tmap** package.
 
@@ -374,13 +374,13 @@ ggplot(df, aes(x = Geary_C)) +
 
 ## 9.5 Spatial Correlogram
 
-Spatial correlograms are great to examine patterns of spatial autocorrelation in the data or model residuals. They show how correlated pairs of spatial observations are when the distance (lag) between them is increased. They are plots of some index of autocorrelation (Moran\'s I or Geary\'s c) against distance.
+Spatial correlograms are great to examine patterns of spatial autocorrelation in the data or model residuals. They show how correlated pairs of spatial observations are when the distance (lag) between them is increased. They are plots of some index of autocorrelation (Moran's I or Geary's c) against distance.
 
 Although correlograms are not as fundamental as variograms (a keystone concept of geostatistics), they are very useful as an exploratory and descriptive tool. For this purpose they actually provide richer information than variograms.
 
 ### 9.5.1 Computing and Visualising Moran's I Correlogram
 
-The **sp.correlogram()** (under spdep package) is used to compute a 6-lag spatial correlogram of the GDPPC variable. The GSA used is Moran\'s I. The output is plotted using plot() (under graphics package).
+The **sp.correlogram()** (under spdep package) is used to compute a 6-lag spatial correlogram of the GDPPC variable. The GSA used is Moran's I. The output is plotted using plot() (under graphics package).
 
 ***Student Note***: The "**method="I"**" argument specifies that Moran's I should be used as the measure of spatial autocorrelation.
 
