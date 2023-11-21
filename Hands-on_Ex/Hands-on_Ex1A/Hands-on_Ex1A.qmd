@@ -15,7 +15,7 @@ font-family:  Palatino Linotype;
 
 ## 1.1 Overview
 
-In this page, I show how I had completed the Hands-on Exercise 1. It includes the codes used, the graphs obtained as well as the insights gathered.
+In this page, I show how I had completed the Hands-on Exercise 1A. It includes the codes used, the graphs obtained as well as the insights gathered.
 
 ## 1.2 Data Acquisition
 
@@ -39,23 +39,23 @@ These two sub-folders are within the data folder of my Hands-on_Ex1A folder.
 
 ## 1.3 Getting Started
 
-The two R packages used in this hands-on exercises were:
+The two R packages used in this hands-on exercise are:
 
--   **sf** for importing, managing, and processing geospatial data, and
+-   **sf** for importing, managing, and processing geospatial data; and
 
 -   **tidyverse** for performing data science tasks such as importing, wrangling, and visualising data.
 
-They were loaded into the R environment using the following code:
+They are loaded into the R environment using the following code:
 
 ```{r}
 pacman::p_load(sf, tidyverse)
 ```
 
-***Student Note***: This allowed for loading of multiple packages in one line of code.
+***Student Note***: This allows for loading of multiple packages in one line of code.
 
 ## 1.4 Importing Geospatial Data
 
-The **st_read()** (under sf package) was used to import the three geospatial data sets:
+The **st_read()** (under sf package) is used to import the three geospatial data sets:
 
 -   `MP14_SUBZONE_WEB_PL`, a polygon feature layer in ESRI shapefile format;
 

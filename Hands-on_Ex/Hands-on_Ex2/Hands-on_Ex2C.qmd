@@ -1,0 +1,92 @@
+---
+title: "Hands-on Exercise 2C"
+date: "20 November 2023"
+format: html
+execute: 
+  echo: true #shows the code
+  eval: true #shows the outcomes of the code
+  warning: false #does not show the warnings
+editor: visual
+background-color: lightgrey;
+font-family:  Palatino Linotype;
+---
+
+# 10 Local Measures of Spatial Autocorrelation
+
+## 10.1 Overview
+
+## 10.2 Getting Started
+
+### 10.2.1 The Analytical Question
+
+### 10.2.2 The Study Area and Data
+
+### 10.2.3 Setting the Analytical Tools
+
+## 10.3 Importing Data
+
+### 10.3.1 Importing shapefile
+
+### 10.3.2 Importing csv file
+
+### 10.3.3 Performing Relational Join
+
+### 10.3.4 Visualising Regional Development Indicator
+
+## 10.4 Global Spatial Autocorrelation
+
+### 10.4.1 Computing Contiguity Spatial Weights
+
+### 10.4.2 Row-standardised Weights Matrix
+
+### 10.4.3 Global Spatial Autocorrelation: Moran's I
+
+#### 10.4.3.1 Computing and Visualising Monte Carlo's Moran's I
+
+### 10.4.4 Global Spatial Autocorrelation: Geary's C
+
+#### 10.4.4.1 Computing and Visualising Monte Carlo Geary's C
+
+## 10.5 Spatial Correlogram
+
+### 10.5.1 Computing and \[*Extra!*\] Visualising Moran's I Correlogram
+
+### 10.5.2 Computing and Visualising Geary's C Correlogram
+
+### 
+
+## 10.6 Cluster and Outlier Analysis
+
+### 10.6.1 Computing Local Moran's I
+
+### 10.6.2 Mapping Local Moran's I
+
+### 10.6.3 Mapping Local Moran's p-values
+
+### 10.6.4 Mapping Local Moran's I values and p-values
+
+## 10.7 Creating a Local Indicators of Spatial Association (LISA) Cluster Map
+
+### 10.7.1 Plotting Moran Scatterplot
+
+### 10.7.2 Plotting Moran Scatterplot with Standardised Variable
+
+### 10.7.3 Preparing LISA Map Classes
+
+### 10.7.4 Plotting LISA Map
+
+## 10.8 Hot Spot and Cold Spot Area Analysis
+
+### 10.8.1 Getis and Ord's G-Statistics
+
+### 10.8.2 Deriving Distance-based Weight Matrix
+
+### 10.8.2.3 Computing Fixed Distance Weight Matrix
+
+### 10.8.3 Computing Adaptive Distance Weight Matrix
+
+## 10.9 Computing Gi Statistics
+
+### 10.9.1 Gi Statistics Using Fixed Distance and Mapping Gi Values with Fixed Distance Weights
+
+### 10.9.2 Gi Statistics Using Adaptive Distance and Mapping Gi Values with Adaptive Distance Weights

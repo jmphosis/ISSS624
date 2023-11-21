@@ -129,6 +129,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex1B/Hands-on_Ex1B.html" rel="" target="">
  <span class="dropdown-text">Hands-on Exercise 1B</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex2A/Hands-on_Ex2A.html" rel="" target="">
+ <span class="dropdown-text">Hands-on_Exercise 2A</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -223,26 +227,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="getting-started" class="level2">
 <h2 class="anchored" data-anchor-id="getting-started">2.2 Getting Started</h2>
-<p>The R packages used in this hands-on exercises were:</p>
+<p>The R packages used in this hands-on exercise are:</p>
 <ul>
 <li><p><strong>tmap</strong> for thematic mapping;</p></li>
-<li><p><strong>sf</strong> for importing, managing, and processing geospatial data, and</p></li>
+<li><p><strong>sf</strong> for importing, managing, and processing geospatial data; and</p></li>
 <li><p><strong>tidyverse</strong> (i.e.&nbsp;readr, tidyr, dplyr) for performing data science tasks such as importing, tidying, and wrangling data.</p></li>
 </ul>
-<p>They were loaded into the R environment using the following code:</p>
+<p>They are loaded into the R environment using the following code:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, tmap, tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><strong><em>Student Note</em></strong>: This allowed for loading of multiple packages in one line of code.</p>
+<p><strong><em>Student Note</em></strong>: This allows for loading of multiple packages in one line of code.</p>
 </section>
 <section id="importing-data" class="level2">
 <h2 class="anchored" data-anchor-id="importing-data">2.3 Importing Data</h2>
-<p>The following data sets were used in this hands-on exercise:</p>
+<p>The following data sets are used in this hands-on exercise:</p>
 <ul>
 <li><p><a href="https://beta.data.gov.sg/collections/1708/view">Master Plan 2014 Subzone Boundary (Web)</a> from <a href="https://data.gov.sg/">data.gov.sg</a></p></li>
-<li><p><a href="https://www.singstat.gov.sg/find-data/search-by-theme/population/geographic-distribution/latest-data">Singapore Residents by Planning Area / Subzone, Age Group, Sex and Type of Dwelling, June 2011-2020</a> from the <a href="https://www.singstat.gov.sg/">Department of Statistics Singapore</a>.</p></li>
+<li><p><a href="https://www.singstat.gov.sg/find-data/search-by-theme/population/geographic-distribution/latest-data">Singapore Residents by Planning Area / Subzone, Age Group, Sex and Type of Dwelling, June 2011-2020</a> from the <a href="https://www.singstat.gov.sg/">Department of Statistics Singapore</a></p></li>
 </ul>
-<p>The data sets were placed under two sub-folders:</p>
+<p>The data sets are placed under two sub-folders:</p>
 <ul>
 <li><p>geospatial (Master Plan Subzone Boundary), and</p></li>
 <li><p>aspatial (Residents).</p></li>
@@ -250,7 +254,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>These two sub-folders are within the data folder of my Hands-on_Ex1B folder.</p>
 <section id="importing-geospatial-data" class="level3">
 <h3 class="anchored" data-anchor-id="importing-geospatial-data">2.3.1 Importing Geospatial Data</h3>
-<p>The <strong>st_read()</strong> (under sf package) was used to import the geospatial data set: <code>MP14_SUBZONE_WEB_PL</code>, a polygon feature layer in ESRI shapefile format.</p>
+<p>The <strong>st_read()</strong> (under sf package) is used to import the geospatial data set: <code>MP14_SUBZONE_WEB_PL</code>, a polygon feature layer in ESRI shapefile format.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mpsz <span class="ot">=</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/geospatial"</span>, </span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">layer =</span> <span class="st">"MP14_SUBZONE_WEB_PL"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -269,7 +273,7 @@ Projected CRS: SVY21</code></pre>
 </section>
 <section id="importing-attribute-data" class="level3">
 <h3 class="anchored" data-anchor-id="importing-attribute-data">2.3.2 Importing Attribute Data</h3>
-<p>The <strong>read_csv()</strong> (under readr package) was used to import the aspatial data set: <code>respopagsex2000to2018</code>, a csv file with PA and SZ fields that can be used as unique identifiers to geocode to the <code>MP14_SUBZONE_WEB_PL</code>&nbsp;shapefile.</p>
+<p>The <strong>read_csv()</strong> (under readr package) is used to import the aspatial data set: <code>respopagsex2000to2018</code>, a csv file with PA and SZ fields that can be used as unique identifiers to geocode to the <code>MP14_SUBZONE_WEB_PL</code>&nbsp;shapefile.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>popdata <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/respopagesextod2011to2020.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>

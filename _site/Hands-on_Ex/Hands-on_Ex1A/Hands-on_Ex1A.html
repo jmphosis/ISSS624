@@ -129,6 +129,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex1B/Hands-on_Ex1B.html" rel="" target="">
  <span class="dropdown-text">Hands-on Exercise 1B</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex2A/Hands-on_Ex2A.html" rel="" target="">
+ <span class="dropdown-text">Hands-on_Exercise 2A</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -241,7 +245,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>1 Geospatial Data Wrangling with R</h1>
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">1.1 Overview</h2>
-<p>In this page, I show how I had completed the Hands-on Exercise 1. It includes the codes used, the graphs obtained as well as the insights gathered.</p>
+<p>In this page, I show how I had completed the Hands-on Exercise 1A. It includes the codes used, the graphs obtained as well as the insights gathered.</p>
 </section>
 <section id="data-acquisition" class="level2">
 <h2 class="anchored" data-anchor-id="data-acquisition">1.2 Data Acquisition</h2>
@@ -261,20 +265,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="getting-started" class="level2">
 <h2 class="anchored" data-anchor-id="getting-started">1.3 Getting Started</h2>
-<p>The two R packages used in this hands-on exercises were:</p>
+<p>The two R packages used in this hands-on exercise are:</p>
 <ul>
-<li><p><strong>sf</strong> for importing, managing, and processing geospatial data, and</p></li>
+<li><p><strong>sf</strong> for importing, managing, and processing geospatial data; and</p></li>
 <li><p><strong>tidyverse</strong> for performing data science tasks such as importing, wrangling, and visualising data.</p></li>
 </ul>
-<p>They were loaded into the R environment using the following code:</p>
+<p>They are loaded into the R environment using the following code:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><strong><em>Student Note</em></strong>: This allowed for loading of multiple packages in one line of code.</p>
+<p><strong><em>Student Note</em></strong>: This allows for loading of multiple packages in one line of code.</p>
 </section>
 <section id="importing-geospatial-data" class="level2">
 <h2 class="anchored" data-anchor-id="importing-geospatial-data">1.4 Importing Geospatial Data</h2>
-<p>The <strong>st_read()</strong> (under sf package) was used to import the three geospatial data sets:</p>
+<p>The <strong>st_read()</strong> (under sf package) is used to import the three geospatial data sets:</p>
 <ul>
 <li><p><code>MP14_SUBZONE_WEB_PL</code>, a polygon feature layer in ESRI shapefile format;</p></li>
 <li><p><code>CyclingPath</code>, a line feature layer in ESRI shapefile format; and</p></li>

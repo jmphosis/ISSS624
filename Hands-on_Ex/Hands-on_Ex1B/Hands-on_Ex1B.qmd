@@ -21,31 +21,31 @@ Choropleth mapping involves the symbolisation of enumeration units, such as coun
 
 ## 2.2 Getting Started
 
-The R packages used in this hands-on exercises were:
+The R packages used in this hands-on exercise are:
 
 -   **tmap** for thematic mapping;
 
--   **sf** for importing, managing, and processing geospatial data, and
+-   **sf** for importing, managing, and processing geospatial data; and
 
 -   **tidyverse** (i.e. readr, tidyr, dplyr) for performing data science tasks such as importing, tidying, and wrangling data.
 
-They were loaded into the R environment using the following code:
+They are loaded into the R environment using the following code:
 
 ```{r}
 pacman::p_load(sf, tmap, tidyverse)
 ```
 
-***Student Note***: This allowed for loading of multiple packages in one line of code.
+***Student Note***: This allows for loading of multiple packages in one line of code.
 
 ## 2.3 Importing Data
 
-The following data sets were used in this hands-on exercise:
+The following data sets are used in this hands-on exercise:
 
 -   [Master Plan 2014 Subzone Boundary (Web)](https://beta.data.gov.sg/collections/1708/view) from [data.gov.sg](https://data.gov.sg/)
 
--   [Singapore Residents by Planning Area / Subzone, Age Group, Sex and Type of Dwelling, June 2011-2020](https://www.singstat.gov.sg/find-data/search-by-theme/population/geographic-distribution/latest-data) from the [Department of Statistics Singapore](https://www.singstat.gov.sg/).
+-   [Singapore Residents by Planning Area / Subzone, Age Group, Sex and Type of Dwelling, June 2011-2020](https://www.singstat.gov.sg/find-data/search-by-theme/population/geographic-distribution/latest-data) from the [Department of Statistics Singapore](https://www.singstat.gov.sg/)
 
-The data sets were placed under two sub-folders:
+The data sets are placed under two sub-folders:
 
 -   geospatial (Master Plan Subzone Boundary), and
 
@@ -55,7 +55,7 @@ These two sub-folders are within the data folder of my Hands-on_Ex1B folder.
 
 ### 2.3.1 Importing Geospatial Data
 
-The **st_read()** (under sf package) was used to import the geospatial data set: `MP14_SUBZONE_WEB_PL`, a polygon feature layer in ESRI shapefile format.
+The **st_read()** (under sf package) is used to import the geospatial data set: `MP14_SUBZONE_WEB_PL`, a polygon feature layer in ESRI shapefile format.
 
 ```{r}
 mpsz = st_read(dsn = "data/geospatial", 
@@ -66,7 +66,7 @@ mpsz = st_read(dsn = "data/geospatial",
 
 ### 2.3.2 Importing Attribute Data
 
-The **read_csv()** (under readr package) was used to import the aspatial data set: `respopagsex2000to2018`, a csv file with PA and SZ fields that can be used as unique identifiers to geocode to the `MP14_SUBZONE_WEB_PL` shapefile.
+The **read_csv()** (under readr package) is used to import the aspatial data set: `respopagsex2000to2018`, a csv file with PA and SZ fields that can be used as unique identifiers to geocode to the `MP14_SUBZONE_WEB_PL` shapefile.
 
 ```{r}
 popdata = read_csv("data/aspatial/respopagesextod2011to2020.csv")
