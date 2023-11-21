@@ -247,7 +247,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>Compute and plot spatial correlogram.</p></li>
 </ul></li>
 <li><p>Compute Local Indicator of Spatial Association (LISA) statistics for detecting clusters and outliers using appropriate functions <strong>spdep</strong> package;</p></li>
-<li><p>Compute Getis-Ord's Gi statistics for detecting hot spot or/and cold spot area using appropriate functions of <strong>spdep</strong> package; and</p></li>
+<li><p>Compute Getis-Ord’s Gi statistics for detecting hot spot or/and cold spot area using appropriate functions of <strong>spdep</strong> package; and</p></li>
 <li><p>Visualise the analysis output using <strong>tmap</strong> package.</p></li>
 </ul>
 </section>
@@ -679,11 +679,11 @@ alternative hypothesis: greater</code></pre>
 </section>
 <section id="spatial-correlogram" class="level2">
 <h2 class="anchored" data-anchor-id="spatial-correlogram">9.5 Spatial Correlogram</h2>
-<p>Spatial correlograms are great to examine patterns of spatial autocorrelation in the data or model residuals. They show how correlated pairs of spatial observations are when the distance (lag) between them is increased. They are plots of some index of autocorrelation (Moran's I or Geary's c) against distance.</p>
+<p>Spatial correlograms are great to examine patterns of spatial autocorrelation in the data or model residuals. They show how correlated pairs of spatial observations are when the distance (lag) between them is increased. They are plots of some index of autocorrelation (Moran’s I or Geary’s c) against distance.</p>
 <p>Although correlograms are not as fundamental as variograms (a keystone concept of geostatistics), they are very useful as an exploratory and descriptive tool. For this purpose they actually provide richer information than variograms.</p>
 <section id="computing-and-visualising-morans-i-correlogram" class="level3">
 <h3 class="anchored" data-anchor-id="computing-and-visualising-morans-i-correlogram">9.5.1 Computing and Visualising Moran’s I Correlogram</h3>
-<p>The <strong>sp.correlogram()</strong> (under spdep package) is used to compute a 6-lag spatial correlogram of the GDPPC variable. The GSA used is Moran's I. The output is plotted using plot() (under graphics package).</p>
+<p>The <strong>sp.correlogram()</strong> (under spdep package) is used to compute a 6-lag spatial correlogram of the GDPPC variable. The GSA used is Moran’s I. The output is plotted using plot() (under graphics package).</p>
 <p><strong><em>Student Note</em></strong>: The “<strong>method=”I”</strong>” argument specifies that Moran’s I should be used as the measure of spatial autocorrelation.</p>
 <p><strong>Question</strong>: What statistical observation can be drawn from the plot below?</p>
 <p><strong><em>Answer</em></strong>:</p>
