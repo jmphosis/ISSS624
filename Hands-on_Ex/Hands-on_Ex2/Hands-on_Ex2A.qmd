@@ -49,7 +49,7 @@ They are loaded into the R environment using the following code:
 pacman::p_load(sf, spdep, tmap, tidyverse, knitr)
 ```
 
-***Student Note***: This allows for loading of multiple packages in one line of code.
+> ***Student Note***: This allows for loading of multiple packages in one line of code.
 
 ## 8.3 Importing Data
 
@@ -71,7 +71,7 @@ These two sub-folders are within the data folder of my Hands-on_Ex2 folder.
 
 The **st_read()** (under sf package) is used to import the geospatial data set: `hunan`, a polygon feature layer in ESRI shapefile format.
 
-***Student Note***: The geospatial objects are polygon features. There are a total of **88 features and 7 fields** in `hunan` simple feature data frame. `hunan` is in **wgs84 coordinate system**.
+> ***Student Note***: The geospatial objects are polygon features. There are a total of **88 features and 7 fields** in `hunan` simple feature data frame. `hunan` is in **wgs84 coordinate system**.
 
 ```{r}
 hunan = st_read(dsn = "data/geospatial", 
@@ -82,7 +82,7 @@ hunan = st_read(dsn = "data/geospatial",
 
 The **read_csv()** (under readr package) is used to import the aspatial data set: `hunan_2012`, a csv file.
 
-***Student Note***: The `hunan_2012` tibble data frame contains **88 rows and 29 columns**. There are two columns with character data - County and City.
+> ***Student Note***: The `hunan_2012` tibble data frame contains **88 rows and 29 columns**. There are two columns with character data - County and City.
 
 ```{r}
 hunan2012 = read_csv("data/aspatial/Hunan_2012.csv")
@@ -92,7 +92,7 @@ hunan2012 = read_csv("data/aspatial/Hunan_2012.csv")
 
 The attribute table of the spatial polygons data frame, `hunan`, is updated using the attribute fields of the tibble data frame, `hunan2012` using **left_join()** (under dplyr package).
 
-***Student Note***: Without explicitly stating the "by" argument for left_join(), the two tables are joined by the 'County' columns.
+> ***Student Note***: Without explicitly stating the "by" argument for left_join(), the two tables are joined by the 'County' columns.
 
 ```{r}
 hunan = left_join(hunan,hunan2012) %>%
@@ -123,9 +123,9 @@ The **poly2nb()** (under spdep package) is used to compute **contiguity weight m
 
 The "queen" argument in the function is set to either TRUE (default) or FALSE. The TRUE option will return a list of first order neighbours using the Queen's continguity criteria.
 
-***Student Note***: According to Queen's criteria, two regions are considered neighbours if they share any part of their boundary (even if it is a single point). This results in a more inclusive definition of neighbour relationships.
+> ***Student Note***: According to Queen's criteria, two regions are considered neighbours if they share any part of their boundary (even if it is a single point). This results in a more inclusive definition of neighbour relationships.
 
-***Student Note***: The summary report below shows that there are **88 area units** in `hunan`. The **most connected area unit (85) has 11 neighbours**. The **least connected area units (30 and 65) have only one neighbour each**.
+> ***Student Note***: The summary report below shows that there are **88 area units** in `hunan`. The **most connected area unit (85) has 11 neighbours**. The **least connected area units (30 and 65) have only one neighbour each**.
 
 ```{r}
 wm_q = poly2nb(hunan, queen = TRUE)
@@ -143,7 +143,7 @@ wm_q[[1]]
 
 -   County names. For example, area unit 1 is Anxiang, and it is surrounded by Hanshou, Jinshi, Li, Nan, and Taoyuan.
 
-***Student Note***: Both "County" and "NAME_3" can be used to get the county names.
+> ***Student Note***: Both "County" and "NAME_3" can be used to get the county names.
 
 ```{r}
 hunan$County[1]
@@ -168,9 +168,9 @@ str(wm_q)
 
 The "queen" argument in the function is set to either TRUE (default) or FALSE. The FALSE option will return a list of first order neighbours using the Rook's continguity criteria instead.
 
-***Student Note***: According to Rook's criteria, two regions are considered neighbours if they share an entire edge (but not corners). This results in a stricter definition neighbour relationships.
+> ***Student Note***: According to Rook's criteria, two regions are considered neighbours if they share an entire edge (but not corners). This results in a stricter definition neighbour relationships.
 
-***Student Note***: The summary report below shows that there are **88 area units** in `hunan`. The **most connected area unit (85) has 10 neighbours**. The **least connected area units (30 and 65) have only one neighbour each**. **This is the same outcome as setting "queen = TRUE".**
+> ***Student Note***: The summary report below shows that there are **88 area units** in `hunan`. The **most connected area unit (85) has 10 neighbours**. The **least connected area units (30 and 65) have only one neighbour each**. **This is the same outcome as setting "queen = TRUE".**
 
 ```{r}
 wm_r = poly2nb(hunan, queen = FALSE)
@@ -179,7 +179,7 @@ summary(wm_r)
 
 The complete weight matrix, `wm_r`, can be displayed using **str()** (under utils package).
 
-***Student Note***: Due to the different contiguity criteria used, there are some differences in the outcomes. For example, for area unit 1, it has only four neighbours under the Rook's criteria (3, 4, 57 and 85), whereas it has five neighbours under the Queen's criteria (2, 3, 4, 57 and 85). This is expected given that the Rook's criteria is stricter.
+> ***Student Note***: Due to the different contiguity criteria used, there are some differences in the outcomes. For example, for area unit 1, it has only four neighbours under the Rook's criteria (3, 4, 57 and 85), whereas it has five neighbours under the Queen's criteria (2, 3, 4, 57 and 85). This is expected given that the Rook's criteria is stricter.
 
 ```{r}
 str(wm_r)
@@ -189,7 +189,7 @@ str(wm_r)
 
 A connectivity graph takes a point and displays a line to each neighboring point. The typical method used for polygons is to find the polygon centroids. These can be calculated using the sf package.
 
-The mapping function, **map_dbl()** (under the purrr package) is utilised to apply a function, **st_centroid()**, on each element of the geometry column, `us.bound`, returning a vector of a same length.
+The mapping function, **map_dbl()** (under the purrr package) is utilised to apply a function, **st_centroid()** (under sf package), on each element of the geometry column, `us.bound`, returning a vector of a same length.
 
 The longitude is then extracted by looking for the first value of each centroid, while the latitude is extracted by looking for the second value of each centroid. The cbind() is then used to put the two values together.
 
@@ -205,7 +205,7 @@ head(coords)
 
 The neighbours maps using the Queen's criteria and Rook's criteria respectively are then plotted below.
 
-***Student Note***: The **par()** (under graphics package) is used to plot the two maps side by side. The "main" argument is used to add titles for the two maps.
+> ***Student Note***: The **par()** (under graphics package) is used to plot the two maps side by side. The "main" argument is used to add titles for the two maps.
 
 ```{r}
 par(mfrow = c(1, 2))
@@ -225,11 +225,11 @@ The function identifies neighbours of region points by Euclidean distance with a
 
 ### 8.6.1 Determine the Cut-off Distance
 
-Firstly, to determine the upper limit for the distance band by using the following steps and functions under the **spdep** package:
+The upper limit for the distance band is determined by using the following steps and functions under the **spdep** package:
 
 1.  Return a matrix with the indices of points belonging to the set of the k nearest neighbours (knn) of each other by using **knearneigh()**.
 
-    ***Student Note***: In the matrix, each row corresponds to a point, and the columns contain the indices of its knn.
+    > ***Student Note***: In the matrix, each row corresponds to a point, and the columns contain the indices of its knn.
 
 2.  Convert the knn object into a neighbours list of class nb with a list of integer vectors containing neighbour region number ids by using **knn2nb()**.
 
@@ -251,11 +251,11 @@ summary(k1dists)
 
 The **dnearneigh()** (under spdep package) is used to compute the distance weight matrix.
 
-***Student Note***: knearneigh() computes knn, while dnearneigh() computes distance-based neighbours.
+> ***Student Note***: knearneigh() computes knn, while dnearneigh() computes distance-based neighbours.
 
-**Quiz:** What is the meaning of "Average number of links: 3.681818" shown above?
-
--   ***Answer***: On average, each region is connected to approximately 3.68 neighbours.
+> **Question:** What is the meaning of "Average number of links: 3.681818" shown above?
+>
+> ***Answer***: On average, each region is connected to approximately 3.68 neighbours.
 
 ```{r}
 wm_d62 = dnearneigh(coords, 0, 62, longlat = TRUE)
@@ -274,9 +274,9 @@ Another way to display the structure of the weight matrix, wm_d62, is to combine
 table(hunan$County, card(wm_d62))
 ```
 
-The n.comp.nb() (under spdep package) is used to calculate the number of connected components in `wm_d62`, which is then accessed using "nc". Using "comp.id", the connected component(s) and their size(s) (i.e., number of spatial units belonging to each) are extracted.
+The **n.comp.nb()** (under spdep package) is used to calculate the number of connected components in `wm_d62`, which is then accessed using "nc". Using "comp.id", the connected component(s) and their size(s) (i.e., number of spatial units belonging to each) are extracted.
 
-***Student Note***: Since n_comp\$nc = 1, it means that there is only one connected component in `wm_d62`. Having only one connected component suggests that the entire study area is spatially connected, and there are no distinct subgroups that are not linked to each other.
+> ***Student Note***: Since n_comp\$nc = 1, it means that there is only one connected component in `wm_d62`. Having only one connected component suggests that the entire study area is spatially connected, and there are no distinct subgroups that are not linked to each other.
 
 ```{r}
 n_comp = n.comp.nb(wm_d62)
@@ -306,7 +306,7 @@ One of the characteristics of fixed distance weight matrix is that more densely 
 
 It is possible to control the numbers of neighbours directly using knn, either accepting asymmetric neighbours or imposing symmetry as shown below.
 
-***Student Note***: Fixing the k argument's value in knearneigh() means that the number of neighbours for each region is exactly 6.
+> ***Student Note***: Fixing the k argument's value in knearneigh() means that the number of neighbours for each region is exactly 6.
 
 ```{r}
 knn6 = knn2nb(knearneigh(coords, k=6))
@@ -326,7 +326,7 @@ plot(knn6, coords, pch = 19, cex = 0.6, add = TRUE, col = "purple")
 
 The Inversed Distance Weighting (IDW) method is used to derive a different type of spatial weight matrix.
 
-***Student Not***e: IDW assigns higher weights to neighbours that are closer and lower weights to neighbours that are further away.
+> ***Student Not*****e**: IDW assigns higher weights to neighbours that are closer and lower weights to neighbours that are further away.
 
 The **nbdists()** (under spdep package) is used to compute the distances between areas.
 
@@ -344,13 +344,13 @@ The "**style**" argument influences the specific characteristics of the weights 
 
 The following example shows "**style="W"**"**, each neighboring polygon is assigned equal weight.** This is accomplished by assigning the fraction 1/(#ofneighbors) to each neighboring county then summing the weighted income values. While this is the most intuitive way to summarise the neighbors' values, its downside is that polygons along the edges of the study area will base their lagged values on fewer polygons thus potentially over- or under-estimating the true nature of the spatial autocorrelation in the data.
 
-***Student Note***:
-
--   "listw" stands for list of weights.
-
--   The "**style**" argument set to "W" specifies a **binary spatial weight matrix**, where the presence of a spatial relationship is indicated by 1, and absence by 0. **All neighbouring units are considered equal in terms of their impact on the target unit, reflecting a uniform spatial relationship.**
-
--   The "**zero.policy**" argument returns lists of non-neighbours when set to TRUE.
+> ***Student Note***:
+>
+> -   "listw" stands for list of weights.
+>
+> -   The "**style**" argument set to "W" specifies a **binary spatial weight matrix**, where the presence of a spatial relationship is indicated by 1, and absence by 0. **All neighbouring units are considered equal in terms of their impact on the target unit, reflecting a uniform spatial relationship.**
+>
+> -   The "**zero.policy**" argument returns lists of non-neighbours when set to TRUE.
 
 ```{r}
 rswm_q = nb2listw(wm_q, style="W", zero.policy = TRUE)
@@ -359,7 +359,7 @@ rswm_q
 
 The weights of the first polygon's eight neighbours are extracted below. It shows that each neighbour is assigned an equal weight of 0.2 of the total weight. This means that when computing the average neighbouring income values, each neighbour's income will be multiplied by 0.2 before being tallied.
 
-***Student Note***: In this example, each neighbour has an equal weight, indicating a form of uniform spatial relationship.
+> ***Student Note***: In this example, each neighbour has an equal weight, indicating a form of uniform spatial relationship.
 
 ```{r}
 rswm_q$weights[1]
@@ -367,11 +367,11 @@ rswm_q$weights[1]
 
 On the other hand, for "**style="B"**", **the spatial lag of a variable for a particular unit is the sum of that variable over all neighbouring units**, with each neighbour contributing a binary indicator (1 or 0).
 
-***Student Note***:
-
--   "glist=ids" means the list of inverse distances is used for the general list of weights argument.
-
--   The "**style**" argument set to "B" specifies a **binary spatial lag matrix**, where the presence of a spatial relationship is indicated by 1, and absence by 0. At the same time, the **direction of the connection is considered** for the calculations.
+> ***Student Note***:
+>
+> -   "glist=ids" means the list of inverse distances is used for the general list of weights argument.
+>
+> -   The "**style**" argument set to "B" specifies a **binary spatial lag matrix**, where the presence of a spatial relationship is indicated by 1, and absence by 0. At the same time, the **direction of the connection is considered** for the calculations.
 
 ```{r}
 rswm_ids = nb2listw(wm_q, glist=ids, style="B", zero.policy=TRUE)
@@ -380,13 +380,13 @@ rswm_ids
 
 The weights of the first polygon's five neighbours are extracted below. It shows that each neighbour is assigned varying weights. This means that when computing the average neighbouring income values, each neighbour's income will be multiplied by their corresponding weight values before being tallied.
 
-***Student Note***: In this example, each neighbour has an equal weight, indicating a form of uniform spatial relationship.
+> ***Student Note***: In this example, each neighbour has an equal weight, indicating a form of uniform spatial relationship.
 
 ```{r}
 rswm_ids$weights[1]
 ```
 
-***Student Note***: The summary below shows the range of weights using "**style="B"**" and IDW. The summary statistics indicate that the weights are not uniform.
+> ***Student Note***: The summary below shows the range of weights using "**style="B"**" and IDW. The summary statistics indicate that the weights are not uniform.
 
 ```{r}
 summary(unlist(rswm_ids$weights))
@@ -406,7 +406,7 @@ Four different spatial lagged variables are created to compute the average neigh
 
 ### 8.8.1 Spatial Lag with Row-standardised Weights
 
-***Student Note***: Spatial lag with row-standardized weights reflects **average value of the variable in neighbouring units**, with closer units having a higher influence. It is calculated using the weighted average of the values of a variable in neighbouring units, where the weights are row standardised.
+> ***Student Note***: Spatial lag with row-standardized weights reflects **average value of the variable in neighbouring units**, with closer units having a higher influence. It is calculated using the weighted average of the values of a variable in neighbouring units, where the weights are row standardised.
 
 Comparing the outcome below with the neighbouring GDP per capita values found in section 8.5.1 above, it is observed that each element `GDPPC.lag` is the average GDP per capita value of the neighbouring polygons. For example, for the first polygon, the average of 20981, 34592, 24473, 21311, and 22879 is indeed 24847.20.
 
@@ -439,7 +439,7 @@ tmap_arrange(gdppc, lag_gdppc, asp=1, ncol=2)
 
 ### 8.8.2 Spatial Lag as a Sum of Neighbouring Values
 
-***Student Note***: Spatial lag as a sum of neighbouring values represents the **total values of the variable in the surrounding area**. This is calculated by summing the values of a variable in neighbouring units, where each neighbouring units contributes equally, regardless of distance.
+> ***Student Note***: Spatial lag as a sum of neighbouring values represents the **total values of the variable in the surrounding area**. This is calculated by summing the values of a variable in neighbouring units, where each neighbouring units contributes equally, regardless of distance.
 
 A value of 1 is assigned to each neighbour using **lapply()** (under base package).
 
@@ -487,7 +487,7 @@ tmap_arrange(gdppc, lag_sum_gdppc, asp=1, ncol=2)
 
 The spatial window average uses row-standardised weights and **includes the diagonal element**.
 
-***Student Note***: Spatial window average provides a localised measure of central tendency by calculating the **average value of a variable within a specified spatial window or neighbourhood**. Unlike row-standardised spatial lag, this approach may consider a fixed-size spatial window, and all units within that window contribute equally to the average.
+> ***Student Note***: Spatial window average provides a localised measure of central tendency by calculating the **average value of a variable within a specified spatial window or neighbourhood**. Unlike row-standardised spatial lag, this approach may consider a fixed-size spatial window, and all units within that window contribute equally to the average.
 
 To add the diagonal element to the neighbour list, we need to use **include.self()** (under spdep package).
 
@@ -547,7 +547,7 @@ tmap_arrange(lag_gdppc, w_avg_gdppc, asp=1, ncol=2)
 
 The spatial window sum is the counterpart of spatial window average, but without using row-standardised weights.
 
-***Student Note***: Spatial window sum reflects the total accumulated value of the variable in the surrounding area, without normalisation by the number of neighbouring units. It is calculated by summing the values of a variable within a specified spatial window.
+> ***Student Note***: Spatial window sum reflects the total accumulated value of the variable in the surrounding area, without normalisation by the number of neighbouring units. It is calculated by summing the values of a variable within a specified spatial window.
 
 To add the diagonal element to the neighbour list, we need to use **include.self()** (under spdep package).
 

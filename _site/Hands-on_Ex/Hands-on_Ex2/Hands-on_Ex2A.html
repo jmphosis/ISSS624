@@ -265,7 +265,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, spdep, tmap, tidyverse, knitr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: This allows for loading of multiple packages in one line of code.</p>
+</blockquote>
 </section>
 <section id="importing-data" class="level2">
 <h2 class="anchored" data-anchor-id="importing-data">8.3 Importing Data</h2>
@@ -283,7 +285,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="importing-shapefile" class="level3">
 <h3 class="anchored" data-anchor-id="importing-shapefile">8.3.1 Importing shapefile</h3>
 <p>The <strong>st_read()</strong> (under sf package) is used to import the geospatial data set: <code>hunan</code>, a polygon feature layer in ESRI shapefile format.</p>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: The geospatial objects are polygon features. There are a total of <strong>88 features and 7 fields</strong> in <code>hunan</code> simple feature data frame. <code>hunan</code> is in <strong>wgs84 coordinate system</strong>.</p>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>hunan <span class="ot">=</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/geospatial"</span>, </span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">layer =</span> <span class="st">"Hunan"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -302,7 +306,9 @@ Geodetic CRS:  WGS 84</code></pre>
 <section id="importing-csv-file" class="level3">
 <h3 class="anchored" data-anchor-id="importing-csv-file">8.3.2 Importing csv file</h3>
 <p>The <strong>read_csv()</strong> (under readr package) is used to import the aspatial data set: <code>hunan_2012</code>, a csv file.</p>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: The <code>hunan_2012</code> tibble data frame contains <strong>88 rows and 29 columns</strong>. There are two columns with character data - County and City.</p>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>hunan2012 <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/Hunan_2012.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -310,7 +316,9 @@ Geodetic CRS:  WGS 84</code></pre>
 <section id="performing-relational-join" class="level3">
 <h3 class="anchored" data-anchor-id="performing-relational-join">8.3.3 Performing Relational Join</h3>
 <p>The attribute table of the spatial polygons data frame, <code>hunan</code>, is updated using the attribute fields of the tibble data frame, <code>hunan2012</code> using <strong>left_join()</strong> (under dplyr package).</p>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: Without explicitly stating the “by” argument for left_join(), the two tables are joined by the ‘County’ columns.</p>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>hunan <span class="ot">=</span> <span class="fu">left_join</span>(hunan,hunan2012) <span class="sc">%&gt;%</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">7</span>, <span class="dv">15</span>)</span>
@@ -371,8 +379,12 @@ First 10 features:
 <section id="computing-queen-contiguity-based-neighbours" class="level3">
 <h3 class="anchored" data-anchor-id="computing-queen-contiguity-based-neighbours">8.5.1 Computing (QUEEN) Contiguity Based Neighbours</h3>
 <p>The “queen” argument in the function is set to either TRUE (default) or FALSE. The TRUE option will return a list of first order neighbours using the Queen’s continguity criteria.</p>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: According to Queen’s criteria, two regions are considered neighbours if they share any part of their boundary (even if it is a single point). This results in a more inclusive definition of neighbour relationships.</p>
+</blockquote>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: The summary report below shows that there are <strong>88 area units</strong> in <code>hunan</code>. The <strong>most connected area unit (85) has 11 neighbours</strong>. The <strong>least connected area units (30 and 65) have only one neighbour each</strong>.</p>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>wm_q <span class="ot">=</span> <span class="fu">poly2nb</span>(hunan, <span class="at">queen =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -406,7 +418,9 @@ Link number distribution:
 <ul>
 <li>County names. For example, area unit 1 is Anxiang, and it is surrounded by Hanshou, Jinshi, Li, Nan, and Taoyuan.</li>
 </ul>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: Both “County” and “NAME_3” can be used to get the county names.</p>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>hunan<span class="sc">$</span>County[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -535,8 +549,12 @@ Link number distribution:
 <section id="creating-rook-contiguity-based-neighbours" class="level3">
 <h3 class="anchored" data-anchor-id="creating-rook-contiguity-based-neighbours">8.5.2 Creating (ROOK) Contiguity Based Neighbours</h3>
 <p>The “queen” argument in the function is set to either TRUE (default) or FALSE. The FALSE option will return a list of first order neighbours using the Rook’s continguity criteria instead.</p>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: According to Rook’s criteria, two regions are considered neighbours if they share an entire edge (but not corners). This results in a stricter definition neighbour relationships.</p>
+</blockquote>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: The summary report below shows that there are <strong>88 area units</strong> in <code>hunan</code>. The <strong>most connected area unit (85) has 10 neighbours</strong>. The <strong>least connected area units (30 and 65) have only one neighbour each</strong>. <strong>This is the same outcome as setting “queen = TRUE”.</strong></p>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>wm_r <span class="ot">=</span> <span class="fu">poly2nb</span>(hunan, <span class="at">queen =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(wm_r)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -557,7 +575,9 @@ Link number distribution:
 </div>
 </div>
 <p>The complete weight matrix, <code>wm_r</code>, can be displayed using <strong>str()</strong> (under utils package).</p>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: Due to the different contiguity criteria used, there are some differences in the outcomes. For example, for area unit 1, it has only four neighbours under the Rook’s criteria (3, 4, 57 and 85), whereas it has five neighbours under the Queen’s criteria (2, 3, 4, 57 and 85). This is expected given that the Rook’s criteria is stricter.</p>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(wm_r)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -661,7 +681,7 @@ Link number distribution:
 <section id="visualising-contiguity-weights" class="level3">
 <h3 class="anchored" data-anchor-id="visualising-contiguity-weights">8.5.3 Visualising Contiguity Weights</h3>
 <p>A connectivity graph takes a point and displays a line to each neighboring point. The typical method used for polygons is to find the polygon centroids. These can be calculated using the sf package.</p>
-<p>The mapping function, <strong>map_dbl()</strong> (under the purrr package) is utilised to apply a function, <strong>st_centroid()</strong>, on each element of the geometry column, <code>us.bound</code>, returning a vector of a same length.</p>
+<p>The mapping function, <strong>map_dbl()</strong> (under the purrr package) is utilised to apply a function, <strong>st_centroid()</strong> (under sf package), on each element of the geometry column, <code>us.bound</code>, returning a vector of a same length.</p>
 <p>The longitude is then extracted by looking for the first value of each centroid, while the latitude is extracted by looking for the second value of each centroid. The cbind() is then used to put the two values together.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>longitude <span class="ot">=</span> <span class="fu">map_dbl</span>(hunan<span class="sc">$</span>geometry, <span class="sc">~</span><span class="fu">st_centroid</span>(.x)[[<span class="dv">1</span>]])</span>
@@ -682,7 +702,9 @@ Link number distribution:
 </div>
 </div>
 <p>The neighbours maps using the Queen’s criteria and Rook’s criteria respectively are then plotted below.</p>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: The <strong>par()</strong> (under graphics package) is used to plot the two maps side by side. The “main” argument is used to add titles for the two maps.</p>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -703,10 +725,12 @@ Link number distribution:
 <p>The function identifies neighbours of region points by Euclidean distance with a distance band with lower “d1” and upper “d2” bounds controlled by the bounds argument. If unprojected coordinates are used and either specified in the coordinates object x or with x as a two column matrix and “longlat” set as TRUE, great circle distances in km will be calculated assuming the WGS84 reference ellipsoid.</p>
 <section id="determine-the-cut-off-distance" class="level3">
 <h3 class="anchored" data-anchor-id="determine-the-cut-off-distance">8.6.1 Determine the Cut-off Distance</h3>
-<p>Firstly, to determine the upper limit for the distance band by using the following steps and functions under the <strong>spdep</strong> package:</p>
+<p>The upper limit for the distance band is determined by using the following steps and functions under the <strong>spdep</strong> package:</p>
 <ol type="1">
 <li><p>Return a matrix with the indices of points belonging to the set of the k nearest neighbours (knn) of each other by using <strong>knearneigh()</strong>.</p>
-<p><strong><em>Student Note</em></strong>: In the matrix, each row corresponds to a point, and the columns contain the indices of its knn.</p></li>
+<blockquote class="blockquote">
+<p><strong><em>Student Note</em></strong>: In the matrix, each row corresponds to a point, and the columns contain the indices of its knn.</p>
+</blockquote></li>
 <li><p>Convert the knn object into a neighbours list of class nb with a list of integer vectors containing neighbour region number ids by using <strong>knn2nb()</strong>.</p></li>
 <li><p>Return the length of neighbour relationship edges by using <strong>nbdists()</strong>. This function returns in the units of the coordinates if the coordinates are projected, and in km otherwise.</p></li>
 <li><p>Remove the list structure of the returned object by using <strong>unlist()</strong> (under base package).</p></li>
@@ -727,11 +751,13 @@ Link number distribution:
 <section id="computing-and-plotting-fixed-distance-weight-matrix" class="level3">
 <h3 class="anchored" data-anchor-id="computing-and-plotting-fixed-distance-weight-matrix">8.6.2 Computing and Plotting Fixed Distance Weight Matrix</h3>
 <p>The <strong>dnearneigh()</strong> (under spdep package) is used to compute the distance weight matrix.</p>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: knearneigh() computes knn, while dnearneigh() computes distance-based neighbours.</p>
-<p><strong>Quiz:</strong> What is the meaning of “Average number of links: 3.681818” shown above?</p>
-<ul>
-<li><strong><em>Answer</em></strong>: On average, each region is connected to approximately 3.68 neighbours.</li>
-</ul>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Question:</strong> What is the meaning of “Average number of links: 3.681818” shown above?</p>
+<p><strong><em>Answer</em></strong>: On average, each region is connected to approximately 3.68 neighbours.</p>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>wm_d62 <span class="ot">=</span> <span class="fu">dnearneigh</span>(coords, <span class="dv">0</span>, <span class="dv">62</span>, <span class="at">longlat =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>wm_d62</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -941,8 +967,10 @@ Average number of links: 3.681818 </code></pre>
   Zixing        0 0 1 0 0 0</code></pre>
 </div>
 </div>
-<p>The n.comp.nb() (under spdep package) is used to calculate the number of connected components in <code>wm_d62</code>, which is then accessed using “nc”. Using “comp.id”, the connected component(s) and their size(s) (i.e., number of spatial units belonging to each) are extracted.</p>
+<p>The <strong>n.comp.nb()</strong> (under spdep package) is used to calculate the number of connected components in <code>wm_d62</code>, which is then accessed using “nc”. Using “comp.id”, the connected component(s) and their size(s) (i.e., number of spatial units belonging to each) are extracted.</p>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: Since n_comp$nc = 1, it means that there is only one connected component in <code>wm_d62</code>. Having only one connected component suggests that the entire study area is spatially connected, and there are no distinct subgroups that are not linked to each other.</p>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>n_comp <span class="ot">=</span> <span class="fu">n.comp.nb</span>(wm_d62)</span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>n_comp<span class="sc">$</span>nc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -980,7 +1008,9 @@ Average number of links: 3.681818 </code></pre>
 <h3 class="anchored" data-anchor-id="computing-and-plotting-adaptive-distance-weight-matrix">8.6.3 Computing and Plotting Adaptive Distance Weight Matrix</h3>
 <p>One of the characteristics of fixed distance weight matrix is that more densely settled areas (usually the urban areas) tend to have more neighbours and the less densely settled areas (usually the rural counties) tend to have less neighbours. Having many neighbours smoothes the neighbour relationship across more neighbours.</p>
 <p>It is possible to control the numbers of neighbours directly using knn, either accepting asymmetric neighbours or imposing symmetry as shown below.</p>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: Fixing the k argument’s value in knearneigh() means that the number of neighbours for each region is exactly 6.</p>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>knn6 <span class="ot">=</span> <span class="fu">knn2nb</span>(<span class="fu">knearneigh</span>(coords, <span class="at">k=</span><span class="dv">6</span>))</span>
 <span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>knn6</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1104,7 +1134,9 @@ Non-symmetric neighbours list</code></pre>
 <section id="weights-based-on-inverse-distance-weighting-idw" class="level2">
 <h2 class="anchored" data-anchor-id="weights-based-on-inverse-distance-weighting-idw">8.7 Weights Based on Inverse Distance Weighting (IDW)</h2>
 <p>The Inversed Distance Weighting (IDW) method is used to derive a different type of spatial weight matrix.</p>
-<p><strong><em>Student Not</em></strong>e: IDW assigns higher weights to neighbours that are closer and lower weights to neighbours that are further away.</p>
+<blockquote class="blockquote">
+<p><strong><em>Student Not</em>e</strong>: IDW assigns higher weights to neighbours that are closer and lower weights to neighbours that are further away.</p>
+</blockquote>
 <p>The <strong>nbdists()</strong> (under spdep package) is used to compute the distances between areas.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>dist <span class="ot">=</span> <span class="fu">nbdists</span>(wm_q, coords, <span class="at">longlat =</span> <span class="cn">TRUE</span>)</span>
@@ -1389,12 +1421,14 @@ Non-symmetric neighbours list</code></pre>
 <p>Weights are assigned to each neighbouring polygon. The <strong>nb21listw()</strong> (under spdep package) is used to convert a neighborhood object, <code>wm_q</code>, to a listw object, <code>rswm_q</code> (style=“W”) or <code>rswm_ids</code> (style=“B”). This allows row-standardised distance weight matrices to be created, whereby each row sums to 1.</p>
 <p>The “<strong>style</strong>” argument influences the specific characteristics of the weights matrix.</p>
 <p>The following example shows “<strong>style=”W”</strong>”<strong>, each neighboring polygon is assigned equal weight.</strong> This is accomplished by assigning the fraction 1/(#ofneighbors) to each neighboring county then summing the weighted income values. While this is the most intuitive way to summarise the neighbors’ values, its downside is that polygons along the edges of the study area will base their lagged values on fewer polygons thus potentially over- or under-estimating the true nature of the spatial autocorrelation in the data.</p>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>:</p>
 <ul>
 <li><p>“listw” stands for list of weights.</p></li>
 <li><p>The “<strong>style</strong>” argument set to “W” specifies a <strong>binary spatial weight matrix</strong>, where the presence of a spatial relationship is indicated by 1, and absence by 0. <strong>All neighbouring units are considered equal in terms of their impact on the target unit, reflecting a uniform spatial relationship.</strong></p></li>
 <li><p>The “<strong>zero.policy</strong>” argument returns lists of non-neighbours when set to TRUE.</p></li>
 </ul>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>rswm_q <span class="ot">=</span> <span class="fu">nb2listw</span>(wm_q, <span class="at">style=</span><span class="st">"W"</span>, <span class="at">zero.policy =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>rswm_q</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1413,7 +1447,9 @@ W 88 7744 88 37.86334 365.9147</code></pre>
 </div>
 </div>
 <p>The weights of the first polygon’s eight neighbours are extracted below. It shows that each neighbour is assigned an equal weight of 0.2 of the total weight. This means that when computing the average neighbouring income values, each neighbour’s income will be multiplied by 0.2 before being tallied.</p>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: In this example, each neighbour has an equal weight, indicating a form of uniform spatial relationship.</p>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>rswm_q<span class="sc">$</span>weights[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1422,11 +1458,13 @@ W 88 7744 88 37.86334 365.9147</code></pre>
 </div>
 </div>
 <p>On the other hand, for “<strong>style=”B”</strong>”, <strong>the spatial lag of a variable for a particular unit is the sum of that variable over all neighbouring units</strong>, with each neighbour contributing a binary indicator (1 or 0).</p>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>:</p>
 <ul>
 <li><p>“glist=ids” means the list of inverse distances is used for the general list of weights argument.</p></li>
 <li><p>The “<strong>style</strong>” argument set to “B” specifies a <strong>binary spatial lag matrix</strong>, where the presence of a spatial relationship is indicated by 1, and absence by 0. At the same time, the <strong>direction of the connection is considered</strong> for the calculations.</p></li>
 </ul>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>rswm_ids <span class="ot">=</span> <span class="fu">nb2listw</span>(wm_q, <span class="at">glist=</span>ids, <span class="at">style=</span><span class="st">"B"</span>, <span class="at">zero.policy=</span><span class="cn">TRUE</span>)</span>
 <span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>rswm_ids</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1445,7 +1483,9 @@ B 88 7744 8.786867 0.3776535 3.8137</code></pre>
 </div>
 </div>
 <p>The weights of the first polygon’s five neighbours are extracted below. It shows that each neighbour is assigned varying weights. This means that when computing the average neighbouring income values, each neighbour’s income will be multiplied by their corresponding weight values before being tallied.</p>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: In this example, each neighbour has an equal weight, indicating a form of uniform spatial relationship.</p>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>rswm_ids<span class="sc">$</span>weights[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1453,7 +1493,9 @@ B 88 7744 8.786867 0.3776535 3.8137</code></pre>
 [1] 0.01535405 0.03916350 0.01820896 0.02807922 0.01145113</code></pre>
 </div>
 </div>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: The summary below shows the range of weights using “<strong>style=”B”</strong>” and IDW. The summary statistics indicate that the weights are not uniform.</p>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">unlist</span>(rswm_ids<span class="sc">$</span>weights))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1474,7 +1516,9 @@ B 88 7744 8.786867 0.3776535 3.8137</code></pre>
 </ol>
 <section id="spatial-lag-with-row-standardised-weights" class="level3">
 <h3 class="anchored" data-anchor-id="spatial-lag-with-row-standardised-weights">8.8.1 Spatial Lag with Row-standardised Weights</h3>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: Spatial lag with row-standardized weights reflects <strong>average value of the variable in neighbouring units</strong>, with closer units having a higher influence. It is calculated using the weighted average of the values of a variable in neighbouring units, where the weights are row standardised.</p>
+</blockquote>
 <p>Comparing the outcome below with the neighbouring GDP per capita values found in section 8.5.1 above, it is observed that each element <code>GDPPC.lag</code> is the average GDP per capita value of the neighbouring polygons. For example, for the first polygon, the average of 20981, 34592, 24473, 21311, and 22879 is indeed 24847.20.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>GDPPC.lag <span class="ot">=</span> <span class="fu">lag.listw</span>(rswm_q, hunan<span class="sc">$</span>GDPPC)</span>
@@ -1538,7 +1582,9 @@ Geodetic CRS:  WGS 84
 </section>
 <section id="spatial-lag-as-a-sum-of-neighbouring-values" class="level3">
 <h3 class="anchored" data-anchor-id="spatial-lag-as-a-sum-of-neighbouring-values">8.8.2 Spatial Lag as a Sum of Neighbouring Values</h3>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: Spatial lag as a sum of neighbouring values represents the <strong>total values of the variable in the surrounding area</strong>. This is calculated by summing the values of a variable in neighbouring units, where each neighbouring units contributes equally, regardless of distance.</p>
+</blockquote>
 <p>A value of 1 is assigned to each neighbour using <strong>lapply()</strong> (under base package).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>b_weights <span class="ot">=</span> <span class="fu">lapply</span>(wm_q, <span class="cf">function</span>(x) <span class="dv">0</span><span class="sc">*</span>x <span class="sc">+</span> <span class="dv">1</span>)</span>
@@ -1648,7 +1694,9 @@ Geodetic CRS:  WGS 84
 <section id="spatial-window-average" class="level3">
 <h3 class="anchored" data-anchor-id="spatial-window-average">8.8.3 Spatial Window Average</h3>
 <p>The spatial window average uses row-standardised weights and <strong>includes the diagonal element</strong>.</p>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: Spatial window average provides a localised measure of central tendency by calculating the <strong>average value of a variable within a specified spatial window or neighbourhood</strong>. Unlike row-standardised spatial lag, this approach may consider a fixed-size spatial window, and all units within that window contribute equally to the average.</p>
+</blockquote>
 <p>To add the diagonal element to the neighbour list, we need to use <strong>include.self()</strong> (under spdep package).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>wm_qs <span class="ot">=</span> <span class="fu">include.self</span>(wm_q)</span>
@@ -2301,7 +2349,9 @@ Geodetic CRS:  WGS 84
 <section id="spatial-window-sum" class="level3">
 <h3 class="anchored" data-anchor-id="spatial-window-sum">8.8.4 Spatial Window Sum</h3>
 <p>The spatial window sum is the counterpart of spatial window average, but without using row-standardised weights.</p>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: Spatial window sum reflects the total accumulated value of the variable in the surrounding area, without normalisation by the number of neighbouring units. It is calculated by summing the values of a variable within a specified spatial window.</p>
+</blockquote>
 <p>To add the diagonal element to the neighbour list, we need to use <strong>include.self()</strong> (under spdep package).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>wm_qs <span class="ot">=</span> <span class="fu">include.self</span>(wm_q)</span>

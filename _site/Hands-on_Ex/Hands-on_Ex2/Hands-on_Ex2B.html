@@ -173,7 +173,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#global-measures-of-spatial-autocorrelation" id="toc-global-measures-of-spatial-autocorrelation" class="nav-link active" data-scroll-target="#global-measures-of-spatial-autocorrelation">9 Global Measures of Spatial Autocorrelation</a>
+  <li><a href="#global-and-local-measures-of-spatial-autocorrelation" id="toc-global-and-local-measures-of-spatial-autocorrelation" class="nav-link active" data-scroll-target="#global-and-local-measures-of-spatial-autocorrelation">9 Global and Local Measures of Spatial Autocorrelation</a>
   <ul class="collapse">
   <li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview">9.1 Overview</a></li>
   <li><a href="#getting-started" id="toc-getting-started" class="nav-link" data-scroll-target="#getting-started">9.2 Getting Started</a>
@@ -200,6 +200,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#computing-and-visualising-morans-i-correlogram" id="toc-computing-and-visualising-morans-i-correlogram" class="nav-link" data-scroll-target="#computing-and-visualising-morans-i-correlogram">9.5.1 Computing and Visualising Moran’s I Correlogram</a></li>
   <li><a href="#computing-and-visualising-gearys-c-correlogram" id="toc-computing-and-visualising-gearys-c-correlogram" class="nav-link" data-scroll-target="#computing-and-visualising-gearys-c-correlogram">9.5.2 Computing and Visualising Geary’s C Correlogram</a></li>
+  </ul></li>
+  <li><a href="#cluster-and-outlier-analysis" id="toc-cluster-and-outlier-analysis" class="nav-link" data-scroll-target="#cluster-and-outlier-analysis">10.6 Cluster and Outlier Analysis</a>
+  <ul class="collapse">
+  <li><a href="#computing-local-morans-i" id="toc-computing-local-morans-i" class="nav-link" data-scroll-target="#computing-local-morans-i">10.6.1 Computing Local Moran’s I</a></li>
+  <li><a href="#mapping-local-morans-i-values-and-p-values" id="toc-mapping-local-morans-i-values-and-p-values" class="nav-link" data-scroll-target="#mapping-local-morans-i-values-and-p-values">10.6.2 Mapping Local Moran’s I values and p-values</a></li>
+  </ul></li>
+  <li><a href="#creating-a-local-indicators-of-spatial-association-lisa-cluster-map" id="toc-creating-a-local-indicators-of-spatial-association-lisa-cluster-map" class="nav-link" data-scroll-target="#creating-a-local-indicators-of-spatial-association-lisa-cluster-map">10.7 Creating a Local Indicators of Spatial Association (LISA) Cluster Map</a>
+  <ul class="collapse">
+  <li><a href="#plotting-moran-scatterplot" id="toc-plotting-moran-scatterplot" class="nav-link" data-scroll-target="#plotting-moran-scatterplot">10.7.1 Plotting Moran Scatterplot</a></li>
+  <li><a href="#plotting-moran-scatterplot-with-standardised-variable" id="toc-plotting-moran-scatterplot-with-standardised-variable" class="nav-link" data-scroll-target="#plotting-moran-scatterplot-with-standardised-variable">10.7.2 Plotting Moran Scatterplot with Standardised Variable</a></li>
+  <li><a href="#preparing-lisa-map-classes-and-plotting-lisa-map" id="toc-preparing-lisa-map-classes-and-plotting-lisa-map" class="nav-link" data-scroll-target="#preparing-lisa-map-classes-and-plotting-lisa-map">10.7.3 Preparing LISA Map Classes and Plotting LISA Map</a></li>
+  </ul></li>
+  <li><a href="#hot-spot-and-cold-spot-area-analysis" id="toc-hot-spot-and-cold-spot-area-analysis" class="nav-link" data-scroll-target="#hot-spot-and-cold-spot-area-analysis">10.8 Hot Spot and Cold Spot Area Analysis</a>
+  <ul class="collapse">
+  <li><a href="#getis-and-ords-g-statistics" id="toc-getis-and-ords-g-statistics" class="nav-link" data-scroll-target="#getis-and-ords-g-statistics">10.8.1 Getis and Ord’s G-Statistics</a></li>
+  <li><a href="#deriving-distance-based-weight-matrix" id="toc-deriving-distance-based-weight-matrix" class="nav-link" data-scroll-target="#deriving-distance-based-weight-matrix">10.8.2 Deriving Distance-based Weight Matrix</a></li>
+  <li><a href="#computing-adaptive-distance-weight-matrix" id="toc-computing-adaptive-distance-weight-matrix" class="nav-link" data-scroll-target="#computing-adaptive-distance-weight-matrix">10.8.3 Computing Adaptive Distance Weight Matrix</a></li>
+  </ul></li>
+  <li><a href="#computing-gi-statistics" id="toc-computing-gi-statistics" class="nav-link" data-scroll-target="#computing-gi-statistics">10.9 Computing Gi Statistics</a>
+  <ul class="collapse">
+  <li><a href="#gi-statistics-using-fixed-distance-and-mapping-gi-values-with-fixed-distance-weights" id="toc-gi-statistics-using-fixed-distance-and-mapping-gi-values-with-fixed-distance-weights" class="nav-link" data-scroll-target="#gi-statistics-using-fixed-distance-and-mapping-gi-values-with-fixed-distance-weights">10.9.1 Gi Statistics Using Fixed Distance and Mapping Gi Values with Fixed Distance Weights</a></li>
+  <li><a href="#gi-statistics-using-adaptive-distance-and-mapping-gi-values-with-adaptive-distance-weights" id="toc-gi-statistics-using-adaptive-distance-and-mapping-gi-values-with-adaptive-distance-weights" class="nav-link" data-scroll-target="#gi-statistics-using-adaptive-distance-and-mapping-gi-values-with-adaptive-distance-weights">10.9.2 Gi Statistics Using Adaptive Distance and Mapping Gi Values with Adaptive Distance Weights</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -231,8 +253,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<section id="global-measures-of-spatial-autocorrelation" class="level1">
-<h1>9 Global Measures of Spatial Autocorrelation</h1>
+<section id="global-and-local-measures-of-spatial-autocorrelation" class="level1">
+<h1>9 Global and Local Measures of Spatial Autocorrelation</h1>
+<p><strong><em>Note</em></strong>: This Hands-on Exercise 2B combines both <u>9 Global Measures of Spatial Autocorrelation</u> and <u>10 Local Measures of Spatial Autocorrelation</u> on r4gdsa.netlify.app since there are some overlaps in Sections 9.1 to 9.5.</p>
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">9.1 Overview</h2>
 <p>In this page, I show how I had completed the Hands-on Exercise 2B, on computing Global and Local Measures of Spatial Autocorrelation (GLSA) using the <strong>spdep</strong> package.</p>
@@ -395,14 +418,20 @@ First 10 features:
 <section id="global-spatial-autocorrelation" class="level2">
 <h2 class="anchored" data-anchor-id="global-spatial-autocorrelation">9.4 Global Spatial Autocorrelation</h2>
 <p>The <strong>Global Spatial Autocorrelation (GSA) statistics</strong> are computed for the study area. Also, <strong>Spatial Complete Randomness (SCR) test for GSA</strong> is performed.</p>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: The SCR test for GSR checks if the spatial distribution of GDPPC is entirely random and lacks any systematic spatial pattern. In other words, it assesses whether the observed spatial pattern of the GDPPC deviates significantly from what would be expected under spatial randomness.</p>
+</blockquote>
 <section id="computing-contiguity-spatial-weights" class="level3">
 <h3 class="anchored" data-anchor-id="computing-contiguity-spatial-weights">9.4.1 Computing Contiguity Spatial Weights</h3>
 <p>Firstly, the spatial weights of the study area would need to be computed to define the neighbourhood relationships between the geographical units (i.e., county) in the study area.</p>
 <p>The <strong>poly2nb()</strong> (under spdep package) is used to compute <strong>contiguity weight matrices</strong> for the study area. This function builds a neighbours list based on regions with contiguous boundaries.</p>
 <p>The “queen” argument in the function is set to either TRUE (default) or FALSE. The TRUE option will return a list of first order neighbours using the Queen’s continguity criteria.</p>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: According to Queen’s criteria, two regions are considered neighbours if they share any part of their boundary (even if it is a single point). This results in a more inclusive definition of neighbour relationships.</p>
+</blockquote>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: The summary report below shows that there are <strong>88 area units</strong> in <code>hunan</code>. The <strong>most connected area unit (85) has 11 neighbours</strong>. The <strong>least connected area units (30 and 65) have only one neighbour each</strong>.</p>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>wm_q <span class="ot">=</span> <span class="fu">poly2nb</span>(hunan, <span class="at">queen =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -428,6 +457,7 @@ Link number distribution:
 <h3 class="anchored" data-anchor-id="row-standardised-weights-matrix">9.4.2 Row-standardised Weights Matrix</h3>
 <p>Weights are assigned to each neighbouring polygon. The <strong>nb21listw()</strong> (under spdep package) is used to convert a neighborhood object, <code>wm_q</code>, to a listw object, <code>rswm_q</code> (style=“W”). This allows row-standardised distance weight matrices to be created, whereby each row sums to 1. The “<strong>style</strong>” argument influences the specific characteristics of the weights matrix.</p>
 <p>For this hands-on exercise, the “<strong>style=”W”</strong>” is used<strong>, each neighboring polygon is assigned equal weight.</strong> This is accomplished by assigning the fraction 1/(#ofneighbors) to each neighboring county then summing the weighted income values. While this is the most intuitive way to summarise the neighbors’ values, its downside is that polygons along the edges of the study area will base their lagged values on fewer polygons thus potentially over- or under-estimating the true nature of the spatial autocorrelation in the data.</p>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>:</p>
 <ul>
 <li><p>The “<strong>style</strong>” argument set to “W” specifies a <strong>binary spatial weight matrix</strong>, where the presence of a spatial relationship is indicated by 1, and absence by 0. <strong>All neighbouring units are considered equal in terms of their impact on the target unit, reflecting a uniform spatial relation</strong></p>
@@ -442,6 +472,7 @@ Link number distribution:
 <li>This ensures that even regions without neighbors are included in the spatial weights matrix, and their spatial lag values are explicitly set to zero. This can be useful in certain analytical contexts where the treatment of regions without neighbours is important for the analysis.</li>
 </ul></li>
 </ul>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>rswm_q <span class="ot">=</span> <span class="fu">nb2listw</span>(wm_q,</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">style=</span><span class="st">"W"</span>,</span>
@@ -465,6 +496,7 @@ W 88 7744 88 37.86334 365.9147</code></pre>
 <section id="global-spatial-autocorrelation-morans-i" class="level3">
 <h3 class="anchored" data-anchor-id="global-spatial-autocorrelation-morans-i">9.4.3 Global Spatial Autocorrelation: Moran’s I</h3>
 <p>Moran’s I statistics testing is performed using <strong>moran.test()</strong> (under spdep package) to study the GSA.</p>
+<blockquote class="blockquote">
 <p><strong>Question</strong>: What statistical conclusion can be drawn from the output below?</p>
 <p><strong><em>Answer</em></strong>:</p>
 <ul>
@@ -472,6 +504,7 @@ W 88 7744 88 37.86334 365.9147</code></pre>
 <li><p>The <strong>p-value of 1.095e-06 is very small, indicating a strong evidence to reject the null hypothesis of spatial randomness</strong> and support the alternative hypothesis.</p></li>
 <li><p><strong>The alternative hypothesis is that there is a <em>significant</em> positive autocorrelation in the GDPPC</strong>, i.e., neighbouring regions tend to have similar GDPPC values (cluster together).</p></li>
 </ul>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(hunan<span class="sc">$</span>GDPPC, </span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">listw =</span> rswm_q, </span>
@@ -494,12 +527,15 @@ Moran I statistic       Expectation          Variance
 <section id="computing-and-visualising-monte-carlos-morans-i" class="level4">
 <h4 class="anchored" data-anchor-id="computing-and-visualising-monte-carlos-morans-i">9.4.3.1 Computing and Visualising Monte Carlo’s Moran’s I</h4>
 <p>A permutation test (999 simulations using Monte Carlo) for Moran’s I statistic is performed using <strong>moran.mc()</strong> (under spdep package).</p>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>:</p>
 <ul>
 <li><p>The <strong>set.seed()</strong> is used to ensure reproducibility.</p></li>
 <li><p>The “<strong>na.action = na.omit</strong>” argument specifies the action to be taken if there are missing values. In this case, any observations with missing values are omitted from the analysis.</p></li>
 <li><p>The “+ 1” is typically added to the <strong>number of simulations</strong> because the <u>observed value</u> is also included in the distribution of <u>simulated values</u>.</p></li>
 </ul>
+</blockquote>
+<blockquote class="blockquote">
 <p><strong>Question</strong>: What statistical conclusion can be drawn from the output below?</p>
 <p><strong><em>Answer</em></strong>:</p>
 <ul>
@@ -508,6 +544,7 @@ Moran I statistic       Expectation          Variance
 <li><p><strong>The alternative hypothesis is that there is a <em>significant</em> positive autocorrelation in the GDPPC</strong>, i.e., neighbouring regions tend to have similar GDPPC values (cluster together).</p></li>
 <li><p><strong>The rank of 1,000 of the observed Moran’s I statistic compared to the simulated values means that the observed spatial pattern is unlikely to have occurred by random chance.</strong></p></li>
 </ul>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>bperm_moran <span class="ot">=</span> <span class="fu">moran.mc</span>(hunan<span class="sc">$</span>GDPPC, </span>
@@ -529,7 +566,9 @@ alternative hypothesis: greater</code></pre>
 </div>
 </div>
 <p>The simulated Moran’s I test statistics can be observed in further detail by plotting the distribution of the statistical values as a histogram. The hist() and abline() (under graphics package) are used.</p>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: The distribution of simulated values show that more than half are negative values (i.e., negative correlation). It also shows that the observed Moran’s I statistic of 0.30075 would be considered an outlier, and unlikely to have occurred by chance.</p>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(bperm_moran<span class="sc">$</span>res[<span class="dv">1</span><span class="sc">:</span><span class="dv">999</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -577,6 +616,7 @@ alternative hypothesis: greater</code></pre>
 <section id="global-spatial-autocorrelation-gearys-c" class="level3">
 <h3 class="anchored" data-anchor-id="global-spatial-autocorrelation-gearys-c">9.4.4 Global Spatial Autocorrelation: Geary’s C</h3>
 <p>Geary’s c statistics testing is performed using <strong>geary.test()</strong> (under spdep package) to study the GSA.</p>
+<blockquote class="blockquote">
 <p><strong>Question</strong>: What statistical conclusion can be drawn from the output below?</p>
 <p><strong><em>Answer</em></strong>:</p>
 <ul>
@@ -584,6 +624,7 @@ alternative hypothesis: greater</code></pre>
 <li><p>The <strong>p-value of 0.0001526 is less than the commonly used significance level of 0.05, indicating a strong evidence to reject the null hypothesis of spatial randomness</strong> and support the alternative hypothesis.</p></li>
 <li><p><strong>The alternative hypothesis is that there is a <em>significant</em> positive autocorrelation in the GDPPC</strong>, i.e., neighbouring regions tend to have similar GDPPC values (cluster together).</p></li>
 </ul>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">geary.test</span>(hunan<span class="sc">$</span>GDPPC, <span class="at">listw=</span>rswm_q)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -603,11 +644,14 @@ Geary C statistic       Expectation          Variance
 <section id="computing-and-visualising-monte-carlo-gearys-c" class="level4">
 <h4 class="anchored" data-anchor-id="computing-and-visualising-monte-carlo-gearys-c">9.4.4.1 Computing and Visualising Monte Carlo Geary’s C</h4>
 <p>A permutation test (999 simulations using Monte Carlo) for Geary’s c statistic is performed using <strong>geary.mc()</strong> (under spdep package).</p>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>:</p>
 <ul>
 <li><p>The <strong>set.seed()</strong> is used to ensure reproducibility.</p></li>
 <li><p>The “+ 1” is typically added to the <strong>number of simulations</strong> because the <u>observed value</u> is also included in the distribution of <u>simulated values</u>.</p></li>
 </ul>
+</blockquote>
+<blockquote class="blockquote">
 <p><strong>Question</strong>: What statistical conclusion can be drawn from the output below?</p>
 <p><strong><em>Answer</em></strong>:</p>
 <ul>
@@ -616,6 +660,7 @@ Geary C statistic       Expectation          Variance
 <li><p><strong>The alternative hypothesis is that there is a <em>significant</em> positive autocorrelation in the GDPPC</strong>, i.e., neighbouring regions tend to have similar GDPPC values (cluster together).</p></li>
 <li><p><strong>The rank of 1 of the observed Geary’s c statistic compared to the simulated values means that the observed spatial pattern is unlikely to have occurred by random chance.</strong></p></li>
 </ul>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>bperm_geary<span class="ot">=</span><span class="fu">geary.mc</span>(hunan<span class="sc">$</span>GDPPC, </span>
@@ -635,7 +680,9 @@ alternative hypothesis: greater</code></pre>
 </div>
 </div>
 <p>The simulated Geary’s c test statistics can be observed in further detail by plotting the distribution of the statistical values as a histogram. The hist() and abline() (under graphics package) are used.</p>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: The distribution of simulated values show that more than half are abpve 1.0 (i.e., negative correlation). It also shows that the observed Geary’s c statistic of 69072 would be considered an outlier, and unlikely to have occurred by chance.</p>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(bperm_geary<span class="sc">$</span>res[<span class="dv">1</span><span class="sc">:</span><span class="dv">999</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -684,7 +731,10 @@ alternative hypothesis: greater</code></pre>
 <section id="computing-and-visualising-morans-i-correlogram" class="level3">
 <h3 class="anchored" data-anchor-id="computing-and-visualising-morans-i-correlogram">9.5.1 Computing and Visualising Moran’s I Correlogram</h3>
 <p>The <strong>sp.correlogram()</strong> (under spdep package) is used to compute a 6-lag spatial correlogram of the GDPPC variable. The GSA used is Moran’s I. The output is plotted using plot() (under graphics package).</p>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: The “<strong>method=”I”</strong>” argument specifies that Moran’s I should be used as the measure of spatial autocorrelation.</p>
+</blockquote>
+<blockquote class="blockquote">
 <p><strong>Question</strong>: What statistical observation can be drawn from the plot below?</p>
 <p><strong><em>Answer</em></strong>:</p>
 <ul>
@@ -693,6 +743,7 @@ alternative hypothesis: greater</code></pre>
 <li><p><strong>The p-values are generally very small (except for distance lag 4), indicating statistical significance, and high level of confidence to reject the null hypothesis of spatial randomness.</strong></p></li>
 <li><p><strong>Overall, statistical significance observed for positive correlation at distance lags of 1-3, and negative correlation at distance lags of 5-6.</strong></p></li>
 </ul>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>MI_corr <span class="ot">=</span> <span class="fu">sp.correlogram</span>(wm_q, </span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>                          hunan<span class="sc">$</span>GDPPC, </span>
@@ -725,7 +776,10 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <section id="computing-and-visualising-gearys-c-correlogram" class="level3">
 <h3 class="anchored" data-anchor-id="computing-and-visualising-gearys-c-correlogram">9.5.2 Computing and Visualising Geary’s C Correlogram</h3>
 <p>The <strong>sp.correlogram()</strong> (under spdep package) is used to compute a 6-lag spatial correlogram of the GDPPC variable. The GSA used is Geary’s c.&nbsp;The output is plotted using plot() (under graphics package).</p>
+<blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: The “<strong>method=”C”</strong>” argument specifies that Geary’s c should be used as the measure of spatial autocorrelation.</p>
+</blockquote>
+<blockquote class="blockquote">
 <p><strong>Question</strong>: What statistical observation can be drawn from the plot below?</p>
 <p><strong><em>Answer</em></strong>:</p>
 <ul>
@@ -734,6 +788,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <li><p><strong>The p-values are small for distance lags 1, 2, and 5), indicating statistical significance, and high level of confidence to reject the null hypothesis of spatial randomness.</strong></p></li>
 <li><p><strong>Overall, statistical significance observed for positive correlation at distance lags of 1-2, and negative correlation at distance lag of 5.</strong></p></li>
 </ul>
+</blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>GC_corr <span class="ot">=</span> <span class="fu">sp.correlogram</span>(wm_q, </span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>                          hunan<span class="sc">$</span>GDPPC, </span>
@@ -762,6 +817,711 @@ method: Geary's C
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
+<p><strong><em>Note</em></strong>: The following sections follows <u>10 Local Measures of Spatial Autocorrelation</u> (from Sections 10.6 onwards) on r4gdsa.netlify.app</p>
+</section>
+</section>
+<section id="cluster-and-outlier-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="cluster-and-outlier-analysis">10.6 Cluster and Outlier Analysis</h2>
+<p>Local Indicators of Spatial Association (LISA) are statistics that evaluate the existence of clusters in the spatial arrangement of a given variable.</p>
+<p>The appropriate LISA, including local Moran's I, are applied to detect cluster and/or outlier from the 2012 GDP per capita of the Hunan province in China.</p>
+<section id="computing-local-morans-i" class="level3">
+<h3 class="anchored" data-anchor-id="computing-local-morans-i">10.6.1 Computing Local Moran’s I</h3>
+<p>The <strong>localmoran()</strong> (under spdep package) is used to compute the local Moran’s I. It computes <em>Ii</em> values, given a set of <em>zi</em> values and a listw object providing neighbour weighting information for the polygon associated with the <em>zi</em> values.</p>
+<ul>
+<li><p><em>Ii</em>: the local Moran's I statistic.</p></li>
+<li><p><em>E.Ii</em>: the expectation of local Moran’s I statistic under the randomisation hypothesis.</p></li>
+<li><p><em>Var.Ii</em>: the variance of local Moran’s I statistic under the randomisation hypothesis.</p></li>
+<li><p><em>Z.Ii</em>: the standard deviate of local Moran’s I statistic.</p></li>
+<li><p><em>Pr()</em>: the p-value of local Moran’s I statistic.</p></li>
+</ul>
+<blockquote class="blockquote">
+<p><strong><em>Student Note</em></strong>:</p>
+<ul>
+<li><p><strong>Positive local Moran’s I values indicate a location surrounded by similar values</strong> (High-High or Low-Low).</p></li>
+<li><p><strong>Negative values indicate a location surrounded by dissimilar values</strong> (High-Low or Low-High).</p></li>
+<li><p><strong>Values near zero suggest no significant local spatial autocorrelation.</strong></p></li>
+</ul>
+</blockquote>
+<p>The local Moran’s I of the GDPPC at the county level is computed.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>fips <span class="ot">=</span> <span class="fu">order</span>(hunan<span class="sc">$</span>County)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>localMI <span class="ot">=</span> <span class="fu">localmoran</span>(hunan<span class="sc">$</span>GDPPC, rswm_q)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(localMI)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Ii          E.Ii       Var.Ii        Z.Ii Pr(z != E(Ii))
+1 -0.001468468 -2.815006e-05 4.723841e-04 -0.06626904      0.9471636
+2  0.025878173 -6.061953e-04 1.016664e-02  0.26266425      0.7928094
+3 -0.011987646 -5.366648e-03 1.133362e-01 -0.01966705      0.9843090
+4  0.001022468 -2.404783e-07 5.105969e-06  0.45259801      0.6508382
+5  0.014814881 -6.829362e-05 1.449949e-03  0.39085814      0.6959021
+6 -0.038793829 -3.860263e-04 6.475559e-03 -0.47728835      0.6331568</code></pre>
+</div>
+</div>
+<p>The contents of the local Moran’s I statistic matrix is derived using printCoefmat() (under stats package).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">printCoefmat</span>(<span class="fu">data.frame</span>(</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  localMI[fips,], </span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">row.names=</span>hunan<span class="sc">$</span>County[fips]),</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">check.names=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                       Ii        E.Ii      Var.Ii        Z.Ii Pr.z....E.Ii..
+Anhua         -2.2493e-02 -5.0048e-03  5.8235e-02 -7.2467e-02         0.9422
+Anren         -3.9932e-01 -7.0111e-03  7.0348e-02 -1.4791e+00         0.1391
+Anxiang       -1.4685e-03 -2.8150e-05  4.7238e-04 -6.6269e-02         0.9472
+Baojing        3.4737e-01 -5.0089e-03  8.3636e-02  1.2185e+00         0.2230
+Chaling        2.0559e-02 -9.6812e-04  2.7711e-02  1.2932e-01         0.8971
+Changning     -2.9868e-05 -9.0010e-09  1.5105e-07 -7.6828e-02         0.9388
+Changsha       4.9022e+00 -2.1348e-01  2.3194e+00  3.3590e+00         0.0008
+Chengbu        7.3725e-01 -1.0534e-02  2.2132e-01  1.5895e+00         0.1119
+Chenxi         1.4544e-01 -2.8156e-03  4.7116e-02  6.8299e-01         0.4946
+Cili           7.3176e-02 -1.6747e-03  4.7902e-02  3.4200e-01         0.7324
+Dao            2.1420e-01 -2.0824e-03  4.4123e-02  1.0297e+00         0.3032
+Dongan         1.5210e-01 -6.3485e-04  1.3471e-02  1.3159e+00         0.1882
+Dongkou        5.2918e-01 -6.4461e-03  1.0748e-01  1.6338e+00         0.1023
+Fenghuang      1.8013e-01 -6.2832e-03  1.3257e-01  5.1198e-01         0.6087
+Guidong       -5.9160e-01 -1.3086e-02  3.7003e-01 -9.5104e-01         0.3416
+Guiyang        1.8240e-01 -3.6908e-03  3.2610e-02  1.0305e+00         0.3028
+Guzhang        2.8466e-01 -8.5054e-03  1.4152e-01  7.7931e-01         0.4358
+Hanshou        2.5878e-02 -6.0620e-04  1.0167e-02  2.6266e-01         0.7928
+Hengdong       9.9964e-03 -4.9063e-04  6.7742e-03  1.2742e-01         0.8986
+Hengnan        2.8064e-02 -3.2160e-04  3.7597e-03  4.6294e-01         0.6434
+Hengshan      -5.8201e-03 -3.0437e-05  5.1076e-04 -2.5618e-01         0.7978
+Hengyang       6.2997e-02 -1.3046e-03  2.1865e-02  4.3486e-01         0.6637
+Hongjiang      1.8790e-01 -2.3019e-03  3.1725e-02  1.0678e+00         0.2856
+Huarong       -1.5389e-02 -1.8667e-03  8.1030e-02 -4.7503e-02         0.9621
+Huayuan        8.3772e-02 -8.5569e-04  2.4495e-02  5.4072e-01         0.5887
+Huitong        2.5997e-01 -5.2447e-03  1.1077e-01  7.9685e-01         0.4255
+Jiahe         -1.2431e-01 -3.0550e-03  5.1111e-02 -5.3633e-01         0.5917
+Jianghua       2.8651e-01 -3.8280e-03  8.0968e-02  1.0204e+00         0.3076
+Jiangyong      2.4337e-01 -2.7082e-03  1.1746e-01  7.1800e-01         0.4728
+Jingzhou       1.8270e-01 -8.5106e-04  2.4363e-02  1.1759e+00         0.2396
+Jinshi        -1.1988e-02 -5.3666e-03  1.1334e-01 -1.9667e-02         0.9843
+Jishou        -2.8680e-01 -2.6305e-03  4.4028e-02 -1.3543e+00         0.1756
+Lanshan        6.3334e-02 -9.6365e-04  2.0441e-02  4.4972e-01         0.6529
+Leiyang        1.1581e-02 -1.4948e-04  2.5082e-03  2.3422e-01         0.8148
+Lengshuijiang -1.7903e+00 -8.2129e-02  2.1598e+00 -1.1623e+00         0.2451
+Li             1.0225e-03 -2.4048e-07  5.1060e-06  4.5260e-01         0.6508
+Lianyuan      -1.4672e-01 -1.8983e-03  1.9145e-02 -1.0467e+00         0.2952
+Liling         1.3774e+00 -1.5097e-02  4.2601e-01  2.1335e+00         0.0329
+Linli          1.4815e-02 -6.8294e-05  1.4499e-03  3.9086e-01         0.6959
+Linwu         -2.4621e-03 -9.0703e-06  1.9258e-04 -1.7676e-01         0.8597
+Linxiang       6.5904e-02 -2.9028e-03  2.5470e-01  1.3634e-01         0.8916
+Liuyang        3.3688e+00 -7.7502e-02  1.5180e+00  2.7972e+00         0.0052
+Longhui        8.0801e-01 -1.1377e-02  1.5538e-01  2.0787e+00         0.0376
+Longshan       7.5663e-01 -1.1100e-02  3.1449e-01  1.3690e+00         0.1710
+Luxi           1.8177e-01 -2.4855e-03  3.4249e-02  9.9561e-01         0.3194
+Mayang         2.1852e-01 -5.8773e-03  9.8049e-02  7.1663e-01         0.4736
+Miluo          1.8704e+00 -1.6927e-02  2.7925e-01  3.5715e+00         0.0004
+Nan           -9.5789e-03 -4.9497e-04  6.8341e-03 -1.0988e-01         0.9125
+Ningxiang      1.5607e+00 -7.3878e-02  8.0012e-01  1.8274e+00         0.0676
+Ningyuan       2.0910e-01 -7.0884e-03  8.2306e-02  7.5356e-01         0.4511
+Pingjiang     -9.8964e-01 -2.6457e-03  5.6027e-02 -4.1698e+00         0.0000
+Qidong         1.1806e-01 -2.1207e-03  2.4747e-02  7.6396e-01         0.4449
+Qiyang         6.1966e-02 -7.3374e-04  8.5743e-03  6.7712e-01         0.4983
+Rucheng       -3.6992e-01 -8.8999e-03  2.5272e-01 -7.1814e-01         0.4727
+Sangzhi        2.5053e-01 -4.9470e-03  6.8000e-02  9.7972e-01         0.3272
+Shaodong      -3.2659e-02 -3.6592e-05  5.0546e-04 -1.4510e+00         0.1468
+Shaoshan       2.1223e+00 -5.0227e-02  1.3668e+00  1.8583e+00         0.0631
+Shaoyang       5.9499e-01 -1.1253e-02  1.3012e-01  1.6807e+00         0.0928
+Shimen        -3.8794e-02 -3.8603e-04  6.4756e-03 -4.7729e-01         0.6332
+Shuangfeng     9.2835e-03 -2.2867e-03  3.1516e-02  6.5174e-02         0.9480
+Shuangpai      8.0591e-02 -3.1366e-04  8.9838e-03  8.5358e-01         0.3933
+Suining        3.7585e-01 -3.5933e-03  4.1870e-02  1.8544e+00         0.0637
+Taojiang      -2.5394e-01 -1.2395e-03  1.4477e-02 -2.1002e+00         0.0357
+Taoyuan        1.4729e-02 -1.2039e-04  8.5103e-04  5.0903e-01         0.6107
+Tongdao        4.6482e-01 -6.9870e-03  1.9879e-01  1.0582e+00         0.2900
+Wangcheng      4.4220e+00 -1.1067e-01  1.3596e+00  3.8873e+00         0.0001
+Wugang         7.1003e-01 -7.8144e-03  1.0710e-01  2.1935e+00         0.0283
+Xiangtan       2.4530e-01 -3.6457e-04  3.2319e-03  4.3213e+00         0.0000
+Xiangxiang     2.6271e-01 -1.2703e-03  2.1290e-02  1.8092e+00         0.0704
+Xiangyin       5.4525e-01 -4.7442e-03  7.9236e-02  1.9539e+00         0.0507
+Xinhua         1.1810e-01 -6.2649e-03  8.6001e-02  4.2409e-01         0.6715
+Xinhuang       1.5725e-01 -4.1820e-03  3.6648e-01  2.6667e-01         0.7897
+Xinning        6.8928e-01 -9.6674e-03  2.0328e-01  1.5502e+00         0.1211
+Xinshao        5.7578e-02 -8.5932e-03  1.1769e-01  1.9289e-01         0.8470
+Xintian       -7.4050e-03 -5.1493e-03  1.0877e-01 -6.8395e-03         0.9945
+Xupu           3.2406e-01 -5.7468e-03  5.7735e-02  1.3726e+00         0.1699
+Yanling       -6.9021e-02 -5.9211e-04  9.9306e-03 -6.8667e-01         0.4923
+Yizhang       -2.6844e-01 -2.2463e-03  4.7588e-02 -1.2202e+00         0.2224
+Yongshun       6.3064e-01 -1.1350e-02  1.8830e-01  1.4795e+00         0.1390
+Yongxing       4.3411e-01 -9.0735e-03  1.5088e-01  1.1409e+00         0.2539
+You            7.8750e-02 -7.2728e-03  1.2116e-01  2.4714e-01         0.8048
+Yuanjiang      2.0004e-04 -1.7760e-04  2.9798e-03  6.9181e-03         0.9945
+Yuanling       8.7298e-03 -2.2981e-06  2.3221e-05  1.8121e+00         0.0700
+Yueyang        4.1189e-02 -1.9768e-04  2.3113e-03  8.6085e-01         0.3893
+Zhijiang       1.0476e-01 -7.8123e-04  1.3100e-02  9.2214e-01         0.3565
+Zhongfang     -2.2685e-01 -2.1455e-03  3.5927e-02 -1.1855e+00         0.2358
+Zhuzhou        3.2864e-01 -5.2432e-04  7.2391e-03  3.8688e+00         0.0001
+Zixing        -7.6849e-01 -8.8210e-02  9.4057e-01 -7.0144e-01         0.4830</code></pre>
+</div>
+</div>
+<p>The local Moran's I dataframe (i.e.&nbsp;localMI) is then appended onto <code>hunan</code> SpatialPolygonDataFrame. The output SpatialPolygonDataFrame is called <code>hunan.localMI</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>hunan.localMI <span class="ot">=</span> <span class="fu">cbind</span>(hunan,localMI) <span class="sc">%&gt;%</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Pr.Ii =</span> Pr.z....E.Ii..)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="mapping-local-morans-i-values-and-p-values" class="level3">
+<h3 class="anchored" data-anchor-id="mapping-local-morans-i-values-and-p-values">10.6.2 Mapping Local Moran’s I values and p-values</h3>
+<p>Using choropleth mapping functions of <strong>tmap</strong> package, the local Moran's I values are plotted.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(hunan.localMI) <span class="sc">+</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"Ii"</span>, </span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">style =</span> <span class="st">"pretty"</span>,</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette =</span> <span class="st">"RdBu"</span>,</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"local moran statistics"</span>) <span class="sc">+</span></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Hands-on_Ex2B_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The choropleth shows evidence of both positive and negative Ii values. However, it is useful to consider the p-values for each of these values to see their statistical significance. A choropleth map of Moran's I p-values using functions of <strong>tmap</strong> package is plotted below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(hunan.localMI) <span class="sc">+</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"Pr.Ii"</span>, </span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">breaks=</span><span class="fu">c</span>(<span class="sc">-</span><span class="cn">Inf</span>, <span class="fl">0.001</span>, <span class="fl">0.01</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span>, <span class="cn">Inf</span>),</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette=</span><span class="st">"-Blues"</span>, </span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"local Moran's I p-values"</span>) <span class="sc">+</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Hands-on_Ex2B_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Putting the two plots side by side:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>localMI.map <span class="ot">=</span> <span class="fu">tm_shape</span>(hunan.localMI) <span class="sc">+</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"Ii"</span>, </span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">style =</span> <span class="st">"pretty"</span>, </span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"local moran statistics"</span>) <span class="sc">+</span></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>pvalue.map <span class="ot">=</span> <span class="fu">tm_shape</span>(hunan.localMI) <span class="sc">+</span></span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"Pr.Ii"</span>, </span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">breaks=</span><span class="fu">c</span>(<span class="sc">-</span><span class="cn">Inf</span>, <span class="fl">0.001</span>, <span class="fl">0.01</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span>, <span class="cn">Inf</span>),</span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette=</span><span class="st">"-Blues"</span>, </span>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"local Moran's I p-values"</span>) <span class="sc">+</span></span>
+<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span>
+<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(localMI.map, pvalue.map, <span class="at">asp=</span><span class="dv">1</span>, <span class="at">ncol=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Hands-on_Ex2B_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="creating-a-local-indicators-of-spatial-association-lisa-cluster-map" class="level2">
+<h2 class="anchored" data-anchor-id="creating-a-local-indicators-of-spatial-association-lisa-cluster-map">10.7 Creating a Local Indicators of Spatial Association (LISA) Cluster Map</h2>
+<p>The LISA Cluster Map shows the significant locations that are colour coded by the type of spatial autocorrelation.</p>
+<p>Before generating the LISA cluster map, the Moran scatterplot is plotted.</p>
+<section id="plotting-moran-scatterplot" class="level3">
+<h3 class="anchored" data-anchor-id="plotting-moran-scatterplot">10.7.1 Plotting Moran Scatterplot</h3>
+<p>The <strong>moran.plot()</strong> (under spdep package) is used to plot the Moran scatterplot, which is an <strong>illustration of the relationship between the values of the chosen attribute at each location and the average value of the same attribute at neighboring locations</strong>.</p>
+<p>The plot is split in 4 quadrants. The top right corner belongs to areas that have high GDPPC and are surrounded by other areas that have the average level of GDPPC. These are the high-high locations.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>nci <span class="ot">=</span> <span class="fu">moran.plot</span>(hunan<span class="sc">$</span>GDPPC, rswm_q,</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">labels=</span><span class="fu">as.character</span>(hunan<span class="sc">$</span>County), </span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">xlab=</span><span class="st">"GDPPC 2012"</span>, </span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">ylab=</span><span class="st">"Spatially Lag GDPPC 2012"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Hands-on_Ex2B_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="plotting-moran-scatterplot-with-standardised-variable" class="level3">
+<h3 class="anchored" data-anchor-id="plotting-moran-scatterplot-with-standardised-variable">10.7.2 Plotting Moran Scatterplot with Standardised Variable</h3>
+<p>The scale() (from base package) is used to center and scale the variable. Centering is done by subtracting the mean (omitting NAs) of the corresponding columns, and scaling is done by dividing the (centered) variable by their standard deviations.</p>
+<p>The as.vector() (under base package) is added to make sure that the data type derived is a vector that maps neatly into the dataframe.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>hunan<span class="sc">$</span>Z.GDPPC <span class="ot">=</span> <span class="fu">scale</span>(hunan<span class="sc">$</span>GDPPC) <span class="sc">%&gt;%</span> </span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  as.vector</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(hunan)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 6 features and 7 fields
+Geometry type: POLYGON
+Dimension:     XY
+Bounding box:  xmin: 110.4922 ymin: 28.61762 xmax: 112.3013 ymax: 30.12812
+Geodetic CRS:  WGS 84
+   NAME_2  ID_3  NAME_3   ENGTYPE_3  County GDPPC
+1 Changde 21098 Anxiang      County Anxiang 23667
+2 Changde 21100 Hanshou      County Hanshou 20981
+3 Changde 21101  Jinshi County City  Jinshi 34592
+4 Changde 21102      Li      County      Li 24473
+5 Changde 21103   Linli      County   Linli 25554
+6 Changde 21104  Shimen      County  Shimen 27137
+                        geometry      Z.GDPPC
+1 POLYGON ((112.0625 29.75523... -0.049205949
+2 POLYGON ((112.2288 29.11684... -0.228341158
+3 POLYGON ((111.8927 29.6013,...  0.679406172
+4 POLYGON ((111.3731 29.94649...  0.004547952
+5 POLYGON ((111.6324 29.76288...  0.076642204
+6 POLYGON ((110.8825 30.11675...  0.182215933</code></pre>
+</div>
+</div>
+<p>The Moran scatterplot is then plotted again.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>nci2 <span class="ot">=</span> <span class="fu">moran.plot</span>(hunan<span class="sc">$</span>Z.GDPPC, rswm_q,</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">labels=</span><span class="fu">as.character</span>(hunan<span class="sc">$</span>County),</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">xlab=</span><span class="st">"z-GDPPC 2012"</span>, </span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">ylab=</span><span class="st">"Spatially Lag z-GDPPC 2012"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Hands-on_Ex2B_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="preparing-lisa-map-classes-and-plotting-lisa-map" class="level3">
+<h3 class="anchored" data-anchor-id="preparing-lisa-map-classes-and-plotting-lisa-map">10.7.3 Preparing LISA Map Classes and Plotting LISA Map</h3>
+<p>To plot a LISA cluster map, the following steps are taken:</p>
+<ol type="1">
+<li><p>The spatially lagged variable of interest (GDPPC) is derived and centered around its mean.</p></li>
+<li><p>The local Moran’s I is centered around the mean.</p></li>
+<li><p>The statistical significance level for the local Moran’s I is set at 0.05.</p></li>
+<li><p>The four quadrants are then defined.</p></li>
+<li><p>Non-significant Moran’s I are then placed in the category 0.</p></li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>quadrant <span class="ot">=</span> <span class="fu">vector</span>(<span class="at">mode=</span><span class="st">"numeric"</span>,<span class="at">length=</span><span class="fu">nrow</span>(localMI))</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>hunan<span class="sc">$</span>lag_GDPPC <span class="ot">=</span> <span class="fu">lag.listw</span>(rswm_q, hunan<span class="sc">$</span>GDPPC)</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>DV <span class="ot">=</span> hunan<span class="sc">$</span>lag_GDPPC <span class="sc">-</span> <span class="fu">mean</span>(hunan<span class="sc">$</span>lag_GDPPC)    </span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>LM_I <span class="ot">=</span> localMI[,<span class="dv">1</span>]</span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>signif <span class="ot">=</span> <span class="fl">0.05</span>       </span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a>quadrant[DV <span class="sc">&lt;</span><span class="dv">0</span> <span class="sc">&amp;</span> LM_I<span class="sc">&gt;</span><span class="dv">0</span>] <span class="ot">=</span> <span class="dv">1</span></span>
+<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a>quadrant[DV <span class="sc">&gt;</span><span class="dv">0</span> <span class="sc">&amp;</span> LM_I<span class="sc">&lt;</span><span class="dv">0</span>] <span class="ot">=</span> <span class="dv">2</span></span>
+<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a>quadrant[DV <span class="sc">&lt;</span><span class="dv">0</span> <span class="sc">&amp;</span> LM_I<span class="sc">&lt;</span><span class="dv">0</span>] <span class="ot">=</span> <span class="dv">3</span>  </span>
+<span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a>quadrant[DV <span class="sc">&gt;</span><span class="dv">0</span> <span class="sc">&amp;</span> LM_I<span class="sc">&gt;</span><span class="dv">0</span>] <span class="ot">=</span> <span class="dv">4</span>    </span>
+<span id="cb54-15"><a href="#cb54-15" aria-hidden="true" tabindex="-1"></a>quadrant[localMI[,<span class="dv">5</span>]<span class="sc">&gt;</span>signif] <span class="ot">=</span> <span class="dv">0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The LISA map is then plotted.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>hunan.localMI<span class="sc">$</span>quadrant <span class="ot">=</span> quadrant</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>colors <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"#ffffff"</span>, <span class="st">"#2c7bb6"</span>, <span class="st">"#abd9e9"</span>, <span class="st">"#fdae61"</span>, <span class="st">"#d7191c"</span>)</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>clusters <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"insignificant"</span>, <span class="st">"low-low"</span>, <span class="st">"low-high"</span>, <span class="st">"high-low"</span>, <span class="st">"high-high"</span>)</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(hunan.localMI) <span class="sc">+</span></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"quadrant"</span>, </span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">style =</span> <span class="st">"cat"</span>, </span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette =</span> colors[<span class="fu">c</span>(<span class="fu">sort</span>(<span class="fu">unique</span>(quadrant)))<span class="sc">+</span><span class="dv">1</span>], </span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">labels =</span> clusters[<span class="fu">c</span>(<span class="fu">sort</span>(<span class="fu">unique</span>(quadrant)))<span class="sc">+</span><span class="dv">1</span>],</span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a>          <span class="at">popup.vars =</span> <span class="fu">c</span>(<span class="st">""</span>)) <span class="sc">+</span></span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_view</span>(<span class="at">set.zoom.limits =</span> <span class="fu">c</span>(<span class="dv">11</span>,<span class="dv">17</span>)) <span class="sc">+</span></span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha=</span><span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Hands-on_Ex2B_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>For effective interpretation, both the local Moran's I values map and its corresponding p-values map are plotted side by side.</p>
+<blockquote class="blockquote">
+<p><strong>Question</strong>: What statistical observations can be drawn from the LISA map below?</p>
+<p><strong><em>Answer</em></strong>:</p>
+<ul>
+<li><p>Most of the Moran’s I values are insignificant.</p></li>
+<li><p>There are two low-low GDPPC counties in the central-west region. Based on the local Moran’s I p-values, they are statistically significant.</p></li>
+<li><p>There are some high-high GDPPC counties in the northeast region. Based on the local Moran’s I p-values, they are statistically significant.</p></li>
+<li><p>There are also two counties with low-high GDPPC in the northeast region. These two countries have low GDPPC even though they are surrounded by counties with high GDPPC. Based on the local Moran’s I p-values, they are statistically significant.</p></li>
+</ul>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>gdppc <span class="ot">=</span> <span class="fu">qtm</span>(hunan, <span class="st">"GDPPC"</span>)</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>hunan.localMI<span class="sc">$</span>quadrant <span class="ot">=</span> quadrant</span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>colors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"#ffffff"</span>, <span class="st">"#2c7bb6"</span>, <span class="st">"#abd9e9"</span>, <span class="st">"#fdae61"</span>, <span class="st">"#d7191c"</span>)</span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>clusters <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"insignificant"</span>, <span class="st">"low-low"</span>, <span class="st">"low-high"</span>, <span class="st">"high-low"</span>, <span class="st">"high-high"</span>)</span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>LISAmap <span class="ot">=</span> <span class="fu">tm_shape</span>(hunan.localMI) <span class="sc">+</span></span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"quadrant"</span>, </span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">style =</span> <span class="st">"cat"</span>, </span>
+<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette =</span> colors[<span class="fu">c</span>(<span class="fu">sort</span>(<span class="fu">unique</span>(quadrant)))<span class="sc">+</span><span class="dv">1</span>], </span>
+<span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a>          <span class="at">labels =</span> clusters[<span class="fu">c</span>(<span class="fu">sort</span>(<span class="fu">unique</span>(quadrant)))<span class="sc">+</span><span class="dv">1</span>],</span>
+<span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a>          <span class="at">popup.vars =</span> <span class="fu">c</span>(<span class="st">""</span>)) <span class="sc">+</span></span>
+<span id="cb56-13"><a href="#cb56-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_view</span>(<span class="at">set.zoom.limits =</span> <span class="fu">c</span>(<span class="dv">11</span>,<span class="dv">17</span>)) <span class="sc">+</span></span>
+<span id="cb56-14"><a href="#cb56-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha=</span><span class="fl">0.5</span>)</span>
+<span id="cb56-15"><a href="#cb56-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-16"><a href="#cb56-16" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(gdppc, LISAmap, </span>
+<span id="cb56-17"><a href="#cb56-17" aria-hidden="true" tabindex="-1"></a>             <span class="at">asp=</span><span class="dv">1</span>, <span class="at">ncol=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Hands-on_Ex2B_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="hot-spot-and-cold-spot-area-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="hot-spot-and-cold-spot-area-analysis">10.8 Hot Spot and Cold Spot Area Analysis</h2>
+<p>Beside detecting cluster and outliers, localised spatial statistics can be also used to detect hot spot and/or cold spot areas.</p>
+<p>The term 'hot spot' has been used generically across disciplines to describe a region or value that is higher relative to its surroundings (Lepers et al 2005, Aben et al 2012, Isobe et al 2015).</p>
+<section id="getis-and-ords-g-statistics" class="level3">
+<h3 class="anchored" data-anchor-id="getis-and-ords-g-statistics">10.8.1 Getis and Ord’s G-Statistics</h3>
+<p>An alternative spatial statistics to detect spatial anomalies is the <strong>Getis and Ord's G-statistics</strong> (Getis and Ord, 1972; Ord and Getis, 1995). It <strong>looks at neighbours within a defined proximity to identify where either high or low values clutser spatially</strong>. Here, statistically significant hot spots are recognised as areas of high values where other areas within a neighbourhood range also share high values too.</p>
+<p>The analysis consists of three steps:</p>
+<ol type="1">
+<li><p>Deriving spatial weight matrix;</p></li>
+<li><p>Computing Gi statistics; and</p></li>
+<li><p>Mapping Gi statistics.</p></li>
+</ol>
+</section>
+<section id="deriving-distance-based-weight-matrix" class="level3">
+<h3 class="anchored" data-anchor-id="deriving-distance-based-weight-matrix">10.8.2 Deriving Distance-based Weight Matrix</h3>
+<p>A new set of neighbours has to be defined. For Getis-Ord, neighbours are defined based on distance (as opposed to shared borders under spatial autocorrelation).</p>
+<p>There are two types of distance-based proximity matrix:</p>
+<ol type="1">
+<li><p>Fixed distance weight matrix; and</p></li>
+<li><p>Adaptive distance weight matrix.</p></li>
+</ol>
+<section id="deriving-the-centroid" class="level4">
+<h4 class="anchored" data-anchor-id="deriving-the-centroid">10.8.2.1 Deriving the Centroid</h4>
+<p>Before making a connectivity graph, points are required to associate with each polygon</p>
+<p>The mapping function, <strong>map_dbl()</strong> (under the purrr package) is utilised to apply a function, <strong>st_centroid()</strong> (under sf package), on each element of the geometry column, <code>us.bound</code>, returning a vector of a same length.</p>
+<p>The longitude is then extracted by looking for the first value of each centroid, while the latitude is extracted by looking for the second value of each centroid. The cbind() is then used to put the two values together.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>longitude <span class="ot">=</span> <span class="fu">map_dbl</span>(hunan<span class="sc">$</span>geometry, <span class="sc">~</span><span class="fu">st_centroid</span>(.x)[[<span class="dv">1</span>]])</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>latitude <span class="ot">=</span> <span class="fu">map_dbl</span>(hunan<span class="sc">$</span>geometry, <span class="sc">~</span><span class="fu">st_centroid</span>(.x)[[<span class="dv">2</span>]])</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>coords <span class="ot">=</span> <span class="fu">cbind</span>(longitude, latitude)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="determining-the-cut-off-distance" class="level4">
+<h4 class="anchored" data-anchor-id="determining-the-cut-off-distance">10.8.2.2 Determining the Cut-Off Distance</h4>
+<p>The upper limit for the distance band is determined by using the following steps and functions under the <strong>spdep</strong> package:</p>
+<ol type="1">
+<li><p>Return a matrix with the indices of points belonging to the set of the k nearest neighbours (knn) of each other by using <strong>knearneigh()</strong>.</p>
+<blockquote class="blockquote">
+<p><strong><em>Student Note</em></strong>: In the matrix, each row corresponds to a point, and the columns contain the indices of its knn.</p>
+</blockquote></li>
+<li><p>Convert the knn object into a neighbours list of class nb with a list of integer vectors containing neighbour region number ids by using <strong>knn2nb()</strong>.</p></li>
+<li><p>Return the length of neighbour relationship edges by using <strong>nbdists()</strong>. This function returns in the units of the coordinates if the coordinates are projected, and in km otherwise.</p></li>
+<li><p>Remove the list structure of the returned object by using <strong>unlist()</strong> (under base package).</p></li>
+</ol>
+<p>The summary report below shows that the largest first nearest neighbour distance is 61.79 km (i.e., max value). Thus, this is used as the upper threshold as it ensures that all units will have at least one neighbour.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>k1 <span class="ot">=</span> <span class="fu">knn2nb</span>(<span class="fu">knearneigh</span>(coords))  </span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>k1dists <span class="ot">=</span> <span class="fu">unlist</span>(<span class="fu">nbdists</span>(k1, coords, <span class="at">longlat =</span> <span class="cn">TRUE</span>))  </span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(k1dists)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  24.79   32.57   38.01   39.07   44.52   61.79 </code></pre>
+</div>
+</div>
+</section>
+<section id="computing-fixed-distance-weight-matrix" class="level4">
+<h4 class="anchored" data-anchor-id="computing-fixed-distance-weight-matrix">10.8.2.3 Computing Fixed Distance Weight Matrix</h4>
+<p>The <strong>dnearneigh()</strong> (under spdep package) is used to compute the distance weight matrix.</p>
+<blockquote class="blockquote">
+<p><strong><em>Student Note</em></strong>: knearneigh() computes knn, while dnearneigh() computes distance-based neighbours.</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>wm_d62 <span class="ot">=</span> <span class="fu">dnearneigh</span>(coords, <span class="dv">0</span>, <span class="dv">62</span>, <span class="at">longlat =</span> <span class="cn">TRUE</span>) </span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>wm_d62</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Neighbour list object:
+Number of regions: 88 
+Number of nonzero links: 324 
+Percentage nonzero weights: 4.183884 
+Average number of links: 3.681818 </code></pre>
+</div>
+</div>
+<p>The <strong>nb2listw()</strong> (under spdep package) is then used to convert the nb object into spatial weights object, <code>wm62_lw</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>wm62_lw <span class="ot">=</span> <span class="fu">nb2listw</span>(wm_d62, <span class="at">style =</span> <span class="st">'B'</span>)</span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(wm62_lw)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Characteristics of weights list object:
+Neighbour list object:
+Number of regions: 88 
+Number of nonzero links: 324 
+Percentage nonzero weights: 4.183884 
+Average number of links: 3.681818 
+Link number distribution:
+
+ 1  2  3  4  5  6 
+ 6 15 14 26 20  7 
+6 least connected regions:
+6 15 30 32 56 65 with 1 link
+7 most connected regions:
+21 28 35 45 50 52 82 with 6 links
+
+Weights style: B 
+Weights constants summary:
+   n   nn  S0  S1   S2
+B 88 7744 324 648 5440</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="computing-adaptive-distance-weight-matrix" class="level3">
+<h3 class="anchored" data-anchor-id="computing-adaptive-distance-weight-matrix">10.8.3 Computing Adaptive Distance Weight Matrix</h3>
+<p>One of the characteristics of fixed distance weight matrix is that more densely settled areas (usually the urban areas) tend to have more neighbours and the less densely settled areas (usually the rural counties) tend to have lesser neighbours. Having many neighbours smoothes the neighbour relationship across more neighbours.</p>
+<p>It is possible to control the numbers of neighbours directly using k-nearest neighbours, either accepting asymmetric neighbours or imposing symmetry as shown below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>knn <span class="ot">=</span> <span class="fu">knn2nb</span>(<span class="fu">knearneigh</span>(coords, <span class="at">k=</span><span class="dv">8</span>)) </span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>knn</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Neighbour list object:
+Number of regions: 88 
+Number of nonzero links: 704 
+Percentage nonzero weights: 9.090909 
+Average number of links: 8 
+Non-symmetric neighbours list</code></pre>
+</div>
+</div>
+<p>Again, the <strong>nb2listw()</strong> (under spdep package) is used to convert the nb object into spatial weights object, <code>knn_lw</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>knn_lw <span class="ot">=</span> <span class="fu">nb2listw</span>(knn, <span class="at">style =</span> <span class="st">'B'</span>)</span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(knn_lw)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Characteristics of weights list object:
+Neighbour list object:
+Number of regions: 88 
+Number of nonzero links: 704 
+Percentage nonzero weights: 9.090909 
+Average number of links: 8 
+Non-symmetric neighbours list
+Link number distribution:
+
+ 8 
+88 
+88 least connected regions:
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 with 8 links
+88 most connected regions:
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 with 8 links
+
+Weights style: B 
+Weights constants summary:
+   n   nn  S0   S1    S2
+B 88 7744 704 1300 23014</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="computing-gi-statistics" class="level2">
+<h2 class="anchored" data-anchor-id="computing-gi-statistics">10.9 Computing Gi Statistics</h2>
+<section id="gi-statistics-using-fixed-distance-and-mapping-gi-values-with-fixed-distance-weights" class="level3">
+<h3 class="anchored" data-anchor-id="gi-statistics-using-fixed-distance-and-mapping-gi-values-with-fixed-distance-weights">10.9.1 Gi Statistics Using Fixed Distance and Mapping Gi Values with Fixed Distance Weights</h3>
+<p>The output of <strong>localG()</strong> (under spdep package) is a vector of G or Gstar values, with attributes "gstari" set to TRUE or FALSE, "call" set to the function call, and class "localG".</p>
+<p>The Gi statistics is represented as a Z-score. Greater values represent a greater intensity of clustering and the direction (positive or negative) indicates high or low clusters.</p>
+<p>The Gi values for GDPPC 2012 is computed using fixed distance weights, <code>wm62_lw</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>fips <span class="ot">=</span> <span class="fu">order</span>(hunan<span class="sc">$</span>County)</span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>gi.fixed <span class="ot">=</span> <span class="fu">localG</span>(hunan<span class="sc">$</span>GDPPC, wm62_lw)</span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a>gi.fixed</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1]  0.436075843 -0.265505650 -0.073033665  0.413017033  0.273070579
+ [6] -0.377510776  2.863898821  2.794350420  5.216125401  0.228236603
+[11]  0.951035346 -0.536334231  0.176761556  1.195564020 -0.033020610
+[16]  1.378081093 -0.585756761 -0.419680565  0.258805141  0.012056111
+[21] -0.145716531 -0.027158687 -0.318615290 -0.748946051 -0.961700582
+[26] -0.796851342 -1.033949773 -0.460979158 -0.885240161 -0.266671512
+[31] -0.886168613 -0.855476971 -0.922143185 -1.162328599  0.735582222
+[36] -0.003358489 -0.967459309 -1.259299080 -1.452256513 -1.540671121
+[41] -1.395011407 -1.681505286 -1.314110709 -0.767944457 -0.192889342
+[46]  2.720804542  1.809191360 -1.218469473 -0.511984469 -0.834546363
+[51] -0.908179070 -1.541081516 -1.192199867 -1.075080164 -1.631075961
+[56] -0.743472246  0.418842387  0.832943753 -0.710289083 -0.449718820
+[61] -0.493238743 -1.083386776  0.042979051  0.008596093  0.136337469
+[66]  2.203411744  2.690329952  4.453703219 -0.340842743 -0.129318589
+[71]  0.737806634 -1.246912658  0.666667559  1.088613505 -0.985792573
+[76]  1.233609606 -0.487196415  1.626174042 -1.060416797  0.425361422
+[81] -0.837897118 -0.314565243  0.371456331  4.424392623 -0.109566928
+[86]  1.364597995 -1.029658605 -0.718000620
+attr(,"internals")
+               Gi      E(Gi)        V(Gi)        Z(Gi) Pr(z != E(Gi))
+ [1,] 0.064192949 0.05747126 2.375922e-04  0.436075843   6.627817e-01
+ [2,] 0.042300020 0.04597701 1.917951e-04 -0.265505650   7.906200e-01
+ [3,] 0.044961480 0.04597701 1.933486e-04 -0.073033665   9.417793e-01
+ [4,] 0.039475779 0.03448276 1.461473e-04  0.413017033   6.795941e-01
+ [5,] 0.049767939 0.04597701 1.927263e-04  0.273070579   7.847990e-01
+ [6,] 0.008825335 0.01149425 4.998177e-05 -0.377510776   7.057941e-01
+ [7,] 0.050807266 0.02298851 9.435398e-05  2.863898821   4.184617e-03
+ [8,] 0.083966739 0.04597701 1.848292e-04  2.794350420   5.200409e-03
+ [9,] 0.115751554 0.04597701 1.789361e-04  5.216125401   1.827045e-07
+[10,] 0.049115587 0.04597701 1.891013e-04  0.228236603   8.194623e-01
+[11,] 0.045819180 0.03448276 1.420884e-04  0.951035346   3.415864e-01
+[12,] 0.049183846 0.05747126 2.387633e-04 -0.536334231   5.917276e-01
+[13,] 0.048429181 0.04597701 1.924532e-04  0.176761556   8.596957e-01
+[14,] 0.034733752 0.02298851 9.651140e-05  1.195564020   2.318667e-01
+[15,] 0.011262043 0.01149425 4.945294e-05 -0.033020610   9.736582e-01
+[16,] 0.065131196 0.04597701 1.931870e-04  1.378081093   1.681783e-01
+[17,] 0.027587075 0.03448276 1.385862e-04 -0.585756761   5.580390e-01
+[18,] 0.029409313 0.03448276 1.461397e-04 -0.419680565   6.747188e-01
+[19,] 0.061466754 0.05747126 2.383385e-04  0.258805141   7.957856e-01
+[20,] 0.057656917 0.05747126 2.371303e-04  0.012056111   9.903808e-01
+[21,] 0.066518379 0.06896552 2.820326e-04 -0.145716531   8.841452e-01
+[22,] 0.045599896 0.04597701 1.928108e-04 -0.027158687   9.783332e-01
+[23,] 0.030646753 0.03448276 1.449523e-04 -0.318615290   7.500183e-01
+[24,] 0.035635552 0.04597701 1.906613e-04 -0.748946051   4.538897e-01
+[25,] 0.032606647 0.04597701 1.932888e-04 -0.961700582   3.362000e-01
+[26,] 0.035001352 0.04597701 1.897172e-04 -0.796851342   4.255374e-01
+[27,] 0.012746354 0.02298851 9.812587e-05 -1.033949773   3.011596e-01
+[28,] 0.061287917 0.06896552 2.773884e-04 -0.460979158   6.448136e-01
+[29,] 0.014277403 0.02298851 9.683314e-05 -0.885240161   3.760271e-01
+[30,] 0.009622875 0.01149425 4.924586e-05 -0.266671512   7.897221e-01
+[31,] 0.014258398 0.02298851 9.705244e-05 -0.886168613   3.755267e-01
+[32,] 0.005453443 0.01149425 4.986245e-05 -0.855476971   3.922871e-01
+[33,] 0.043283712 0.05747126 2.367109e-04 -0.922143185   3.564539e-01
+[34,] 0.020763514 0.03448276 1.393165e-04 -1.162328599   2.451020e-01
+[35,] 0.081261843 0.06896552 2.794398e-04  0.735582222   4.619850e-01
+[36,] 0.057419907 0.05747126 2.338437e-04 -0.003358489   9.973203e-01
+[37,] 0.013497133 0.02298851 9.624821e-05 -0.967459309   3.333145e-01
+[38,] 0.019289310 0.03448276 1.455643e-04 -1.259299080   2.079223e-01
+[39,] 0.025996272 0.04597701 1.892938e-04 -1.452256513   1.464303e-01
+[40,] 0.016092694 0.03448276 1.424776e-04 -1.540671121   1.233968e-01
+[41,] 0.035952614 0.05747126 2.379439e-04 -1.395011407   1.630124e-01
+[42,] 0.031690963 0.05747126 2.350604e-04 -1.681505286   9.266481e-02
+[43,] 0.018750079 0.03448276 1.433314e-04 -1.314110709   1.888090e-01
+[44,] 0.015449080 0.02298851 9.638666e-05 -0.767944457   4.425202e-01
+[45,] 0.065760689 0.06896552 2.760533e-04 -0.192889342   8.470456e-01
+[46,] 0.098966900 0.05747126 2.326002e-04  2.720804542   6.512325e-03
+[47,] 0.085415780 0.05747126 2.385746e-04  1.809191360   7.042128e-02
+[48,] 0.038816536 0.05747126 2.343951e-04 -1.218469473   2.230456e-01
+[49,] 0.038931873 0.04597701 1.893501e-04 -0.511984469   6.086619e-01
+[50,] 0.055098610 0.06896552 2.760948e-04 -0.834546363   4.039732e-01
+[51,] 0.033405005 0.04597701 1.916312e-04 -0.908179070   3.637836e-01
+[52,] 0.043040784 0.06896552 2.829941e-04 -1.541081516   1.232969e-01
+[53,] 0.011297699 0.02298851 9.615920e-05 -1.192199867   2.331829e-01
+[54,] 0.040968457 0.05747126 2.356318e-04 -1.075080164   2.823388e-01
+[55,] 0.023629663 0.04597701 1.877170e-04 -1.631075961   1.028743e-01
+[56,] 0.006281129 0.01149425 4.916619e-05 -0.743472246   4.571958e-01
+[57,] 0.063918654 0.05747126 2.369553e-04  0.418842387   6.753313e-01
+[58,] 0.070325003 0.05747126 2.381374e-04  0.832943753   4.048765e-01
+[59,] 0.025947288 0.03448276 1.444058e-04 -0.710289083   4.775249e-01
+[60,] 0.039752578 0.04597701 1.915656e-04 -0.449718820   6.529132e-01
+[61,] 0.049934283 0.05747126 2.334965e-04 -0.493238743   6.218439e-01
+[62,] 0.030964195 0.04597701 1.920248e-04 -1.083386776   2.786368e-01
+[63,] 0.058129184 0.05747126 2.343319e-04  0.042979051   9.657182e-01
+[64,] 0.046096514 0.04597701 1.932637e-04  0.008596093   9.931414e-01
+[65,] 0.012459080 0.01149425 5.008051e-05  0.136337469   8.915545e-01
+[66,] 0.091447733 0.05747126 2.377744e-04  2.203411744   2.756574e-02
+[67,] 0.049575872 0.02298851 9.766513e-05  2.690329952   7.138140e-03
+[68,] 0.107907212 0.04597701 1.933581e-04  4.453703219   8.440175e-06
+[69,] 0.019616151 0.02298851 9.789454e-05 -0.340842743   7.332220e-01
+[70,] 0.032923393 0.03448276 1.454032e-04 -0.129318589   8.971056e-01
+[71,] 0.030317663 0.02298851 9.867859e-05  0.737806634   4.606320e-01
+[72,] 0.019437582 0.03448276 1.455870e-04 -1.246912658   2.124295e-01
+[73,] 0.055245460 0.04597701 1.932838e-04  0.666667559   5.049845e-01
+[74,] 0.074278054 0.05747126 2.383538e-04  1.088613505   2.763244e-01
+[75,] 0.013269580 0.02298851 9.719982e-05 -0.985792573   3.242349e-01
+[76,] 0.049407829 0.03448276 1.463785e-04  1.233609606   2.173484e-01
+[77,] 0.028605749 0.03448276 1.455139e-04 -0.487196415   6.261191e-01
+[78,] 0.039087662 0.02298851 9.801040e-05  1.626174042   1.039126e-01
+[79,] 0.031447120 0.04597701 1.877464e-04 -1.060416797   2.889550e-01
+[80,] 0.064005294 0.05747126 2.359641e-04  0.425361422   6.705732e-01
+[81,] 0.044606529 0.05747126 2.357330e-04 -0.837897118   4.020885e-01
+[82,] 0.063700493 0.06896552 2.801427e-04 -0.314565243   7.530918e-01
+[83,] 0.051142205 0.04597701 1.933560e-04  0.371456331   7.102977e-01
+[84,] 0.102121112 0.04597701 1.610278e-04  4.424392623   9.671399e-06
+[85,] 0.021901462 0.02298851 9.843172e-05 -0.109566928   9.127528e-01
+[86,] 0.064931813 0.04597701 1.929430e-04  1.364597995   1.723794e-01
+[87,] 0.031747344 0.04597701 1.909867e-04 -1.029658605   3.031703e-01
+[88,] 0.015893319 0.02298851 9.765131e-05 -0.718000620   4.727569e-01
+attr(,"cluster")
+ [1] Low  Low  High High High High High High High Low  Low  High Low  Low  Low 
+[16] High High High High Low  High High Low  Low  High Low  Low  Low  Low  Low 
+[31] Low  Low  Low  High Low  Low  Low  Low  Low  Low  High Low  Low  Low  Low 
+[46] High High Low  Low  Low  Low  High Low  Low  Low  Low  Low  High Low  Low 
+[61] Low  Low  Low  High High High Low  High Low  Low  High Low  High High Low 
+[76] High Low  Low  Low  Low  Low  Low  High High Low  High Low  Low 
+Levels: Low High
+attr(,"gstari")
+[1] FALSE
+attr(,"call")
+localG(x = hunan$GDPPC, listw = wm62_lw)
+attr(,"class")
+[1] "localG"</code></pre>
+</div>
+</div>
+<p>The Gi values are then joined to their corresponding <code>hunan</code> sf dataframe. The output vector, gi.fixed, is converted into into an r matrix object using <strong>as.matrix()</strong> (under base package). Then, <strong>cbind()</strong> (under base package) is used to join <code>hunan</code> sf dataframe and gi.fixed matrix to produce a new SpatialPolygonDataFrame, <code>hunan.gi_fixed</code>. Lastly, the field name of gi value is renamed to gstat_fixed using <strong>rename()</strong> (under dplyr package).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>hunan.gi_fixed <span class="ot">=</span> <span class="fu">cbind</span>(hunan, <span class="fu">as.matrix</span>(gi.fixed)) <span class="sc">%&gt;%</span></span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">gstat_fixed =</span> as.matrix.gi.fixed.)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The Gi values derived using fixed distance weight matrix are then plotted side by side with the GDPPC values in <code>hunan</code> using the tmap package.</p>
+<blockquote class="blockquote">
+<p><strong>Question</strong>: What statistical observation can be drawn from the Gi map below?</p>
+<p><strong><em>Answer</em></strong>: The positive Gi values for the northeast region indicates High-High clustering, while the negative Gi values for the northwest and central-west regions indicate Low-Low clustering.</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>gdppc <span class="ot">=</span> <span class="fu">qtm</span>(hunan, <span class="st">"GDPPC"</span>)</span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>Gimap_fixed <span class="ot">=</span> <span class="fu">tm_shape</span>(hunan.gi_fixed) <span class="sc">+</span></span>
+<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"gstat_fixed"</span>, </span>
+<span id="cb71-5"><a href="#cb71-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">style =</span> <span class="st">"pretty"</span>,</span>
+<span id="cb71-6"><a href="#cb71-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette=</span><span class="st">"-RdBu"</span>,</span>
+<span id="cb71-7"><a href="#cb71-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"local Gi"</span>) <span class="sc">+</span></span>
+<span id="cb71-8"><a href="#cb71-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span>
+<span id="cb71-9"><a href="#cb71-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-10"><a href="#cb71-10" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(gdppc, Gimap_fixed, <span class="at">asp=</span><span class="dv">1</span>, <span class="at">ncol=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Hands-on_Ex2B_files/figure-html/unnamed-chunk-42-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<blockquote class="blockquote">
+<p><strong><em>Student Note</em></strong>:</p>
+<ul>
+<li><p><strong>Gi values</strong> indicate the local intensity of spatial clustering for each county for GDPPC.</p>
+<ul>
+<li><p>Positive Gi values mean High-High clustering.</p></li>
+<li><p>Negative Gi mean Low-Low clustering.</p></li>
+<li><p>Values around zero indicate no significant spatial clustering.</p></li>
+</ul></li>
+<li><p><strong>Z-scores</strong> represent how many standard deviations an observed Gi value is from the mean Gi value.</p>
+<ul>
+<li><p>Positive Z-scores indicate that the observed Gi is higher than the average, suggesting significant clustering.</p></li>
+<li><p>Negative Z-scores indicate that the observed Gi is lower than the average, suggesting significant dispersion.</p></li>
+</ul></li>
+<li><p><strong>Significance (Pr(z != E(Gi)))</strong> represent the p-values associated with each Gi value, which indicate the statistical significance of the local clustering. Small p-values (typically below 0.05) suggest that the observed clustering or dispersion is unlikely to have occurred by random chance.</p></li>
+<li><p><strong>Cluster Identification (attr(,“cluster”))</strong> categorises each observation as either “Low” or “High” based on the local spatial autocorrelation pattern.</p>
+<ul>
+<li><p>“Low” indicates observations that are part of a Low-Low or High-High cluster.</p></li>
+<li><p>“High” indicates observations that are part of a High-Low or Low-High cluster.</p></li>
+</ul></li>
+<li><p><strong>Attribute Information (attr(,“gstari”))</strong> is set to FALSE, indicating that the analysis was not run under a global model.</p>
+<ul>
+<li>If set to TRUE, it would mean that the observation contributes to the global spatial autocorrelation.</li>
+</ul></li>
+</ul>
+</blockquote>
+</section>
+<section id="gi-statistics-using-adaptive-distance-and-mapping-gi-values-with-adaptive-distance-weights" class="level3">
+<h3 class="anchored" data-anchor-id="gi-statistics-using-adaptive-distance-and-mapping-gi-values-with-adaptive-distance-weights">10.9.2 Gi Statistics Using Adaptive Distance and Mapping Gi Values with Adaptive Distance Weights</h3>
+<p>The Gi values for GDPPC 2012 is computed using adaptive distance weights, <code>knn_lw</code>.</p>
+<p>The Gi values are then joined to their corresponding <code>hunan</code> sf dataframe. The output vector, gi.adaptive, is converted into into an r matrix object using <strong>as.matrix()</strong> (under base package). Then, <strong>cbind()</strong> (under base package) is used to join <code>hunan</code> sf dataframe and gi.adaptive matrix to produce a new SpatialPolygonDataFrame, <code>hunan.gi_adaptive</code>. Lastly, the field name of gi value is renamed to gstat_fixed using <strong>rename()</strong> (under dplyr package).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>fips <span class="ot">=</span> <span class="fu">order</span>(hunan<span class="sc">$</span>County)</span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>gi.adaptive <span class="ot">=</span> <span class="fu">localG</span>(hunan<span class="sc">$</span>GDPPC, knn_lw)</span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a>hunan.gi_adaptive <span class="ot">=</span> <span class="fu">cbind</span>(hunan, <span class="fu">as.matrix</span>(gi.adaptive)) <span class="sc">%&gt;%</span></span>
+<span id="cb72-5"><a href="#cb72-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">gstat_adaptive =</span> as.matrix.gi.adaptive.)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The Gi values derived using adaptive distance weight matrix are then plotted side by side with the GDPPC values in <code>hunan</code> using the tmap package.</p>
+<blockquote class="blockquote">
+<p><strong>Question</strong>: What statistical observation can be drawn from the Gi map below?</p>
+<p><strong><em>Answer</em></strong>: The Gi values show a more graduated change from the northeast region to the central-west region, from positive to negative values. However, similar to fixed distance weights, the adaptive distance weights output also indicates High-High clustering in the northeast, and Low-Low clustering in the central-west.</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>gdppc <span class="ot">=</span> <span class="fu">qtm</span>(hunan, <span class="st">"GDPPC"</span>)</span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a>Gimap_adaptive <span class="ot">=</span> <span class="fu">tm_shape</span>(hunan.gi_adaptive) <span class="sc">+</span> </span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"gstat_adaptive"</span>, </span>
+<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">style =</span> <span class="st">"pretty"</span>, </span>
+<span id="cb73-6"><a href="#cb73-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette=</span><span class="st">"-RdBu"</span>, </span>
+<span id="cb73-7"><a href="#cb73-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"local Gi"</span>) <span class="sc">+</span> </span>
+<span id="cb73-8"><a href="#cb73-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span>
+<span id="cb73-9"><a href="#cb73-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb73-10"><a href="#cb73-10" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(gdppc, </span>
+<span id="cb73-11"><a href="#cb73-11" aria-hidden="true" tabindex="-1"></a>             Gimap_adaptive, </span>
+<span id="cb73-12"><a href="#cb73-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">asp=</span><span class="dv">1</span>, </span>
+<span id="cb73-13"><a href="#cb73-13" aria-hidden="true" tabindex="-1"></a>             <span class="at">ncol=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Hands-on_Ex2B_files/figure-html/unnamed-chunk-44-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<blockquote class="blockquote">
+<p><strong><em>Student Note</em></strong>: <strong>On choosing between fixed distance weights and adaptive distance weights for GDPPC across counties in Hunan province, the latter may be more appropriate</strong> given that GDPPC appears to be more concentrated in the northeast region, which includes the provincial capital, Changsha, and the surrounding counties. Also, it is unlikely that the spatial processes influencing GDPPC are uniform across the entire study area since local development is affected by more than just distance from the provincial capital. Factors such as physical landscape (mountains, rivers), transport networks as well as socioeconomic policies (e.g., education, tourism) are not evenly developed throughout a province. <strong>Hence, an adaptive distance weights approach reflects the varying influence of different factors across space, and allows the analysis to capture the nuanced geospatial processes affecting GDPPC.</strong></p>
+</blockquote>
 <p><span class="smallcaps"><strong>~~~ End of Hands-on Exercise 2B ~~~</strong></span></p>
 
 
