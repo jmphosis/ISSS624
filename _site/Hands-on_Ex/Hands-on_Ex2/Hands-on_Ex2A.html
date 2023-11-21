@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2023-11-20">
+<meta name="dcterms.date" content="2023-11-21">
 
 <title>ISSS624 - Hands-on Exercise 2A</title>
 <style>
@@ -223,7 +223,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 20, 2023</p>
+      <p class="date">November 21, 2023</p>
     </div>
   </div>
   
@@ -237,7 +237,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>8 Spatial Weights and Applications</h1>
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">8.1 Overview</h2>
-<p>In this page, I show how I had completed the Hands-on Exercise 2A, on computing spatial weights using R.</p>
+<p>In this page, I show how I had completed the Hands-on Exercise 2A, on computing spatial weights.</p>
 <p>The objectives are:</p>
 <ul>
 <li><p>Import geospatial data using appropriate function(s) of <strong>sf</strong> package;</p></li>
@@ -275,7 +275,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>geospatial (County Boundary Layer), and</p></li>
 <li><p>aspatial (Local Development Indicators 2012).</p></li>
 </ul>
-<p>These two sub-folders are within the data folder of my Hands-on_Ex2A folder.</p>
+<p>These two sub-folders are within the data folder of my Hands-on_Ex2 folder.</p>
 <section id="importing-shapefile" class="level3">
 <h3 class="anchored" data-anchor-id="importing-shapefile">8.3.1 Importing shapefile</h3>
 <p>The <strong>st_read()</strong> (under sf package) is used to import the geospatial data set: <code>hunan</code>, a polygon feature layer in ESRI shapefile format.</p>
@@ -306,7 +306,7 @@ Geodetic CRS:  WGS 84</code></pre>
 <section id="performing-relational-join" class="level3">
 <h3 class="anchored" data-anchor-id="performing-relational-join">8.3.3 Performing Relational Join</h3>
 <p>The attribute table of the spatial polygons data frame, <code>hunan</code>, is updated using the attribute fields of the tibble data frame, <code>hunan2012</code> using <strong>left_join()</strong> (under dplyr package).</p>
-<p><strong><em>Student Note</em></strong>: Without stating the “by” argument for left_join(), the two tables are joined by the ‘County’ columns.</p>
+<p><strong><em>Student Note</em></strong>: Without explicitly stating the “by” argument for left_join(), the two tables are joined by the ‘County’ columns.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>hunan <span class="ot">=</span> <span class="fu">left_join</span>(hunan,hunan2012) <span class="sc">%&gt;%</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">7</span>, <span class="dv">15</span>)</span>
@@ -1384,7 +1384,7 @@ Non-symmetric neighbours list</code></pre>
 <h3 class="anchored" data-anchor-id="row-standardised-weights-matrix">8.7.1 Row-standardised Weights Matrix</h3>
 <p>Weights are assigned to each neighbouring polygon. The <strong>nb21listw()</strong> (under spdep package) is used to convert a neighborhood object, <code>wm_q</code>, to a listw object, <code>rswm_q</code> (style=“W”) or <code>rswm_ids</code> (style=“B”). This allows row-standardised distance weight matrices to be created, whereby each row sums to 1.</p>
 <p>The “<strong>style</strong>” argument influences the specific characteristics of the weights matrix.</p>
-<p>The following example shows”<strong>style=“W”</strong>”<strong>, each neighboring polygon is assigned equal weight.</strong> This is accomplished by assigning the fraction 1/(#ofneighbors) to each neighboring county then summing the weighted income values. While this is the most intuitive way to summarise the neighbors’ values, its downside is that polygons along the edges of the study area will base their lagged values on fewer polygons thus potentially over- or under-estimating the true nature of the spatial autocorrelation in the data.</p>
+<p>The following example shows “<strong>style=”W”</strong>”<strong>, each neighboring polygon is assigned equal weight.</strong> This is accomplished by assigning the fraction 1/(#ofneighbors) to each neighboring county then summing the weighted income values. While this is the most intuitive way to summarise the neighbors’ values, its downside is that polygons along the edges of the study area will base their lagged values on fewer polygons thus potentially over- or under-estimating the true nature of the spatial autocorrelation in the data.</p>
 <p><strong><em>Student Note</em></strong>:</p>
 <ul>
 <li><p>“listw” stands for list of weights.</p></li>
@@ -2964,7 +2964,7 @@ Geodetic CRS:  WGS 84
 <p><img src="Hands-on_Ex2A_files/figure-html/unnamed-chunk-50-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p><span class="smallcaps"><strong>~~~ End of Hands-on Exercise 12A ~~~</strong></span></p>
+<p><span class="smallcaps"><strong>~~~ End of Hands-on Exercise 2A ~~~</strong></span></p>
 
 
 </section>

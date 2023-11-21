@@ -15,7 +15,7 @@ font-family:  Palatino Linotype;
 
 ## 8.1 Overview
 
-In this page, I show how I had completed the Hands-on Exercise 2A, on computing spatial weights using R.
+In this page, I show how I had completed the Hands-on Exercise 2A, on computing spatial weights.
 
 The objectives are:
 
@@ -65,7 +65,7 @@ The data sets are placed under two sub-folders:
 
 -   aspatial (Local Development Indicators 2012).
 
-These two sub-folders are within the data folder of my Hands-on_Ex2A folder.
+These two sub-folders are within the data folder of my Hands-on_Ex2 folder.
 
 ### 8.3.1 Importing shapefile
 
@@ -92,7 +92,7 @@ hunan2012 = read_csv("data/aspatial/Hunan_2012.csv")
 
 The attribute table of the spatial polygons data frame, `hunan`, is updated using the attribute fields of the tibble data frame, `hunan2012` using **left_join()** (under dplyr package).
 
-***Student Note***: Without stating the "by" argument for left_join(), the two tables are joined by the 'County' columns.
+***Student Note***: Without explicitly stating the "by" argument for left_join(), the two tables are joined by the 'County' columns.
 
 ```{r}
 hunan = left_join(hunan,hunan2012) %>%
@@ -342,7 +342,7 @@ Weights are assigned to each neighbouring polygon. The **nb21listw()** (under sp
 
 The "**style**" argument influences the specific characteristics of the weights matrix.
 
-The following example shows"**style="W"**"**, each neighboring polygon is assigned equal weight.** This is accomplished by assigning the fraction 1/(#ofneighbors) to each neighboring county then summing the weighted income values. While this is the most intuitive way to summarise the neighbors' values, its downside is that polygons along the edges of the study area will base their lagged values on fewer polygons thus potentially over- or under-estimating the true nature of the spatial autocorrelation in the data.
+The following example shows "**style="W"**"**, each neighboring polygon is assigned equal weight.** This is accomplished by assigning the fraction 1/(#ofneighbors) to each neighboring county then summing the weighted income values. While this is the most intuitive way to summarise the neighbors' values, its downside is that polygons along the edges of the study area will base their lagged values on fewer polygons thus potentially over- or under-estimating the true nature of the spatial autocorrelation in the data.
 
 ***Student Note***:
 
@@ -599,4 +599,4 @@ w_sum_gdppc = qtm(hunan, "w_sum GDPPC")
 tmap_arrange(lag_sum_gdppc, w_sum_gdppc, asp=1, ncol=2)
 ```
 
-[**\~\~\~ End of Hands-on Exercise 12A \~\~\~**]{.smallcaps}
+[**\~\~\~ End of Hands-on Exercise 2A \~\~\~**]{.smallcaps}
