@@ -452,13 +452,13 @@ print(GC_corr)
 
 Local Indicators of Spatial Association (LISA) are statistics that evaluate the existence of clusters in the spatial arrangement of a given variable.
 
-The appropriate LISA, including local Moran\'s I, are applied to detect cluster and/or outlier from the 2012 GDP per capita of the Hunan province in China.
+The appropriate LISA, including local Moran's I, are applied to detect cluster and/or outlier from the 2012 GDP per capita of the Hunan province in China.
 
 ### 10.6.1 Computing Local Moran's I
 
 The **localmoran()** (under spdep package) is used to compute the local Moran's I. It computes *Ii* values, given a set of *zi* values and a listw object providing neighbour weighting information for the polygon associated with the *zi* values.
 
--   *Ii*: the local Moran\'s I statistic.
+-   *Ii*: the local Moran's I statistic.
 
 -   *E.Ii*: the expectation of local Moran's I statistic under the randomisation hypothesis.
 
@@ -493,7 +493,7 @@ printCoefmat(data.frame(
   check.names=FALSE)
 ```
 
-The local Moran\'s I dataframe (i.e. localMI) is then appended onto `hunan` SpatialPolygonDataFrame. The output SpatialPolygonDataFrame is called `hunan.localMI`.
+The local Moran's I dataframe (i.e. localMI) is then appended onto `hunan` SpatialPolygonDataFrame. The output SpatialPolygonDataFrame is called `hunan.localMI`.
 
 ```{r}
 hunan.localMI = cbind(hunan,localMI) %>%
@@ -502,7 +502,7 @@ hunan.localMI = cbind(hunan,localMI) %>%
 
 ### 10.6.2 Mapping Local Moran's I values and p-values
 
-Using choropleth mapping functions of **tmap** package, the local Moran\'s I values are plotted.
+Using choropleth mapping functions of **tmap** package, the local Moran's I values are plotted.
 
 ```{r}
 tm_shape(hunan.localMI) +
@@ -513,7 +513,7 @@ tm_shape(hunan.localMI) +
   tm_borders(alpha = 0.5)
 ```
 
-The choropleth shows evidence of both positive and negative Ii values. However, it is useful to consider the p-values for each of these values to see their statistical significance. A choropleth map of Moran\'s I p-values using functions of **tmap** package is plotted below.
+The choropleth shows evidence of both positive and negative Ii values. However, it is useful to consider the p-values for each of these values to see their statistical significance. A choropleth map of Moran's I p-values using functions of **tmap** package is plotted below.
 
 ```{r}
 tm_shape(hunan.localMI) +
@@ -633,7 +633,7 @@ tm_shape(hunan.localMI) +
   tm_borders(alpha=0.5)
 ```
 
-For effective interpretation, both the local Moran\'s I values map and its corresponding p-values map are plotted side by side.
+For effective interpretation, both the local Moran's I values map and its corresponding p-values map are plotted side by side.
 
 > **Question**: What statistical observations can be drawn from the LISA map below?
 >
@@ -671,11 +671,11 @@ tmap_arrange(gdppc, LISAmap,
 
 Beside detecting cluster and outliers, localised spatial statistics can be also used to detect hot spot and/or cold spot areas.
 
-The term \'hot spot\' has been used generically across disciplines to describe a region or value that is higher relative to its surroundings (Lepers et al 2005, Aben et al 2012, Isobe et al 2015).
+The term 'hot spot' has been used generically across disciplines to describe a region or value that is higher relative to its surroundings (Lepers et al 2005, Aben et al 2012, Isobe et al 2015).
 
 ### 10.8.1 Getis and Ord's G-Statistics
 
-An alternative spatial statistics to detect spatial anomalies is the **Getis and Ord\'s G-statistics** (Getis and Ord, 1972; Ord and Getis, 1995). It **looks at neighbours within a defined proximity to identify where either high or low values clutser spatially**. Here, statistically significant hot spots are recognised as areas of high values where other areas within a neighbourhood range also share high values too.
+An alternative spatial statistics to detect spatial anomalies is the **Getis and Ord's G-statistics** (Getis and Ord, 1972; Ord and Getis, 1995). It **looks at neighbours within a defined proximity to identify where either high or low values clutser spatially**. Here, statistically significant hot spots are recognised as areas of high values where other areas within a neighbourhood range also share high values too.
 
 The analysis consists of three steps:
 
@@ -773,7 +773,7 @@ summary(knn_lw)
 
 ### 10.9.1 Gi Statistics Using Fixed Distance and Mapping Gi Values with Fixed Distance Weights
 
-The output of **localG()** (under spdep package) is a vector of G or Gstar values, with attributes \"gstari\" set to TRUE or FALSE, \"call\" set to the function call, and class \"localG\".
+The output of **localG()** (under spdep package) is a vector of G or Gstar values, with attributes "gstari" set to TRUE or FALSE, "call" set to the function call, and class "localG".
 
 The Gi statistics is represented as a Z-score. Greater values represent a greater intensity of clustering and the direction (positive or negative) indicates high or low clusters.
 
