@@ -178,20 +178,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#task" id="toc-task" class="nav-link active" data-scroll-target="#task">1 Task</a></li>
   <li><a href="#getting-started" id="toc-getting-started" class="nav-link" data-scroll-target="#getting-started">2 Getting Started</a></li>
-  <li><a href="#preparing-the-flow-data" id="toc-preparing-the-flow-data" class="nav-link" data-scroll-target="#preparing-the-flow-data">2 Preparing the Flow Data</a>
+  <li><a href="#preparing-the-flow-data" id="toc-preparing-the-flow-data" class="nav-link" data-scroll-target="#preparing-the-flow-data">3 Preparing the Flow Data</a>
   <ul class="collapse">
-  <li><a href="#importing-the-origin-destination-data" id="toc-importing-the-origin-destination-data" class="nav-link" data-scroll-target="#importing-the-origin-destination-data">2.1 Importing the Origin-Destination Data</a></li>
+  <li><a href="#importing-the-origin-destination-data" id="toc-importing-the-origin-destination-data" class="nav-link" data-scroll-target="#importing-the-origin-destination-data">3.1 Importing the Origin-Destination Data</a></li>
+  <li><a href="#extracting-the-study-data" id="toc-extracting-the-study-data" class="nav-link" data-scroll-target="#extracting-the-study-data">3.2 Extracting the Study Data</a></li>
   </ul></li>
-  <li><a href="#extracting-the-study-data" id="toc-extracting-the-study-data" class="nav-link" data-scroll-target="#extracting-the-study-data">2.2 Extracting the Study Data</a></li>
-  <li><a href="#working-with-geospatial-data" id="toc-working-with-geospatial-data" class="nav-link" data-scroll-target="#working-with-geospatial-data">3 Working with Geospatial Data</a>
-  <ul class="collapse">
-  <li><a href="#importing-geospatial-data" id="toc-importing-geospatial-data" class="nav-link" data-scroll-target="#importing-geospatial-data">3.1 Importing Geospatial Data</a></li>
-  </ul></li>
-  <li><a href="#geospatial-data-wrangling" id="toc-geospatial-data-wrangling" class="nav-link" data-scroll-target="#geospatial-data-wrangling">4 Geospatial Data Wrangling</a>
-  <ul class="collapse">
-  <li><a href="#combining-busstop-and-mpsz" id="toc-combining-busstop-and-mpsz" class="nav-link" data-scroll-target="#combining-busstop-and-mpsz">4.1 Combining Busstop and mpsz</a></li>
-  </ul></li>
-  <li><a href="#visualising-the-geospatial-data-using-choropleth" id="toc-visualising-the-geospatial-data-using-choropleth" class="nav-link" data-scroll-target="#visualising-the-geospatial-data-using-choropleth">5. Visualising the Geospatial Data Using Choropleth</a></li>
+  <li><a href="#importing-geospatial-data" id="toc-importing-geospatial-data" class="nav-link" data-scroll-target="#importing-geospatial-data">4 Importing Geospatial Data</a></li>
+  <li><a href="#geospatial-data-wrangling---combining-busstop-and-mpsz" id="toc-geospatial-data-wrangling---combining-busstop-and-mpsz" class="nav-link" data-scroll-target="#geospatial-data-wrangling---combining-busstop-and-mpsz">5 Geospatial Data Wrangling - Combining Busstop and mpsz</a></li>
+  <li><a href="#visualising-the-geospatial-data-using-choropleth" id="toc-visualising-the-geospatial-data-using-choropleth" class="nav-link" data-scroll-target="#visualising-the-geospatial-data-using-choropleth">6 Visualising the Geospatial Data Using Choropleth</a></li>
   </ul>
 </nav>
     </div>
@@ -254,9 +248,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong><em>Student Note</em></strong>: This allowed for loading of multiple packages in one line of code (and installation if not already installed). Also, by calling pacman via “pacman::”, it means that we are calling it dynamically, without having it installed in R Studio.</p>
 </section>
 <section id="preparing-the-flow-data" class="level2">
-<h2 class="anchored" data-anchor-id="preparing-the-flow-data">2 Preparing the Flow Data</h2>
+<h2 class="anchored" data-anchor-id="preparing-the-flow-data">3 Preparing the Flow Data</h2>
 <section id="importing-the-origin-destination-data" class="level3">
-<h3 class="anchored" data-anchor-id="importing-the-origin-destination-data">2.1 Importing the Origin-Destination Data</h3>
+<h3 class="anchored" data-anchor-id="importing-the-origin-destination-data">3.1 Importing the Origin-Destination Data</h3>
 <p>The <em>Passenger Volume by Origin Destination Bus Stops</em> dataset is downloaded from LTA DataMall and then imported by using <code>read_csv()</code> of <strong>readr</strong> package.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>odbus <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/origin_destination_bus_202308.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -297,9 +291,8 @@ $ TOTAL_TRIPS         &lt;dbl&gt; 7, 2, 3, 10, 5, 4, 3, 22, 3, 3, 7, 1, 3, 1, 3,
 </div>
 </div>
 </section>
-</section>
-<section id="extracting-the-study-data" class="level2">
-<h2 class="anchored" data-anchor-id="extracting-the-study-data">2.2 Extracting the Study Data</h2>
+<section id="extracting-the-study-data" class="level3">
+<h3 class="anchored" data-anchor-id="extracting-the-study-data">3.2 Extracting the Study Data</h3>
 <p>The <strong>filter()</strong> (under dplyr package) is applied to extract the data for weekday 7:00-9:59am.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>origin7_9 <span class="ot">=</span> odbus <span class="sc">%&gt;%</span></span>
@@ -356,15 +349,14 @@ $ TOTAL_TRIPS         &lt;dbl&gt; 7, 2, 3, 10, 5, 4, 3, 22, 3, 3, 7, 1, 3, 1, 3,
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>origin7_9 <span class="ot">=</span> <span class="fu">read_rds</span>(<span class="st">"data/rds/origin7_9.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="working-with-geospatial-data" class="level2">
-<h2 class="anchored" data-anchor-id="working-with-geospatial-data">3 Working with Geospatial Data</h2>
+</section>
+<section id="importing-geospatial-data" class="level2">
+<h2 class="anchored" data-anchor-id="importing-geospatial-data">4 Importing Geospatial Data</h2>
 <p>In this section, two shapefiles are imported:</p>
 <ol type="1">
 <li><p><code>BusStop</code>: This data provides the location of bus stop as at last quarter of 2022.</p></li>
 <li><p><code>MPSZ-2019</code>: This data provides the subzone boundary of URA Master Plan 2019.</p></li>
 </ol>
-<section id="importing-geospatial-data" class="level3">
-<h3 class="anchored" data-anchor-id="importing-geospatial-data">3.1 Importing Geospatial Data</h3>
 <p>Both datasets are imported as sf data frames, <code>busstop</code> and <code>mpsz</code>, using <strong>st_read()</strong> (under sf package). The projection was changed to crs 3414.</p>
 <p><strong><em>Student Note</em></strong>: The busstop sf tibble data frame has 5,161 rows and 4 columns, which includes the points indicating the bus stop locations.</p>
 <div class="cell">
@@ -424,11 +416,8 @@ $ geometry   &lt;MULTIPOLYGON [m]&gt; MULTIPOLYGON (((33222.98 29..., MULTIPOLYG
 </div>
 </div>
 </section>
-</section>
-<section id="geospatial-data-wrangling" class="level2">
-<h2 class="anchored" data-anchor-id="geospatial-data-wrangling">4 Geospatial Data Wrangling</h2>
-<section id="combining-busstop-and-mpsz" class="level3">
-<h3 class="anchored" data-anchor-id="combining-busstop-and-mpsz">4.1 Combining Busstop and mpsz</h3>
+<section id="geospatial-data-wrangling---combining-busstop-and-mpsz" class="level2">
+<h2 class="anchored" data-anchor-id="geospatial-data-wrangling---combining-busstop-and-mpsz">5 Geospatial Data Wrangling - Combining Busstop and mpsz</h2>
 <p>The planning subzone code (i.e., “SUBZONE_C”) of <code>mpsz</code> sf data frame was added to the <code>busstop</code> sf data frame using <strong>st_intersection()</strong> and <strong>st_drop_geometry()</strong> (both under sf package), and <strong>select()</strong> (under dplyr package).</p>
 <p>Note:</p>
 <ul>
@@ -499,9 +488,8 @@ $ geometry   &lt;MULTIPOLYGON [m]&gt; MULTIPOLYGON (((33222.98 29..., MULTIPOLYG
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>                           <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"SUBZONE_C"</span> <span class="ot">=</span> <span class="st">"ORIGIN_SZ"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-</section>
 <section id="visualising-the-geospatial-data-using-choropleth" class="level2">
-<h2 class="anchored" data-anchor-id="visualising-the-geospatial-data-using-choropleth">5. Visualising the Geospatial Data Using Choropleth</h2>
+<h2 class="anchored" data-anchor-id="visualising-the-geospatial-data-using-choropleth">6 Visualising the Geospatial Data Using Choropleth</h2>
 <p>A choropleth map is then used to show the distribution of passenger trips at planning subzone level.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mpsz_origtrip)<span class="sc">+</span></span>

@@ -17,3 +17,5 @@ font-family:  Palatino Linotype;
 The code chunk below loads the following packages:
 
 -   
+
+[**\~\~\~ End of In-class Exercise 2 \~\~\~**]{.smallcaps}

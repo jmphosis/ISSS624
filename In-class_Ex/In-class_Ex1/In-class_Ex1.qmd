@@ -46,9 +46,9 @@ pacman::p_load(tmap, sf, tidyverse, knitr)
 
 ***Student Note***: This allowed for loading of multiple packages in one line of code (and installation if not already installed). Also, by calling pacman via "pacman::", it means that we are calling it dynamically, without having it installed in R Studio.
 
-## 2 Preparing the Flow Data
+## 3 Preparing the Flow Data
 
-### 2.1 Importing the Origin-Destination Data
+### 3.1 Importing the Origin-Destination Data
 
 The *Passenger Volume by Origin Destination Bus Stops* dataset is downloaded from LTA DataMall and then imported by using `read_csv()` of **readr** package.
 
@@ -74,7 +74,7 @@ odbus$DESTINATION_PT_CODE = as.factor(odbus$DESTINATION_PT_CODE)
 glimpse(odbus)
 ```
 
-## 2.2 Extracting the Study Data
+### 3.2 Extracting the Study Data
 
 The **filter()** (under dplyr package) is applied to extract the data for weekday 7:00-9:59am.
 
@@ -102,15 +102,13 @@ It can be improted using **read_rds()** (under readr package).
 origin7_9 = read_rds("data/rds/origin7_9.rds")
 ```
 
-## 3 Working with Geospatial Data
+## 4 Importing Geospatial Data
 
 In this section, two shapefiles are imported:
 
 1.  `BusStop`: This data provides the location of bus stop as at last quarter of 2022.
 
 2.  `MPSZ-2019`: This data provides the subzone boundary of URA Master Plan 2019.
-
-### 3.1 Importing Geospatial Data
 
 Both datasets are imported as sf data frames, `busstop` and `mpsz`, using **st_read()** (under sf package). The projection was changed to crs 3414.
 
@@ -138,9 +136,7 @@ mpsz = st_read(dsn = "data/geospatial",
 glimpse(mpsz)
 ```
 
-## 4 Geospatial Data Wrangling
-
-### 4.1 Combining Busstop and mpsz
+## 5 Geospatial Data Wrangling - Combining Busstop and mpsz
 
 The planning subzone code (i.e., "SUBZONE_C") of `mpsz` sf data frame was added to the `busstop` sf data frame using **st_intersection()** and **st_drop_geometry()** (both under sf package), and **select()** (under dplyr package).
 
@@ -205,7 +201,7 @@ mpsz_origtrip = left_join(mpsz,
                            by = c("SUBZONE_C" = "ORIGIN_SZ"))
 ```
 
-## 5. Visualising the Geospatial Data Using Choropleth
+## 6 Visualising the Geospatial Data Using Choropleth
 
 A choropleth map is then used to show the distribution of passenger trips at planning subzone level.
 
