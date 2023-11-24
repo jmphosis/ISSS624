@@ -1,5 +1,5 @@
 ---
-title: "In-class Exercise 1"
+title: "In-class Exercise 1: My First Date with Geospatial Data Science"
 date: "18 November 2023"
 date-modified: "last-modified" #allows for updating to the latest date
 format: html
@@ -14,18 +14,34 @@ font-family:  Palatino Linotype;
 
 ***Student Note***: Delayed upload due to issues in linkage between R Studio and Github.
 
-## 1 Getting Started
+## 1 Task
+
+In this in-class exercise, I prepared a choropleth map showing the distribution of passenger trips at planning subzone by integrating *Passenger Volume by Origin Destination Bus Stops* and bus stop data sets downloaded from the LTA DataMall and Planning Subzone boundary of the URA Master Plan 2019 downloaded from data.gov.sg.
+
+The specific tasks are:
+
+1.  Import *Passenger Volume by Origin Destination Bus Stops* data set downloaded from the LTA DataMall;
+
+2.  Import geospatial data in ESRI shapefile format into sf data frame format;
+
+3.  Perform data wrangling by using appropriate functions from **tidyverse** and **sf** packages; and
+
+4.  Visualise the distribution of passenger trips by using **tmap** methods and functions.
+
+## 2 Getting Started
 
 The code chunk below loads the following packages:
 
 -   **tmap**: for thematic mapping;
 
--   **sf**: for geospatial data handling; and
+-   **sf**: for geospatial data handling;
 
--   **tidyverse**: for non-spatial data handling.
+-   **tidyverse**: for non-spatial data handling; and
+
+-   **knitr** for creating html table.
 
 ```{r}
-pacman::p_load(tmap, sf, tidyverse)
+pacman::p_load(tmap, sf, tidyverse, knitr)
 ```
 
 ***Student Note***: This allowed for loading of multiple packages in one line of code (and installation if not already installed). Also, by calling pacman via "pacman::", it means that we are calling it dynamically, without having it installed in R Studio.
@@ -34,10 +50,16 @@ pacman::p_load(tmap, sf, tidyverse)
 
 ### 2.1 Importing the Origin-Destination Data
 
-The *Passenger Volume by Origin Destination Bus Stops* dataset is downloaded from LTA DataMall by using `read_csv()` of **readr** package.
+The *Passenger Volume by Origin Destination Bus Stops* dataset is downloaded from LTA DataMall and then imported by using `read_csv()` of **readr** package.
 
 ```{r}
 odbus = read_csv("data/aspatial/origin_destination_bus_202308.csv")
+```
+
+***Student Note***: There are 5,709,512 rows and 7 columns. Also, the "ORIGIN_PT_CODE" and "DESTINATON_PT_CODE" are numeric data type.
+
+```{r}
+glimpse(odbus)
 ```
 
 The following code chunk changes the bus stop fields from the numerical data type to the factor data type.
@@ -48,21 +70,51 @@ odbus$ORIGIN_PT_CODE = as.factor(odbus$ORIGIN_PT_CODE)
 odbus$DESTINATION_PT_CODE = as.factor(odbus$DESTINATION_PT_CODE)
 ```
 
+```{r}
+glimpse(odbus)
+```
+
 ## 2.2 Extracting the Study Data
 
-The filter() is applied to extract the data for weekday 7:00-9:59am.
+The **filter()** (under dplyr package) is applied to extract the data for weekday 7:00-9:59am.
 
 ```{r}
-origtrip_7_9 = odbus %>%
+origin7_9 = odbus %>%
   filter(DAY_TYPE == "WEEKDAY") %>%
   filter(TIME_PER_HOUR >= 7 & TIME_PER_HOUR <=9) %>%
   group_by(ORIGIN_PT_CODE) %>%
   summarise(TRIPS = sum(TOTAL_TRIPS))
 ```
 
+```{r}
+kable(head(origin7_9))
+```
+
+The output is then saved in rds format for future use.
+
+```{r}
+write_rds(origin7_9, "data/rds/origin7_9.rds")
+```
+
+It can be improted using **read_rds()** (under readr package).
+
+```{r}
+origin7_9 = read_rds("data/rds/origin7_9.rds")
+```
+
 ## 3 Working with Geospatial Data
 
+In this section, two shapefiles are imported:
+
+1.  `BusStop`: This data provides the location of bus stop as at last quarter of 2022.
+
+2.  `MPSZ-2019`: This data provides the subzone boundary of URA Master Plan 2019.
+
 ### 3.1 Importing Geospatial Data
+
+Both datasets are imported as sf data frames, `busstop` and `mpsz`, using **st_read()** (under sf package). The projection was changed to crs 3414.
+
+***Student Note***: The busstop sf tibble data frame has 5,161 rows and 4 columns, which includes the points indicating the bus stop locations.
 
 ```{r}
 busstop = st_read(dsn = "data/geospatial",
@@ -71,15 +123,110 @@ busstop = st_read(dsn = "data/geospatial",
 ```
 
 ```{r}
+glimpse(busstop)
+```
+
+***Student Note***: The mpsz sf tibble data frame has 332 rows and 7 columns, which includes the polygons of the subzones.
+
+```{r}
 mpsz = st_read(dsn = "data/geospatial",
                layer = "MPSZ-2019") %>%
   st_transform(crs = 3414)
 ```
 
-## Geospatial Data Wrangling
+```{r}
+glimpse(mpsz)
+```
 
-## Combining Busstop and mpsz
+## 4 Geospatial Data Wrangling
 
-## Visualising the Geospatial Data
+### 4.1 Combining Busstop and mpsz
 
-## Viewing the Subzone Spatial File
+The planning subzone code (i.e., "SUBZONE_C") of `mpsz` sf data frame was added to the `busstop` sf data frame using **st_intersection()** and **st_drop_geometry()** (both under sf package), and **select()** (under dplyr package).
+
+Note:
+
+-   **st_intersection()** is used to perform point and polygon overlay and the output is a point sf object.
+
+-   **select()** is then use to retain only "BUS_STOP_N" and "SUBZONE_C" in the `busstop_mpsz` sf data frame.
+
+-   Five bus stops are excluded in the resultant data frame because they are outside of Singapore boundary.
+
+```{r}
+busstop_mpsz = st_intersection(busstop, mpsz) %>%
+  select(BUS_STOP_N, SUBZONE_C) %>%
+  st_drop_geometry()
+```
+
+The output is then saved in rds format.
+
+```{r}
+write_rds(busstop_mpsz, "data/rds/busstop_mpsz.csv")
+```
+
+Moving on, the planning subzone code from `busstop_mpsz` data frame is appended to `odbus7_9` data frame. The combined data frame is `origin_data`.
+
+```{r}
+origin_data = left_join(origin7_9 , busstop_mpsz,
+            by = c("ORIGIN_PT_CODE" = "BUS_STOP_N")) %>%
+  rename(ORIGIN_BS = ORIGIN_PT_CODE,
+         ORIGIN_SZ = SUBZONE_C)
+```
+
+A check for duplicate records is done, which found 26, and only unique records are retained.
+
+```{r}
+duplicate = origin_data %>%
+  group_by_all() %>%
+  filter(n()>1) %>%
+  ungroup()
+
+duplicate
+```
+
+```{r}
+origin_data = unique(origin_data)
+```
+
+```{r}
+duplicate = origin_data %>%
+  group_by_all() %>%
+  filter(n()>1) %>%
+  ungroup()
+
+duplicate
+```
+
+The `origin_data` data frame is then updated with the planning subzone codes.
+
+```{r}
+mpsz_origtrip = left_join(mpsz, 
+                           origin_data,
+                           by = c("SUBZONE_C" = "ORIGIN_SZ"))
+```
+
+## 5. Visualising the Geospatial Data Using Choropleth
+
+A choropleth map is then used to show the distribution of passenger trips at planning subzone level.
+
+```{r}
+tm_shape(mpsz_origtrip)+
+  tm_fill("TRIPS", 
+          style = "quantile", 
+          palette = "Blues",
+          title = "Passenger trips") +
+  tm_layout(main.title = "Passenger trips generated at planning subzone level",
+            main.title.position = "center",
+            main.title.size = 1.2,
+            legend.height = 0.45, 
+            legend.width = 0.35,
+            frame = TRUE) +
+  tm_borders(alpha = 0.5) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar() +
+  tm_grid(alpha =0.2) +
+  tm_credits("Source: Planning Subzone boundary from URA\n and Passenger trips data from LTA", 
+             position = c("left", "bottom"))
+```
+
+[**\~\~\~ End of In-class Exercise 1 \~\~\~**]{.smallcaps}
