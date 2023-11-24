@@ -148,7 +148,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex1/In-class_Ex1.html" rel="" target="">
  <span class="dropdown-text">In-class Exercise 1</span></a>
   </li>  
-        <li class="dropdown-header">In-class Exercise 2</li>
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex2/In-class_Ex2.html" rel="" target="">
+ <span class="dropdown-text">In-class Exercise 2</span></a>
+  </li>  
     </ul>
   </li>
 </ul>
@@ -823,12 +826,12 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <section id="cluster-and-outlier-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="cluster-and-outlier-analysis">10.6 Cluster and Outlier Analysis</h2>
 <p>Local Indicators of Spatial Association (LISA) are statistics that evaluate the existence of clusters in the spatial arrangement of a given variable.</p>
-<p>The appropriate LISA, including local Moran's I, are applied to detect cluster and/or outlier from the 2012 GDP per capita of the Hunan province in China.</p>
+<p>The appropriate LISA, including local Moran’s I, are applied to detect cluster and/or outlier from the 2012 GDP per capita of the Hunan province in China.</p>
 <section id="computing-local-morans-i" class="level3">
 <h3 class="anchored" data-anchor-id="computing-local-morans-i">10.6.1 Computing Local Moran’s I</h3>
 <p>The <strong>localmoran()</strong> (under spdep package) is used to compute the local Moran’s I. It computes <em>Ii</em> values, given a set of <em>zi</em> values and a listw object providing neighbour weighting information for the polygon associated with the <em>zi</em> values.</p>
 <ul>
-<li><p><em>Ii</em>: the local Moran's I statistic.</p></li>
+<li><p><em>Ii</em>: the local Moran’s I statistic.</p></li>
 <li><p><em>E.Ii</em>: the expectation of local Moran’s I statistic under the randomisation hypothesis.</p></li>
 <li><p><em>Var.Ii</em>: the variance of local Moran’s I statistic under the randomisation hypothesis.</p></li>
 <li><p><em>Z.Ii</em>: the standard deviate of local Moran’s I statistic.</p></li>
@@ -955,7 +958,7 @@ Zhuzhou        3.2864e-01 -5.2432e-04  7.2391e-03  3.8688e+00         0.0001
 Zixing        -7.6849e-01 -8.8210e-02  9.4057e-01 -7.0144e-01         0.4830</code></pre>
 </div>
 </div>
-<p>The local Moran's I dataframe (i.e.&nbsp;localMI) is then appended onto <code>hunan</code> SpatialPolygonDataFrame. The output SpatialPolygonDataFrame is called <code>hunan.localMI</code>.</p>
+<p>The local Moran’s I dataframe (i.e.&nbsp;localMI) is then appended onto <code>hunan</code> SpatialPolygonDataFrame. The output SpatialPolygonDataFrame is called <code>hunan.localMI</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>hunan.localMI <span class="ot">=</span> <span class="fu">cbind</span>(hunan,localMI) <span class="sc">%&gt;%</span></span>
 <span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Pr.Ii =</span> Pr.z....E.Ii..)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -963,7 +966,7 @@ Zixing        -7.6849e-01 -8.8210e-02  9.4057e-01 -7.0144e-01         0.4830</co
 </section>
 <section id="mapping-local-morans-i-values-and-p-values" class="level3">
 <h3 class="anchored" data-anchor-id="mapping-local-morans-i-values-and-p-values">10.6.2 Mapping Local Moran’s I values and p-values</h3>
-<p>Using choropleth mapping functions of <strong>tmap</strong> package, the local Moran's I values are plotted.</p>
+<p>Using choropleth mapping functions of <strong>tmap</strong> package, the local Moran’s I values are plotted.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(hunan.localMI) <span class="sc">+</span></span>
 <span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"Ii"</span>, </span>
@@ -975,7 +978,7 @@ Zixing        -7.6849e-01 -8.8210e-02  9.4057e-01 -7.0144e-01         0.4830</co
 <p><img src="Hands-on_Ex2B_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>The choropleth shows evidence of both positive and negative Ii values. However, it is useful to consider the p-values for each of these values to see their statistical significance. A choropleth map of Moran's I p-values using functions of <strong>tmap</strong> package is plotted below.</p>
+<p>The choropleth shows evidence of both positive and negative Ii values. However, it is useful to consider the p-values for each of these values to see their statistical significance. A choropleth map of Moran’s I p-values using functions of <strong>tmap</strong> package is plotted below.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(hunan.localMI) <span class="sc">+</span></span>
 <span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"Pr.Ii"</span>, </span>
@@ -1114,7 +1117,7 @@ Geodetic CRS:  WGS 84
 <p><img src="Hands-on_Ex2B_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>For effective interpretation, both the local Moran's I values map and its corresponding p-values map are plotted side by side.</p>
+<p>For effective interpretation, both the local Moran’s I values map and its corresponding p-values map are plotted side by side.</p>
 <blockquote class="blockquote">
 <p><strong>Question</strong>: What statistical observations can be drawn from the LISA map below?</p>
 <p><strong><em>Answer</em></strong>:</p>
@@ -1152,10 +1155,10 @@ Geodetic CRS:  WGS 84
 <section id="hot-spot-and-cold-spot-area-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="hot-spot-and-cold-spot-area-analysis">10.8 Hot Spot and Cold Spot Area Analysis</h2>
 <p>Beside detecting cluster and outliers, localised spatial statistics can be also used to detect hot spot and/or cold spot areas.</p>
-<p>The term 'hot spot' has been used generically across disciplines to describe a region or value that is higher relative to its surroundings (Lepers et al 2005, Aben et al 2012, Isobe et al 2015).</p>
+<p>The term ‘hot spot’ has been used generically across disciplines to describe a region or value that is higher relative to its surroundings (Lepers et al 2005, Aben et al 2012, Isobe et al 2015).</p>
 <section id="getis-and-ords-g-statistics" class="level3">
 <h3 class="anchored" data-anchor-id="getis-and-ords-g-statistics">10.8.1 Getis and Ord’s G-Statistics</h3>
-<p>An alternative spatial statistics to detect spatial anomalies is the <strong>Getis and Ord's G-statistics</strong> (Getis and Ord, 1972; Ord and Getis, 1995). It <strong>looks at neighbours within a defined proximity to identify where either high or low values clutser spatially</strong>. Here, statistically significant hot spots are recognised as areas of high values where other areas within a neighbourhood range also share high values too.</p>
+<p>An alternative spatial statistics to detect spatial anomalies is the <strong>Getis and Ord’s G-statistics</strong> (Getis and Ord, 1972; Ord and Getis, 1995). It <strong>looks at neighbours within a defined proximity to identify where either high or low values clutser spatially</strong>. Here, statistically significant hot spots are recognised as areas of high values where other areas within a neighbourhood range also share high values too.</p>
 <p>The analysis consists of three steps:</p>
 <ol type="1">
 <li><p>Deriving spatial weight matrix;</p></li>
@@ -1301,7 +1304,7 @@ B 88 7744 704 1300 23014</code></pre>
 <h2 class="anchored" data-anchor-id="computing-gi-statistics">10.9 Computing Gi Statistics</h2>
 <section id="gi-statistics-using-fixed-distance-and-mapping-gi-values-with-fixed-distance-weights" class="level3">
 <h3 class="anchored" data-anchor-id="gi-statistics-using-fixed-distance-and-mapping-gi-values-with-fixed-distance-weights">10.9.1 Gi Statistics Using Fixed Distance and Mapping Gi Values with Fixed Distance Weights</h3>
-<p>The output of <strong>localG()</strong> (under spdep package) is a vector of G or Gstar values, with attributes "gstari" set to TRUE or FALSE, "call" set to the function call, and class "localG".</p>
+<p>The output of <strong>localG()</strong> (under spdep package) is a vector of G or Gstar values, with attributes “gstari” set to TRUE or FALSE, “call” set to the function call, and class “localG”.</p>
 <p>The Gi statistics is represented as a Z-score. Greater values represent a greater intensity of clustering and the direction (positive or negative) indicates high or low clusters.</p>
 <p>The Gi values for GDPPC 2012 is computed using fixed distance weights, <code>wm62_lw</code>.</p>
 <div class="cell">
