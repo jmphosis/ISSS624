@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -142,7 +176,26 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#getting-started" id="toc-getting-started" class="nav-link active" data-scroll-target="#getting-started">1 Getting Started</a></li>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">1 Overview</a></li>
+  <li><a href="#getting-started---installing-and-loading-the-r-packages" id="toc-getting-started---installing-and-loading-the-r-packages" class="nav-link" data-scroll-target="#getting-started---installing-and-loading-the-r-packages">2 Getting Started - Installing and Loading the R Packages</a></li>
+  <li><a href="#importing-data" id="toc-importing-data" class="nav-link" data-scroll-target="#importing-data">3 Importing Data</a>
+  <ul class="collapse">
+  <li><a href="#importing-shapefile" id="toc-importing-shapefile" class="nav-link" data-scroll-target="#importing-shapefile">3.1 Importing shapefile</a></li>
+  <li><a href="#importing-csv-file" id="toc-importing-csv-file" class="nav-link" data-scroll-target="#importing-csv-file">3.2 Importing csv file</a></li>
+  <li><a href="#performing-relational-join" id="toc-performing-relational-join" class="nav-link" data-scroll-target="#performing-relational-join">3.3 Performing Relational Join</a></li>
+  <li><a href="#visualising-regional-development-indicator" id="toc-visualising-regional-development-indicator" class="nav-link" data-scroll-target="#visualising-regional-development-indicator">3.4 Visualising Regional Development Indicator</a></li>
+  </ul></li>
+  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"></a></li>
+  <li><a href="#deriving-contiguity-spatial-weights" id="toc-deriving-contiguity-spatial-weights" class="nav-link" data-scroll-target="#deriving-contiguity-spatial-weights">4 Deriving Contiguity Spatial Weights</a>
+  <ul class="collapse">
+  <li><a href="#deriving-contiguity-weights-queens-method" id="toc-deriving-contiguity-weights-queens-method" class="nav-link" data-scroll-target="#deriving-contiguity-weights-queens-method">4.1 Deriving Contiguity Weights: Queen’s Method</a></li>
+  </ul></li>
+  <li><a href="#distance-based-weights" id="toc-distance-based-weights" class="nav-link" data-scroll-target="#distance-based-weights">5 Distance-based Weights</a></li>
+  <li><a href="#creating-a-time-series-cube" id="toc-creating-a-time-series-cube" class="nav-link" data-scroll-target="#creating-a-time-series-cube">Creating a Time Series Cube</a></li>
+  <li><a href="#mann-kendall-test" id="toc-mann-kendall-test" class="nav-link" data-scroll-target="#mann-kendall-test">Mann-Kendall Test</a>
+  <ul class="collapse">
+  <li><a href="#performing-emerging-hotspot-analysis" id="toc-performing-emerging-hotspot-analysis" class="nav-link" data-scroll-target="#performing-emerging-hotspot-analysis">Performing Emerging Hotspot Analysis</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -169,7 +222,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">November 24, 2023</p>
+      <p class="date-modified">November 25, 2023</p>
     </div>
   </div>
     
@@ -178,15 +231,280 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<section id="getting-started" class="level2">
-<h2 class="anchored" data-anchor-id="getting-started">1 Getting Started</h2>
-<p>The code chunk below loads the following packages:</p>
+<section id="overview" class="level2">
+<h2 class="anchored" data-anchor-id="overview">1 Overview</h2>
+<p>This in-class exercise introduces an alternative R package, <strong>sfdep</strong>. According to Josiah Perry, the developer of the package, “<em>sfdep builds on the great shoulders of spdep package for spatial dependence. sfdep creates an sf and tidyverse friendly interface to the package as well as introduces new functionality that is not present in spdep. sfdep utilizes list columns extensively to make this interface possible.</em>”</p>
+</section>
+<section id="getting-started---installing-and-loading-the-r-packages" class="level2">
+<h2 class="anchored" data-anchor-id="getting-started---installing-and-loading-the-r-packages">2 Getting Started - Installing and Loading the R Packages</h2>
+<p>The code chunk below loads the packages used in this in-class exercise:</p>
 <ul>
-<li></li>
+<li><p><strong>sf</strong> for importing, managing, and processing geospatial data;</p></li>
+<li><p><strong>tidyverse</strong> (i.e.&nbsp;readr, tidyr, dplyr) for performing data science tasks such as importing, tidying, and wrangling data;</p></li>
+<li><p><strong>tmap</strong> for thematic mapping;</p></li>
+<li><p><strong>knitr</strong> for embedding R code in different document formats (e.g., HTML) to facilitate dynamic report generation;</p></li>
+<li><p><strong>sfdep</strong> for analysing spatial dependence and spatial relationships in data (building on spdep); and</p></li>
+<li><p><strong>plotly</strong> for making interactive plots.</p></li>
 </ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, tmap, sfdep, tidyverse, knitr, plotly)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="importing-data" class="level2">
+<h2 class="anchored" data-anchor-id="importing-data">3 Importing Data</h2>
+<p>For the purpose of the in-class exercise, the Hunan data sets are used:</p>
+<ul>
+<li><p><u>Hunan’s County Boundary Layer</u>. This is a geospatial data set in ESRI shapefile format.</p></li>
+<li><p><u>Hunan’s Local Development Indicators 2012</u>. This csv file contains data on selected Hunan’s local development indicators in 2012.</p></li>
+</ul>
+<p>The data sets are placed under two sub-folders:</p>
+<ul>
+<li><p>geospatial (County Boundary Layer), and</p></li>
+<li><p>aspatial (Local Development Indicators 2012).</p></li>
+</ul>
+<p>These two sub-folders are within the data folder of my In-class_Ex2 folder.</p>
+<section id="importing-shapefile" class="level3">
+<h3 class="anchored" data-anchor-id="importing-shapefile">3.1 Importing shapefile</h3>
+<p>The <strong>st_read()</strong> (under sf package) is used to import the geospatial data set: <code>hunan</code>, a polygon feature layer in ESRI shapefile format.</p>
+<blockquote class="blockquote">
+<p><strong><em>Student Note</em></strong>: The geospatial objects are polygon features. There are a total of <strong>88 features and 8 fields</strong> in <code>hunan</code> simple feature data frame. <code>hunan</code> is in <strong>wgs84 coordinate system</strong>.</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>hunan <span class="ot">=</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/geospatial"</span>,                   <span class="at">layer =</span> <span class="st">"Hunan"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `Hunan' from data source 
+  `C:\jmphosis\ISSS624\In-class_Ex\In-class_Ex2\data\geospatial' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 88 features and 7 fields
+Geometry type: POLYGON
+Dimension:     XY
+Bounding box:  xmin: 108.7831 ymin: 24.6342 xmax: 114.2544 ymax: 30.12812
+Geodetic CRS:  WGS 84</code></pre>
+</div>
+</div>
+</section>
+<section id="importing-csv-file" class="level3">
+<h3 class="anchored" data-anchor-id="importing-csv-file">3.2 Importing csv file</h3>
+<p>The <strong>read_csv()</strong> (under readr package) is used to import the aspatial data set: <code>hunan_2012</code>, a csv file.</p>
+<blockquote class="blockquote">
+<p><strong><em>Student Note</em></strong>: The <code>hunan_2012</code> tibble data frame contains <strong>88 rows and 29 columns</strong>. There are two columns with character data - County and City.</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>hunan2012 <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/Hunan_2012.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="performing-relational-join" class="level3">
+<h3 class="anchored" data-anchor-id="performing-relational-join">3.3 Performing Relational Join</h3>
+<p>The attribute table of the spatial polygons data frame, <code>hunan</code>, is updated using the attribute fields of the tibble data frame, <code>hunan2012</code> using <strong>left_join()</strong> (under dplyr package).</p>
+<blockquote class="blockquote">
+<p><strong><em>Student Note</em></strong>: Without explicitly stating the “by” argument for left_join(), the two tables are joined by the ‘County’ columns.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong><em>Student Note</em></strong>: Spatial data stated first in left_join() so as to retain sf data frame format.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong><em>Student Note</em></strong>: The geometry variable is automatically selected (when using dplyr package - part of tidyverse).</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>hunan_GDPPC <span class="ot">=</span> <span class="fu">left_join</span>(hunan,hunan2012) <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">7</span>, <span class="dv">15</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>hunan_GDPPC</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 88 features and 6 fields
+Geometry type: POLYGON
+Dimension:     XY
+Bounding box:  xmin: 108.7831 ymin: 24.6342 xmax: 114.2544 ymax: 30.12812
+Geodetic CRS:  WGS 84
+First 10 features:
+     NAME_2  ID_3    NAME_3   ENGTYPE_3    County GDPPC
+1   Changde 21098   Anxiang      County   Anxiang 23667
+2   Changde 21100   Hanshou      County   Hanshou 20981
+3   Changde 21101    Jinshi County City    Jinshi 34592
+4   Changde 21102        Li      County        Li 24473
+5   Changde 21103     Linli      County     Linli 25554
+6   Changde 21104    Shimen      County    Shimen 27137
+7  Changsha 21109   Liuyang County City   Liuyang 63118
+8  Changsha 21110 Ningxiang      County Ningxiang 62202
+9  Changsha 21111 Wangcheng      County Wangcheng 70666
+10 Chenzhou 21112     Anren      County     Anren 12761
+                         geometry
+1  POLYGON ((112.0625 29.75523...
+2  POLYGON ((112.2288 29.11684...
+3  POLYGON ((111.8927 29.6013,...
+4  POLYGON ((111.3731 29.94649...
+5  POLYGON ((111.6324 29.76288...
+6  POLYGON ((110.8825 30.11675...
+7  POLYGON ((113.9905 28.5682,...
+8  POLYGON ((112.7181 28.38299...
+9  POLYGON ((112.7914 28.52688...
+10 POLYGON ((113.1757 26.82734...</code></pre>
+</div>
+</div>
+</section>
+<section id="visualising-regional-development-indicator" class="level3">
+<h3 class="anchored" data-anchor-id="visualising-regional-development-indicator">3.4 Visualising Regional Development Indicator</h3>
+<p>A basemap and a choropleth map are prepared usign <strong>qtm()</strong> (under tmap package) to visualise the 2012 Gross Domestic Product Per Capita (GDPPC).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>basemap <span class="ot">=</span> <span class="fu">tm_shape</span>(hunan_GDPPC) <span class="sc">+</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>() <span class="sc">+</span>   </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_text</span>(<span class="st">"NAME_3"</span>, <span class="at">size=</span><span class="fl">0.5</span>)  </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>gdppc <span class="ot">=</span> <span class="fu">qtm</span>(hunan_GDPPC, <span class="st">"GDPPC"</span>)  </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(basemap, gdppc, <span class="at">asp=</span><span class="dv">1</span>, <span class="at">ncol=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="In-class_Ex2_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="section" class="level2">
+<h2 class="anchored" data-anchor-id="section"></h2>
+</section>
+<section id="deriving-contiguity-spatial-weights" class="level2">
+<h2 class="anchored" data-anchor-id="deriving-contiguity-spatial-weights">4 Deriving Contiguity Spatial Weights</h2>
+<p>By and large, there are two type of spatial weights, they are contiguity weights and distance-based weights. In this section, the contiguity spatial weights are derived by using <strong>sfdep</strong> package.</p>
+<section id="deriving-contiguity-weights-queens-method" class="level3">
+<h3 class="anchored" data-anchor-id="deriving-contiguity-weights-queens-method">4.1 Deriving Contiguity Weights: Queen’s Method</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>wm_q <span class="ot">=</span> hunan_GDPPC <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">nb =</span> <span class="fu">st_contiguity</span>(geometry),</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">wt =</span> <span class="fu">st_weights</span>(nb,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">style =</span> <span class="st">"W"</span>),</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">.before =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Notice that st_weights() provides three arguments:</p>
+<ul>
+<li><p>nb: A neighbour list object as created by st_neighbours().</p></li>
+<li><p>style: Default “W” for row standardised weights. This value can also be “B”, “C”, “U”, “minmax”, and “S”.</p>
+<ul>
+<li><p>The “<strong>style</strong>” argument set to “W” specifies a <strong>binary spatial weight matrix</strong>, where the presence of a spatial relationship is indicated by 1, and absence by 0. <strong>All neighbouring units are considered equal in terms of their impact on the target unit, reflecting a uniform spatial relationship.</strong></p></li>
+<li><p>If the “<strong>style</strong>” argument is set to “B”, it specifies a <strong>binary spatial lag matrix</strong>, where the presence of a spatial relationship is indicated by 1, and absence by 0. At the same time, the <strong>direction of the connection is considered</strong> for the calculations.</p></li>
+<li><p>“C” is globally standardised (sums over all links to n), “U” is equal to “C” divided by the number of neighbours (sums over all links to unity), while “S” is the variance-stabilizing coding scheme proposed by Tiefelsdorf et al.&nbsp;(1999) (sums over all links to n).</p></li>
+</ul></li>
+<li><p>.before = 1: indicates that the new columns should appear at the front.</p></li>
+</ul>
+<p>wm_fd =</p>
+</section>
+</section>
+<section id="distance-based-weights" class="level2">
+<h2 class="anchored" data-anchor-id="distance-based-weights">5 Distance-based Weights</h2>
+<p>6 Global Measures of Spatial Autocorrelation</p>
+<p>GLSA</p>
+<p>Moran’s I</p>
+<p>Compute Local Moran’s I of GDPPC at county level by using local_moran() (under sfdep package).</p>
+<blockquote class="blockquote">
+<p><strong><em>Student Note</em></strong>: unnest() to list the output statistics as individual columns.</p>
+</blockquote>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>lisa <span class="ot">=</span> wm_q <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">local_moran =</span> <span class="fu">local_moran</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    GDPPC, nb, wt, <span class="at">nsim =</span> <span class="dv">99</span>),</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">.before =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(local_moran)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The output of local_moran() is a sf data frame containing the columns ii, eii, var_ii, z_ii, p_ii, p_ii_sim, and p_folded_sim.</p>
+<ul>
+<li><p><em>ii</em>: the local Moran’s I statistic.</p></li>
+<li><p><em>e.Ii</em>: the expectation of local Moran’s I statistic under the randomisation hypothesis.</p></li>
+<li><p><em>var.Ii</em>: the variance of local Moran’s I statistic under the randomisation hypothesis.</p></li>
+<li><p><em>z.Ii</em>: the standard deviate of local Moran’s I statistic.</p></li>
+<li><p>p_ii: the p-value of local Moran’s I statistic.</p></li>
+<li><p>p_ii_sim: the p-value of local Moran’s I statistic for the simulated (permutation) outcomes.</p></li>
+<li><p>p_folded_sim:</p></li>
+</ul>
+<p>EHSA</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>GDPPC <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/Hunan_GDPPC.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<blockquote class="blockquote">
+<p>Student Note: ‘Year’ variable is numerical data type (not datetime).</p>
+</blockquote>
+</section>
+<section id="creating-a-time-series-cube" class="level2">
+<h2 class="anchored" data-anchor-id="creating-a-time-series-cube">Creating a Time Series Cube</h2>
+<p>The <strong>spacetime()</strong> (under sfdep package) is used to create a spacetime cube.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>GDPPC_st <span class="ot">=</span> <span class="fu">spacetime</span>(GDPPC, hunan,</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">.loc_col =</span> <span class="st">"County"</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">.time_col =</span> <span class="st">"Year"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The <strong>is_spacetime_cube()</strong> (under sfdep package) is used to verify if GDPPC_st is indeed a spacetime cube object. The TRUE return below confirms that GDPPC_st object is indeed a spacetime cube.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is_spacetime_cube</span>(GDPPC_st)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<p>Computing Gi*</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>GDPPC_nb <span class="ot">=</span> GDPPC_st <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">activate</span>(<span class="st">"geometry"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">nb =</span> <span class="fu">include_self</span>(<span class="fu">st_contiguity</span>(geometry)),</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">wt =</span> <span class="fu">st_inverse_distance</span>(nb, geometry,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">scale =</span> <span class="dv">1</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">alpha =</span> <span class="dv">1</span>),</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">.before =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_nbs</span>(<span class="st">"nb"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_wts</span>(<span class="st">"wt"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li><p>activate() (under dplyr package) is used to activate the geometry context.</p></li>
+<li><p>mutate() (under dplyr package) is used</p></li>
+</ul>
+<p>Computing Gi*</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>gi_stars <span class="ot">=</span> GDPPC_nb <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Year) <span class="sc">%&gt;%</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">gi_star =</span> <span class="fu">local_gstar_perm</span>(</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    GDPPC, nb, wt)) <span class="sc">%&gt;%</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(gi_star)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>gi_stars</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,496 × 13
+# Groups:   Year [17]
+    Year County    GDPPC nb        wt     gi_star   e_gi  var_gi p_value   p_sim
+   &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt; &lt;list&gt;    &lt;list&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+ 1  2005 Anxiang    8184 &lt;int [6]&gt; &lt;dbl&gt;    0.398 0.0116 3.08e-6  0.302  0.762  
+ 2  2005 Hanshou    6560 &lt;int [6]&gt; &lt;dbl&gt;   -0.237 0.0109 2.52e-6 -0.0147 0.988  
+ 3  2005 Jinshi     9956 &lt;int [5]&gt; &lt;dbl&gt;    1.05  0.0125 3.00e-6  0.614  0.539  
+ 4  2005 Li         8394 &lt;int [5]&gt; &lt;dbl&gt;    0.966 0.0119 3.25e-6  0.809  0.419  
+ 5  2005 Linli      8850 &lt;int [5]&gt; &lt;dbl&gt;    1.05  0.0120 2.84e-6  0.948  0.343  
+ 6  2005 Shimen     9244 &lt;int [6]&gt; &lt;dbl&gt;    0.210 0.0121 2.91e-6 -0.169  0.866  
+ 7  2005 Liuyang   13406 &lt;int [5]&gt; &lt;dbl&gt;    3.91  0.0144 3.47e-6  2.79   0.00523
+ 8  2005 Ningxiang 11687 &lt;int [8]&gt; &lt;dbl&gt;    1.61  0.0127 2.28e-6  0.875  0.382  
+ 9  2005 Wangcheng 14659 &lt;int [7]&gt; &lt;dbl&gt;    3.88  0.0140 2.58e-6  2.66   0.00775
+10  2005 Anren      7423 &lt;int [9]&gt; &lt;dbl&gt;    1.67  0.0113 2.11e-6  1.87   0.0617 
+# ℹ 1,486 more rows
+# ℹ 3 more variables: p_folded_sim &lt;dbl&gt;, skewness &lt;dbl&gt;, kurtosis &lt;dbl&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="mann-kendall-test" class="level2">
+<h2 class="anchored" data-anchor-id="mann-kendall-test">Mann-Kendall Test</h2>
+<p>Arrange to Show Significant Emerging Hot/Cold Spots</p>
+<p>cbg = gi_stars %&gt;% ungroup() %&gt;% filter(County == “Changsha”) |&gt; select()</p>
+<p>ggplot(data = cbg, aes(x = Year, y = ))</p>
+<section id="performing-emerging-hotspot-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="performing-emerging-hotspot-analysis">Performing Emerging Hotspot Analysis</h3>
+<p>ehsa = emerging_hotspot_analysis( x = GDPPC_st, .var = “GDPPC”, k = 1, nsim = 99 )</p>
+<ul>
+<li><p>k = 1 means comparing time series sequentially</p></li>
+<li><p>nsim = 99 means 99 simulations to perform permutation</p></li>
+<li><p>x = GDPPC_st (already includes the spatial element)</p></li>
+</ul>
+<p>Intepreting the map</p>
+<ul>
+<li><p>Grey areas = no value</p></li>
+<li><p>Not the same as no pattern (which could be statistically significant).</p></li>
+</ul>
+<p>ehsa_sig = hunan_ehsa %&gt;% filter(p_value &lt; 0.05) tmap_mode(“plot”) tm_shape(hunan_ehsa) + tm_polygons() + tm_borders(alpha = 0.5) + tm_shape(ehsa_sig) + tm_fill(“classification”) + tm_borders(alpha = 0.4)</p>
 <p><span class="smallcaps"><strong>~~~ End of In-class Exercise 2 ~~~</strong></span></p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

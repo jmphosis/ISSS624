@@ -148,7 +148,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex1/In-class_Ex1.html" rel="" target="">
  <span class="dropdown-text">In-class Exercise 1</span></a>
   </li>  
-        <li class="dropdown-header">In-class Exercise 2</li>
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex2/In-class_Ex2.html" rel="" target="">
+ <span class="dropdown-text">In-class Exercise 2</span></a>
+  </li>  
     </ul>
   </li>
 </ul>
@@ -286,7 +289,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="importing-shapefile">8.3.1 Importing shapefile</h3>
 <p>The <strong>st_read()</strong> (under sf package) is used to import the geospatial data set: <code>hunan</code>, a polygon feature layer in ESRI shapefile format.</p>
 <blockquote class="blockquote">
-<p><strong><em>Student Note</em></strong>: The geospatial objects are polygon features. There are a total of <strong>88 features and 7 fields</strong> in <code>hunan</code> simple feature data frame. <code>hunan</code> is in <strong>wgs84 coordinate system</strong>.</p>
+<p><strong><em>Student Note</em></strong>: The geospatial objects are polygon features. There are a total of <strong>88 features and 8 fields</strong> in <code>hunan</code> simple feature data frame. <code>hunan</code> is in <strong>wgs84 coordinate system</strong>.</p>
 </blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>hunan <span class="ot">=</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/geospatial"</span>, </span>

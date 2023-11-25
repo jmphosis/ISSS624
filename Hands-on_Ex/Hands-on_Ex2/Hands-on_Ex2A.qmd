@@ -71,7 +71,7 @@ These two sub-folders are within the data folder of my Hands-on_Ex2 folder.
 
 The **st_read()** (under sf package) is used to import the geospatial data set: `hunan`, a polygon feature layer in ESRI shapefile format.
 
-> ***Student Note***: The geospatial objects are polygon features. There are a total of **88 features and 7 fields** in `hunan` simple feature data frame. `hunan` is in **wgs84 coordinate system**.
+> ***Student Note***: The geospatial objects are polygon features. There are a total of **88 features and 8 fields** in `hunan` simple feature data frame. `hunan` is in **wgs84 coordinate system**.
 
 ```{r}
 hunan = st_read(dsn = "data/geospatial", 
