@@ -486,9 +486,9 @@ map2 = tm_shape(lisa) +
 tmap_arrange(map1, map2, ncol = 2)
 ```
 
-### 7.4 Visualising LISA Map
+### 7.4 Visualising Local Indicators of Spatial Association (LISA) Map
 
-LISA map is a categorical map showing outliers and clusters. There are two types of outliers namely: High-Low and Low-High outliers. Likewise, there are two type of clusters namely: High-High and Low-Low clusters. **In fact, LISA map is an interpreted map by combining local Moran's I of geographical areas and their respective p-values.**
+The LISA map is a categorical map showing outliers and clusters. There are two types of outliers namely: High-Low and Low-High outliers. Likewise, there are two type of clusters namely: High-High and Low-Low clusters. **In fact, LISA map is an interpreted map by combining local Moran's I of geographical areas and their respective p-values.**
 
 In the `lisa` sf data frame, we can find three fields contain the LISA categories. They are *mean*, *median* and *pysal*. In general, classification in *mean* will be used.
 
