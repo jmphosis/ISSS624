@@ -195,7 +195,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#deriving-contiguity-spatial-weights" id="toc-deriving-contiguity-spatial-weights" class="nav-link" data-scroll-target="#deriving-contiguity-spatial-weights">4 Deriving Contiguity Spatial Weights</a>
   <ul class="collapse">
-  <li><a href="#identifying-contiguity-neighbours-using-queens-method" id="toc-identifying-contiguity-neighbours-using-queens-method" class="nav-link" data-scroll-target="#identifying-contiguity-neighbours-using-queens-method">4.1 <strong>Identifying Contiguity Neighbours Using Queen’s Method</strong></a></li>
+  <li><a href="#identifying-contiguity-neighbours-using-queens-method" id="toc-identifying-contiguity-neighbours-using-queens-method" class="nav-link" data-scroll-target="#identifying-contiguity-neighbours-using-queens-method">4.1 Identifying Contiguity Neighbours Using Queen’s Method</a></li>
   <li><a href="#identifying-contiguity-neighbours-using-rooks-method" id="toc-identifying-contiguity-neighbours-using-rooks-method" class="nav-link" data-scroll-target="#identifying-contiguity-neighbours-using-rooks-method">4.2 Identifying Contiguity Neighbours Using Rooks’ Method</a></li>
   <li><a href="#identifying-higher-order-neighbours" id="toc-identifying-higher-order-neighbours" class="nav-link" data-scroll-target="#identifying-higher-order-neighbours">4.3 Identifying Higher Order Neighbours</a></li>
   <li><a href="#deriving-contiguity-weights-using-queens-method" id="toc-deriving-contiguity-weights-using-queens-method" class="nav-link" data-scroll-target="#deriving-contiguity-weights-using-queens-method">4.4 Deriving Contiguity Weights Using Queen’s Method</a></li>
@@ -223,8 +223,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#computing-local-gi-statistics" id="toc-computing-local-gi-statistics" class="nav-link" data-scroll-target="#computing-local-gi-statistics">8.1 Computing Local Gi* Statistics</a></li>
   <li><a href="#visualising-gi" id="toc-visualising-gi" class="nav-link" data-scroll-target="#visualising-gi">8.2 Visualising Gi*</a></li>
-  <li><a href="#visualising-p-value-of-hcsa" id="toc-visualising-p-value-of-hcsa" class="nav-link" data-scroll-target="#visualising-p-value-of-hcsa">8.3 Visualising p-value of HCSA</a></li>
-  <li><a href="#visualising-local-hcsa" id="toc-visualising-local-hcsa" class="nav-link" data-scroll-target="#visualising-local-hcsa">8.4 Visualising Local HCSA</a></li>
+  <li><a href="#visualising-p-value-of-hot-spot-and-cold-spot-area-analysis" id="toc-visualising-p-value-of-hot-spot-and-cold-spot-area-analysis" class="nav-link" data-scroll-target="#visualising-p-value-of-hot-spot-and-cold-spot-area-analysis">8.3 Visualising p-value of Hot Spot and Cold Spot Area Analysis</a></li>
+  <li><a href="#visualising-local-hot-spot-and-cold-spot-area-analysis" id="toc-visualising-local-hot-spot-and-cold-spot-area-analysis" class="nav-link" data-scroll-target="#visualising-local-hot-spot-and-cold-spot-area-analysis">8.4 Visualising Local Hot Spot and Cold Spot Area Analysis</a></li>
   <li><a href="#visualising-hot-spot-and-cold-spot-areas" id="toc-visualising-hot-spot-and-cold-spot-areas" class="nav-link" data-scroll-target="#visualising-hot-spot-and-cold-spot-areas">8.5 Visualising Hot Spot and Cold Spot Areas</a></li>
   </ul></li>
   <li><a href="#emerging-hot-spot-analysis" id="toc-emerging-hot-spot-analysis" class="nav-link" data-scroll-target="#emerging-hot-spot-analysis">9 Emerging Hot Spot Analysis</a>
@@ -234,8 +234,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#computing-gi-statistics" id="toc-computing-gi-statistics" class="nav-link" data-scroll-target="#computing-gi-statistics">9.3 Computing Gi* Statistics</a></li>
   <li><a href="#mann-kendall-test" id="toc-mann-kendall-test" class="nav-link" data-scroll-target="#mann-kendall-test">9.4 Mann-Kendall Test</a></li>
   <li><a href="#performing-emerging-hot-spot-analysis" id="toc-performing-emerging-hot-spot-analysis" class="nav-link" data-scroll-target="#performing-emerging-hot-spot-analysis">9.5 Performing Emerging Hot Spot Analysis</a></li>
-  <li><a href="#visualising-distribution-of-ehsa-classes" id="toc-visualising-distribution-of-ehsa-classes" class="nav-link" data-scroll-target="#visualising-distribution-of-ehsa-classes">9.6 <strong>Visualising Distribution of EHSA Classes</strong></a></li>
-  <li><a href="#visualising-ehsa" id="toc-visualising-ehsa" class="nav-link" data-scroll-target="#visualising-ehsa">9.7 Visualising EHSA</a></li>
+  <li><a href="#visualising-distribution-of-emerging-hot-spot-analysis-classes" id="toc-visualising-distribution-of-emerging-hot-spot-analysis-classes" class="nav-link" data-scroll-target="#visualising-distribution-of-emerging-hot-spot-analysis-classes">9.6 Visualising Distribution of Emerging Hot Spot Analysis Classes</a></li>
+  <li><a href="#visualising-emerging-hot-spot-analysis" id="toc-visualising-emerging-hot-spot-analysis" class="nav-link" data-scroll-target="#visualising-emerging-hot-spot-analysis">9.7 Visualising Emerging Hot Spot Analysis</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -272,7 +272,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<p><strong><em>Note</em></strong>: This In-class Exercise 2 combines the following three in-class Exercises on isss624.netlify.app:</p>
+<p><strong><em>Note</em></strong>: This In-class Exercise 2 combines the following three in-class exercises on isss624.netlify.app:</p>
 <ol type="1">
 <li><p>In-class Exercise 2: Spatial Weights - sfdep methods</p></li>
 <li><p>In-class Exercise 2: Global and Local Measures of Spatial Association - sfdep methods</p></li>
@@ -421,7 +421,7 @@ First 10 features:
 <li><p>Derive contiguity spatial weights using <strong>st_weights()</strong> (under <strong>sfdep</strong> package).</p></li>
 </ol>
 <section id="identifying-contiguity-neighbours-using-queens-method" class="level3">
-<h3 class="anchored" data-anchor-id="identifying-contiguity-neighbours-using-queens-method">4.1 <strong>Identifying Contiguity Neighbours Using Queen’s Method</strong></h3>
+<h3 class="anchored" data-anchor-id="identifying-contiguity-neighbours-using-queens-method">4.1 Identifying Contiguity Neighbours Using Queen’s Method</h3>
 <p>The <strong>st_contiguity()</strong> (under sfdep package) is used to derive a contiguity neighbour list using Queen’s method.</p>
 <blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: The “queen” argument in the function is set to either TRUE (default) or FALSE. The TRUE option will return a list of first order neighbours using the Queen’s contiguity criteria; the FALSE option will return a list of first order neighbours using the Rook’s method. According to Queen’s criteria, two regions are considered neighbours if they share any part of their boundary (even if it is a single point). This results in a more inclusive definition of neighbour relationships.</p>
@@ -1218,11 +1218,11 @@ alternative hypothesis: two.sided</code></pre>
 <p><img src="In-class_Ex2_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>The choropleth shows evidence of both positive and negative Ii values. However, it is useful to consider the p-values for each of these values to see their statistical significance. A choropleth map of Moran’s I p-values using functions of <strong>tmap</strong> package is plotted below.</p>
+<p>The choropleth shows evidence of both positive and negative ii values. However, it is useful to consider the p-values for each of these values to see their statistical significance. A choropleth map of Moran’s I p-values (“p_ii_sim”) using functions of <strong>tmap</strong> package is plotted below.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(lisa) <span class="sc">+</span></span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="st">"p_ii"</span>,</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="st">"p_ii_sim"</span>,</span>
 <span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.001</span>, <span class="fl">0.01</span>, <span class="fl">0.05</span>, <span class="dv">1</span>),</span>
 <span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"0.001"</span>, <span class="st">"0.01"</span>, <span class="st">"0.05"</span>, <span class="st">"Not sig"</span>)) <span class="sc">+</span> </span>
 <span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
@@ -1268,7 +1268,7 @@ alternative hypothesis: two.sided</code></pre>
 </section>
 <section id="visualising-lisa-map" class="level3">
 <h3 class="anchored" data-anchor-id="visualising-lisa-map">7.4 Visualising LISA Map</h3>
-<p>LISA map is a categorical map showing outliers and clusters. There are two types of outliers namely: High-Low and Low-High outliers. Likewise, there are two type of clusters namely: High-High and Low-Low clusters. <strong>In fact, LISA map is an interpreted map by combining local Moran's I of geographical areas and their respective p-values.</strong></p>
+<p>LISA map is a categorical map showing outliers and clusters. There are two types of outliers namely: High-Low and Low-High outliers. Likewise, there are two type of clusters namely: High-High and Low-Low clusters. <strong>In fact, LISA map is an interpreted map by combining local Moran’s I of geographical areas and their respective p-values.</strong></p>
 <p>In the <code>lisa</code> sf data frame, we can find three fields contain the LISA categories. They are <em>mean</em>, <em>median</em> and <em>pysal</em>. In general, classification in <em>mean</em> will be used.</p>
 <blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>:</p>
@@ -1280,13 +1280,14 @@ alternative hypothesis: two.sided</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>lisa_sig <span class="ot">=</span> lisa  <span class="sc">%&gt;%</span></span>
 <span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(p_ii <span class="sc">&lt;</span> <span class="fl">0.05</span>)</span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span>
-<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(lisa) <span class="sc">+</span></span>
-<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>() <span class="sc">+</span></span>
-<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(lisa_sig) <span class="sc">+</span></span>
-<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="st">"mean"</span>) <span class="sc">+</span> </span>
-<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(lisa) <span class="sc">+</span></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>() <span class="sc">+</span></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(lisa_sig) <span class="sc">+</span></span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="st">"mean"</span>) <span class="sc">+</span> </span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="In-class_Ex2_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -1411,8 +1412,8 @@ Geodetic CRS:  WGS 84
 </div>
 </div>
 </section>
-<section id="visualising-p-value-of-hcsa" class="level3">
-<h3 class="anchored" data-anchor-id="visualising-p-value-of-hcsa">8.3 Visualising p-value of HCSA</h3>
+<section id="visualising-p-value-of-hot-spot-and-cold-spot-area-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="visualising-p-value-of-hot-spot-and-cold-spot-area-analysis">8.3 Visualising p-value of Hot Spot and Cold Spot Area Analysis</h3>
 <p>The p-values of the HCSA are plotted using functions in the <strong>tmap</strong> package.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span>
@@ -1426,8 +1427,8 @@ Geodetic CRS:  WGS 84
 </div>
 </div>
 </section>
-<section id="visualising-local-hcsa" class="level3">
-<h3 class="anchored" data-anchor-id="visualising-local-hcsa">8.4 Visualising Local HCSA</h3>
+<section id="visualising-local-hot-spot-and-cold-spot-area-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="visualising-local-hot-spot-and-cold-spot-area-analysis">8.4 Visualising Local Hot Spot and Cold Spot Area Analysis</h3>
 <p>The two maps are then plotted next to each other.</p>
 <blockquote class="blockquote">
 <p><strong><em>Student Note</em></strong>: <strong>Interpretation</strong></p>
@@ -1462,17 +1463,18 @@ Geodetic CRS:  WGS 84
 <section id="visualising-hot-spot-and-cold-spot-areas" class="level3">
 <h3 class="anchored" data-anchor-id="visualising-hot-spot-and-cold-spot-areas">8.5 Visualising Hot Spot and Cold Spot Areas</h3>
 <p>The significant (i.e., p-values less than 0.05) hot spot and cold spot areas are then plotted by using <strong>tmap</strong> functions.</p>
-<p>The plot below reveals one hot spot area and one cold spot area. The hot spot area coincides with the High-High cluster identified using local Moran's I method. Both local Moran’s I and Gi* values are derived from the spatially weighted values, and both are measures to assess spatial autocorrelation. LISA identifies local spatial patterns while Gi* is useful for identifying hot spots and cold spot areas.</p>
+<p>The plot below reveals one hot spot area and one cold spot area. The hot spot area coincides with the High-High cluster identified using local Moran’s I method. Both local Moran’s I and Gi* values are derived from the spatially weighted values, and both are measures to assess spatial autocorrelation. LISA identifies local spatial patterns while Gi* is useful for identifying hot spots and cold spot areas.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>HCSA_sig <span class="ot">=</span> HCSA  <span class="sc">%&gt;%</span></span>
 <span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(p_sim <span class="sc">&lt;</span> <span class="fl">0.05</span>)</span>
-<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span>
-<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(HCSA) <span class="sc">+</span></span>
-<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>() <span class="sc">+</span></span>
-<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(HCSA_sig) <span class="sc">+</span></span>
-<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="st">"gi_star"</span>) <span class="sc">+</span> </span>
-<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(HCSA) <span class="sc">+</span></span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>() <span class="sc">+</span></span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(HCSA_sig) <span class="sc">+</span></span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="st">"gi_star"</span>) <span class="sc">+</span> </span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="In-class_Ex2_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -1624,7 +1626,7 @@ Geodetic CRS:  WGS 84
 <span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplotly</span>(p)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="plotly html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-9ff13a907ae150a3bad3" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-9ff13a907ae150a3bad3">{"x":{"data":[{"x":[2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021],"y":[5.0282995066289047,5.1692011079782345,5.2958892892912894,5.6039537096873993,6.2788862246004742,5.9357455762937326,5.7508709054298892,5.6942475830114576,5.7085054237054784,5.7608121561733521,6.097127241257188,6.0036547779673146,6.2028053540357906,6.0371816202738318,6.579432171885526,5.7669155664195504,5.7486534794156494],"text":["Year: 2005<br />gi_star: 5.028300","Year: 2006<br />gi_star: 5.169201","Year: 2007<br />gi_star: 5.295889","Year: 2008<br />gi_star: 5.603954","Year: 2009<br />gi_star: 6.278886","Year: 2010<br />gi_star: 5.935746","Year: 2011<br />gi_star: 5.750871","Year: 2012<br />gi_star: 5.694248","Year: 2013<br />gi_star: 5.708505","Year: 2014<br />gi_star: 5.760812","Year: 2015<br />gi_star: 6.097127","Year: 2016<br />gi_star: 6.003655","Year: 2017<br />gi_star: 6.202805","Year: 2018<br />gi_star: 6.037182","Year: 2019<br />gi_star: 6.579432","Year: 2020<br />gi_star: 5.766916","Year: 2021<br />gi_star: 5.748653"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(0,0,0,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":26.228310502283104,"r":7.3059360730593621,"b":40.182648401826491,"l":43.105022831050235},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[2004.2,2021.8],"tickmode":"array","ticktext":["2005","2010","2015","2020"],"tickvals":[2005,2010,2015,2020],"categoryorder":"array","categoryarray":["2005","2010","2015","2020"],"nticks":null,"ticks":"outside","tickcolor":"rgba(179,179,179,1)","ticklen":3.6529680365296811,"tickwidth":0.33208800332088001,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(222,222,222,1)","gridwidth":0.33208800332088001,"zeroline":false,"anchor":"y","title":{"text":"Year","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[4.9507428733660737,6.656988805148357],"tickmode":"array","ticktext":["5.0","5.5","6.0","6.5"],"tickvals":[5,5.5,6,6.5],"categoryorder":"array","categoryarray":["5.0","5.5","6.0","6.5"],"nticks":null,"ticks":"outside","tickcolor":"rgba(179,179,179,1)","ticklen":3.6529680365296811,"tickwidth":0.33208800332088001,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(222,222,222,1)","gridwidth":0.33208800332088001,"zeroline":false,"anchor":"x","title":{"text":"gi_star","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":"transparent","line":{"color":"rgba(179,179,179,1)","width":0.66417600664176002,"linetype":"solid"},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"26c424493e34":{"x":{},"y":{},"type":"scatter"}},"cur_data":"26c424493e34","visdat":{"26c424493e34":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-9ff13a907ae150a3bad3">{"x":{"data":[{"x":[2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021],"y":[5.0282995066289047,5.1692011079782345,5.2958892892912894,5.6039537096873993,6.2788862246004742,5.9357455762937326,5.7508709054298892,5.6942475830114576,5.7085054237054784,5.7608121561733521,6.097127241257188,6.0036547779673146,6.2028053540357906,6.0371816202738318,6.579432171885526,5.7669155664195504,5.7486534794156494],"text":["Year: 2005<br />gi_star: 5.028300","Year: 2006<br />gi_star: 5.169201","Year: 2007<br />gi_star: 5.295889","Year: 2008<br />gi_star: 5.603954","Year: 2009<br />gi_star: 6.278886","Year: 2010<br />gi_star: 5.935746","Year: 2011<br />gi_star: 5.750871","Year: 2012<br />gi_star: 5.694248","Year: 2013<br />gi_star: 5.708505","Year: 2014<br />gi_star: 5.760812","Year: 2015<br />gi_star: 6.097127","Year: 2016<br />gi_star: 6.003655","Year: 2017<br />gi_star: 6.202805","Year: 2018<br />gi_star: 6.037182","Year: 2019<br />gi_star: 6.579432","Year: 2020<br />gi_star: 5.766916","Year: 2021<br />gi_star: 5.748653"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(0,0,0,1)","dash":"solid"},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":26.228310502283104,"r":7.3059360730593621,"b":40.182648401826491,"l":43.105022831050235},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[2004.2,2021.8],"tickmode":"array","ticktext":["2005","2010","2015","2020"],"tickvals":[2005,2010,2015,2020],"categoryorder":"array","categoryarray":["2005","2010","2015","2020"],"nticks":null,"ticks":"outside","tickcolor":"rgba(179,179,179,1)","ticklen":3.6529680365296811,"tickwidth":0.33208800332088001,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(222,222,222,1)","gridwidth":0.33208800332088001,"zeroline":false,"anchor":"y","title":{"text":"Year","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[4.9507428733660737,6.656988805148357],"tickmode":"array","ticktext":["5.0","5.5","6.0","6.5"],"tickvals":[5,5.5,6,6.5],"categoryorder":"array","categoryarray":["5.0","5.5","6.0","6.5"],"nticks":null,"ticks":"outside","tickcolor":"rgba(179,179,179,1)","ticklen":3.6529680365296811,"tickwidth":0.33208800332088001,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(222,222,222,1)","gridwidth":0.33208800332088001,"zeroline":false,"anchor":"x","title":{"text":"gi_star","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":"transparent","line":{"color":"rgba(179,179,179,1)","width":0.66417600664176002,"linetype":"solid"},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"61bce61abd":{"x":{},"y":{},"type":"scatter"}},"cur_data":"61bce61abd","visdat":{"61bce61abd":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>The p-value for the test is then calculated. In the result below, sl is the p-value. This result tells us that there is a slight upward but insignificant trend.</p>
@@ -1713,8 +1715,8 @@ Geodetic CRS:  WGS 84
 </div>
 </div>
 </section>
-<section id="visualising-distribution-of-ehsa-classes" class="level3">
-<h3 class="anchored" data-anchor-id="visualising-distribution-of-ehsa-classes">9.6 <strong>Visualising Distribution of EHSA Classes</strong></h3>
+<section id="visualising-distribution-of-emerging-hot-spot-analysis-classes" class="level3">
+<h3 class="anchored" data-anchor-id="visualising-distribution-of-emerging-hot-spot-analysis-classes">9.6 Visualising Distribution of Emerging Hot Spot Analysis Classes</h3>
 <p>The functions in ggplot2 package are used to reveal the distribution of EHSA classes using bar chart.</p>
 <p>The bar chat below shows that sporadic cold spots class has the high numbers of counties.</p>
 <div class="cell">
@@ -1726,8 +1728,8 @@ Geodetic CRS:  WGS 84
 </div>
 </div>
 </section>
-<section id="visualising-ehsa" class="level3">
-<h3 class="anchored" data-anchor-id="visualising-ehsa">9.7 Visualising EHSA</h3>
+<section id="visualising-emerging-hot-spot-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="visualising-emerging-hot-spot-analysis">9.7 Visualising Emerging Hot Spot Analysis</h3>
 <p>The <code>hunan</code> and <code>ehsa</code> data frames are joined.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>hunan_ehsa <span class="ot">=</span> hunan <span class="sc">%&gt;%</span></span>

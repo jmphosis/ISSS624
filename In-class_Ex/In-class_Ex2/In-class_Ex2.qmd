@@ -12,7 +12,7 @@ background-color: lightgrey;
 font-family:  Palatino Linotype;
 ---
 
-***Note***: This In-class Exercise 2 combines the following three in-class Exercises on isss624.netlify.app:
+***Note***: This In-class Exercise 2 combines the following three in-class exercises on isss624.netlify.app:
 
 1.  In-class Exercise 2: Spatial Weights - sfdep methods
 
@@ -128,7 +128,7 @@ The two steps for deriving contiguity spatial weights are:
 
 2.  Derive contiguity spatial weights using **st_weights()** (under **sfdep** package).
 
-### 4.1 **Identifying Contiguity Neighbours Using Queen's Method**
+### 4.1 Identifying Contiguity Neighbours Using Queen's Method
 
 The **st_contiguity()** (under sfdep package) is used to derive a contiguity neighbour list using Queen's method.
 
@@ -443,12 +443,12 @@ tm_shape(lisa) +
             main.title.size = 0.8)
 ```
 
-The choropleth shows evidence of both positive and negative Ii values. However, it is useful to consider the p-values for each of these values to see their statistical significance. A choropleth map of Moran's I p-values using functions of **tmap** package is plotted below.
+The choropleth shows evidence of both positive and negative ii values. However, it is useful to consider the p-values for each of these values to see their statistical significance. A choropleth map of Moran's I p-values ("p_ii_sim") using functions of **tmap** package is plotted below.
 
 ```{r}
 tmap_mode("plot")
 tm_shape(lisa) +
-  tm_fill("p_ii",
+  tm_fill("p_ii_sim",
           breaks = c(0, 0.001, 0.01, 0.05, 1),
               labels = c("0.001", "0.01", "0.05", "Not sig")) + 
   tm_borders(alpha = 0.5) +
@@ -488,7 +488,7 @@ tmap_arrange(map1, map2, ncol = 2)
 
 ### 7.4 Visualising LISA Map
 
-LISA map is a categorical map showing outliers and clusters. There are two types of outliers namely: High-Low and Low-High outliers. Likewise, there are two type of clusters namely: High-High and Low-Low clusters. **In fact, LISA map is an interpreted map by combining local Moran\'s I of geographical areas and their respective p-values.**
+LISA map is a categorical map showing outliers and clusters. There are two types of outliers namely: High-Low and Low-High outliers. Likewise, there are two type of clusters namely: High-High and Low-Low clusters. **In fact, LISA map is an interpreted map by combining local Moran's I of geographical areas and their respective p-values.**
 
 In the `lisa` sf data frame, we can find three fields contain the LISA categories. They are *mean*, *median* and *pysal*. In general, classification in *mean* will be used.
 
@@ -501,6 +501,7 @@ In the `lisa` sf data frame, we can find three fields contain the LISA categorie
 ```{r}
 lisa_sig = lisa  %>%
   filter(p_ii < 0.05)
+
 tmap_mode("plot")
 tm_shape(lisa) +
   tm_polygons() +
@@ -552,7 +553,7 @@ tm_shape(HCSA) +
   tm_view(set.zoom.limits = c(6,8))
 ```
 
-### 8.3 Visualising p-value of HCSA
+### 8.3 Visualising p-value of Hot Spot and Cold Spot Area Analysis
 
 The p-values of the HCSA are plotted using functions in the **tmap** package.
 
@@ -565,7 +566,7 @@ tm_shape(HCSA) +
   tm_borders(alpha = 0.5)
 ```
 
-### 8.4 Visualising Local HCSA
+### 8.4 Visualising Local Hot Spot and Cold Spot Area Analysis
 
 The two maps are then plotted next to each other.
 
@@ -599,11 +600,12 @@ tmap_arrange(map1, map2, ncol = 2)
 
 The significant (i.e., p-values less than 0.05) hot spot and cold spot areas are then plotted by using **tmap** functions.
 
-The plot below reveals one hot spot area and one cold spot area. The hot spot area coincides with the High-High cluster identified using local Moran\'s I method. Both local Moran's I and Gi\* values are derived from the spatially weighted values, and both are measures to assess spatial autocorrelation. LISA identifies local spatial patterns while Gi\* is useful for identifying hot spots and cold spot areas.
+The plot below reveals one hot spot area and one cold spot area. The hot spot area coincides with the High-High cluster identified using local Moran's I method. Both local Moran's I and Gi\* values are derived from the spatially weighted values, and both are measures to assess spatial autocorrelation. LISA identifies local spatial patterns while Gi\* is useful for identifying hot spots and cold spot areas.
 
 ```{r}
 HCSA_sig = HCSA  %>%
   filter(p_sim < 0.05)
+
 tmap_mode("plot")
 tm_shape(HCSA) +
   tm_polygons() +
@@ -786,7 +788,7 @@ ehsa = emerging_hotspot_analysis(
 head(ehsa)
 ```
 
-### 9.6 **Visualising Distribution of EHSA Classes**
+### 9.6 Visualising Distribution of Emerging Hot Spot Analysis Classes
 
 The functions in ggplot2 package are used to reveal the distribution of EHSA classes using bar chart.
 
@@ -798,7 +800,7 @@ ggplot(data = ehsa,
   geom_bar()
 ```
 
-### 9.7 Visualising EHSA
+### 9.7 Visualising Emerging Hot Spot Analysis
 
 The `hunan` and `ehsa` data frames are joined.
 
