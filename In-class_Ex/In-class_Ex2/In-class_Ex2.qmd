@@ -74,11 +74,9 @@ hunan2012 = read_csv("data/aspatial/Hunan_2012.csv")
 
 ### 3.3 Performing Relational Join
 
-The attribute table of the spatial polygons data frame, `hunan`, is updated using the attribute fields of the tibble data frame, `hunan2012` using **left_join()** (under dplyr package).
+The attribute table of the spatial polygons data frame, `hunan`, is updated using the attribute fields of the tibble data frame, `hunan2012` using **left_join()** (under dplyr package). In order to retain the geospatial properties, the left data frame must the sf data.frame (i.e. `hunan`)
 
 > ***Student Note***: Without explicitly stating the "by" argument for left_join(), the two tables are joined by the 'County' columns.
-
-> ***Student Note***: Spatial data stated first in left_join() so as to retain sf data frame format.
 
 > ***Student Note***: The geometry variable is automatically selected (when using dplyr package - part of tidyverse).
 
@@ -94,22 +92,100 @@ hunan_GDPPC
 A basemap and a choropleth map are prepared usign **qtm()** (under tmap package) to visualise the 2012 Gross Domestic Product Per Capita (GDPPC).
 
 ```{r}
-basemap = tm_shape(hunan_GDPPC) +
-  tm_polygons() +   
-  tm_text("NAME_3", size=0.5)  
-
-gdppc = qtm(hunan_GDPPC, "GDPPC")  
-
-tmap_arrange(basemap, gdppc, asp=1, ncol=2)
+tmap_mode("plot")
+tm_shape(hunan_GDPPC) +
+  tm_fill("GDPPC", 
+          style = "quantile", 
+          palette = "Blues",
+          title = "GDPPC") +
+  tm_borders(alpha = 0.5) +
+  tm_layout(main.title = "Distribution of GDP per capita by district, Hunan Province",
+            main.title.position = "center",
+            main.title.size = 1.2,
+            legend.height = 0.45, 
+            legend.width = 0.35,
+            frame = TRUE) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar() +
+  tm_grid(alpha =0.2)
 ```
-
-## 
 
 ## 4 Deriving Contiguity Spatial Weights
 
 By and large, there are two type of spatial weights, they are contiguity weights and distance-based weights. In this section, the contiguity spatial weights are derived by using **sfdep** package.
 
-### 4.1 Deriving Contiguity Weights: Queen's Method
+The two steps for deriving contiguity spatial weights are:
+
+1.  Identify contiguity neighbour list using **st_contiguity()** (under sfdep package); and
+
+2.  Derive contiguity spatial weights using **st_weights()** (under **sfdep** package).
+
+### 4.1 **Identifying Contiguity Neighbours Using Queen's Method**
+
+The **st_contiguity()** (under sfdep package) is used to derive a contiguity neighbour list using Queen's method.
+
+> ***Student Note***: The "queen" argument in the function is set to either TRUE (default) or FALSE. The TRUE option will return a list of first order neighbours using the Queen's contiguity criteria; the FALSE option will return a list of first order neighbours using the Rook's method. According to Queen's criteria, two regions are considered neighbours if they share any part of their boundary (even if it is a single point). This results in a more inclusive definition of neighbour relationships.
+
+> ***Student Note***: The summary report below shows that there are **88 area units** in `nb_queen`. The **most connected area unit (85) has 11 neighbours**. The **least connected area units (30 and 65) have only one neighbour each**.
+
+> **Student Note**: The .before = 1 argument indicates that the new column, "nb", should appear at the front.
+
+```{r}
+nb_queen = hunan_GDPPC %>% 
+  mutate(nb = st_contiguity(geometry),
+         .before = 1)
+
+summary(nb_queen$nb)
+
+nb_queen
+```
+
+One of the advantage of **sfdep** over **spdep** is that the former's output is an sf tibble data frame.
+
+```{r}
+kable(head(nb_queen,
+           n = 10))
+```
+
+### 4.2 Identifying Contiguity Neighbours Using Rooks' Method
+
+The **st_contiguity()** (under sfdep package) is used to derive a contiguity neighbour list using Rooks' method.
+
+> ***Student Note***: The "queen" argument in the function is set to either TRUE (default) or FALSE. The TRUE option will return a list of first order neighbours using the Queen's contiguity criteria; the FALSE option will return a list of first order neighbours using the Rook's method. According to Rook's criteria, two regions are considered neighbours if they share an entire edge (but not corners). This results in a stricter definition neighbour relationships.
+
+> ***Student Note***: The summary report below shows that there are **88 area units** in `nb_rook`. The **most connected area unit (85) has 10 (not 11) neighbours**. The **least connected area units (30 and 65) have only one neighbour each**.
+
+> **Student Note**: The .before = 1 argument indicates that the new column, "nb" should appear at the front.
+
+```{r}
+nb_rook = hunan_GDPPC %>% 
+  mutate(nb = st_contiguity(geometry,
+                            queen = FALSE),
+         .before = 1)
+
+summary(nb_rook$nb)
+
+nb_rook
+```
+
+### 4.3 Identifying Higher Order Neighbours
+
+The **st_nb_lag_cumul()** (under sfdep package) is used to identify higher order contiguity neighbours. The result contains both first and second order neighbors because the order is set to 2.
+
+> ***Student Note***: The summary report below shows that there are **88 area units** in `nb2_queen`. For order set at 2, the **most connected area unit (56) has 33 neighbours**. The **least connected area units (30 and 88) have five neighbours each**.
+
+```{r}
+nb2_queen =  hunan_GDPPC %>% 
+  mutate(nb = st_contiguity(geometry),
+         nb2 = st_nb_lag_cumul(nb, 2),
+         .before = 1)
+
+summary(nb2_queen$nb2)
+
+nb2_queen
+```
+
+We can examine the details of a specific polygon and its neigbhours in the following manner:
 
 ```{r}
 wm_q = hunan_GDPPC %>%
@@ -118,6 +194,8 @@ wm_q = hunan_GDPPC %>%
                          style = "W"),
          .before = 1)
 ```
+
+### 4.4 Deriving Contiguity Weights Using Queen's Method
 
 Notice that st_weights() provides three arguments:
 
@@ -137,7 +215,7 @@ Notice that st_weights() provides three arguments:
 
 ```
 
-wm_fd = 
+wm_fd =
 
 ## 5 Distance-based Weights
 

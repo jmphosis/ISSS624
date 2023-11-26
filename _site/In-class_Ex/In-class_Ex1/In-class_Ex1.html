@@ -212,7 +212,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">November 24, 2023</p>
+      <p class="date-modified">November 25, 2023</p>
     </div>
   </div>
     
@@ -439,7 +439,9 @@ $ geometry   &lt;MULTIPOLYGON [m]&gt; MULTIPOLYGON (((33222.98 29..., MULTIPOLYG
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>origin_data <span class="ot">=</span> <span class="fu">left_join</span>(origin7_9 , busstop_mpsz,</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"ORIGIN_PT_CODE"</span> <span class="ot">=</span> <span class="st">"BUS_STOP_N"</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">ORIGIN_BS =</span> ORIGIN_PT_CODE,</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">ORIGIN_SZ =</span> SUBZONE_C)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">ORIGIN_SZ =</span> SUBZONE_C) <span class="sc">%&gt;%</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(ORIGIN_SZ) <span class="sc">%&gt;%</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">TOT_TRIPS =</span> <span class="fu">sum</span>(TRIPS))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>A check for duplicate records is done, which found 26, and only unique records are retained.</p>
 <div class="cell">
@@ -450,20 +452,8 @@ $ geometry   &lt;MULTIPOLYGON [m]&gt; MULTIPOLYGON (((33222.98 29..., MULTIPOLYG
 <span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>duplicate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 26 × 3
-   ORIGIN_BS TRIPS ORIGIN_SZ
-   &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;    
- 1 11009     13826 QTSZ01   
- 2 11009     13826 QTSZ01   
- 3 22501      9743 JWSZ09   
- 4 22501      9743 JWSZ09   
- 5 43709      1118 BKSZ07   
- 6 43709      1118 BKSZ07   
- 7 47201     23998 WDSZ07   
- 8 47201     23998 WDSZ07   
- 9 51071      6218 CCSZ01   
-10 51071      6218 CCSZ01   
-# ℹ 16 more rows</code></pre>
+<pre><code># A tibble: 0 × 2
+# ℹ 2 variables: ORIGIN_SZ &lt;chr&gt;, TOT_TRIPS &lt;dbl&gt;</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -477,8 +467,8 @@ $ geometry   &lt;MULTIPOLYGON [m]&gt; MULTIPOLYGON (((33222.98 29..., MULTIPOLYG
 <span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>duplicate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 0 × 3
-# ℹ 3 variables: ORIGIN_BS &lt;chr&gt;, TRIPS &lt;dbl&gt;, ORIGIN_SZ &lt;chr&gt;</code></pre>
+<pre><code># A tibble: 0 × 2
+# ℹ 2 variables: ORIGIN_SZ &lt;chr&gt;, TOT_TRIPS &lt;dbl&gt;</code></pre>
 </div>
 </div>
 <p>The <code>origin_data</code> data frame is then updated with the planning subzone codes.</p>
@@ -493,7 +483,7 @@ $ geometry   &lt;MULTIPOLYGON [m]&gt; MULTIPOLYGON (((33222.98 29..., MULTIPOLYG
 <p>A choropleth map is then used to show the distribution of passenger trips at planning subzone level.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mpsz_origtrip)<span class="sc">+</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="st">"TRIPS"</span>, </span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="st">"TOT_TRIPS"</span>, </span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">style =</span> <span class="st">"quantile"</span>, </span>
 <span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette =</span> <span class="st">"Blues"</span>,</span>
 <span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"Passenger trips"</span>) <span class="sc">+</span></span>

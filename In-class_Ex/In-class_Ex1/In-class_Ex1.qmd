@@ -32,11 +32,11 @@ The specific tasks are:
 
 The code chunk below loads the following packages:
 
--   **tmap**: for thematic mapping;
+-   **tmap** for thematic mapping;
 
--   **sf**: for geospatial data handling;
+-   **sf** for geospatial data handling;
 
--   **tidyverse**: for non-spatial data handling; and
+-   **tidyverse** for non-spatial data handling; and
 
 -   **knitr** for creating html table.
 
@@ -166,7 +166,9 @@ Moving on, the planning subzone code from `busstop_mpsz` data frame is appended 
 origin_data = left_join(origin7_9 , busstop_mpsz,
             by = c("ORIGIN_PT_CODE" = "BUS_STOP_N")) %>%
   rename(ORIGIN_BS = ORIGIN_PT_CODE,
-         ORIGIN_SZ = SUBZONE_C)
+         ORIGIN_SZ = SUBZONE_C) %>%
+  group_by(ORIGIN_SZ) %>%
+  summarise(TOT_TRIPS = sum(TRIPS))
 ```
 
 A check for duplicate records is done, which found 26, and only unique records are retained.
@@ -207,7 +209,7 @@ A choropleth map is then used to show the distribution of passenger trips at pla
 
 ```{r}
 tm_shape(mpsz_origtrip)+
-  tm_fill("TRIPS", 
+  tm_fill("TOT_TRIPS", 
           style = "quantile", 
           palette = "Blues",
           title = "Passenger trips") +

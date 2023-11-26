@@ -121,7 +121,7 @@ The **poly2nb()** (under spdep package) is used to compute **contiguity weight m
 
 ### 8.5.1 Computing (QUEEN) Contiguity Based Neighbours
 
-The "queen" argument in the function is set to either TRUE (default) or FALSE. The TRUE option will return a list of first order neighbours using the Queen's continguity criteria.
+The "queen" argument in the function is set to either TRUE (default) or FALSE. The TRUE option will return a list of first order neighbours using the Queen's contiguity criteria.
 
 > ***Student Note***: According to Queen's criteria, two regions are considered neighbours if they share any part of their boundary (even if it is a single point). This results in a more inclusive definition of neighbour relationships.
 
