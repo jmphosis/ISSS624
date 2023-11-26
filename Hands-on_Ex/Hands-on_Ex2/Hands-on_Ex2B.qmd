@@ -796,7 +796,7 @@ The Gi values derived using fixed distance weight matrix are then plotted side b
 
 > **Question**: What statistical observation can be drawn from the Gi map below?
 >
-> ***Answer***: The positive Gi values for the northeast region indicates High-High clustering, while the negative Gi values for the northwest and central-west regions indicate Low-Low clustering.
+> ***Answer***: The positive Gi values for the northeast region indicate High-High clustering, while the negative Gi values for the northwest and central-west regions indicate Low-Low clustering.
 
 ```{r}
 gdppc = qtm(hunan, "GDPPC")
