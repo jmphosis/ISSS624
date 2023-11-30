@@ -1,0 +1,304 @@
+---
+title: "Hands-on Exercise 2B"
+date: "21 November 2023"
+format: html
+execute: 
+  echo: true #shows the code
+  eval: true #shows the outcomes of the code
+  warning: false #does not show the warnings
+editor: visual
+background-color: lightgrey;
+font-family:  Palatino Linotype;
+---
+
+# 15 Processing and Visualising Flow Data
+
+## 15.1 Overview
+
+**Spatial interaction represent the flow of people, material, or information between locations in geographical space.**
+
+Each spatial interaction, as an analogy for a set of movements, is composed of **a discrete origin-destination pair**. Each pair can be represented as a cell in a matrix where rows are related to the locations (centroids) of origin, while columns are related to locations (centroids) of destination. Such a matrix is commonly known as an origin-destination matrix, or a **spatial interaction matrix**.
+
+In this page, I show how I had completed the Hands-on Exercise 3 on building an Origin-Destination (OD) matrix by using the *Passenger Volume by Origin Destination Bus Stops* data set downloaded from LTA DataMall.
+
+The objectives are:
+
+-   Import and extract OD data for a selected time interval;
+
+-   Import and save geospatial data (i.e. Bus Stop Location and Master Plan Subzone Boundary) into sf tibble data frame objects;
+
+-   Populate planning subzone code into bus stops sf tibble data frame;
+
+-   Construct desire lines geospatial data from the OD data; and
+
+-   Visualise passenger volume by origin and destination bus stops by using the desire lines data.
+
+## 15.2 Getting Started
+
+The R packages used in this hands-on exercise are:
+
+-   **sf** for importing, managing, and processing geospatial data;
+
+-   **tidyverse** (i.e. readr, tidyr, dplyr) for performing data science tasks such as importing, tidying, and wrangling data;
+
+-   **tmap** for thematic mapping;
+
+-   **DT** a wrapper of the JavaScript Library 'DataTables' for creating interactive and dynamic data tables;
+
+-   **stplanr** for working with spatial data related to transportation and urban planning;
+
+-   **performance** for the assessment of regression models performance; and
+
+-   **ggpubr** for creating customised and annotated ggplot2 plots for better visualisation.
+
+```{r}
+pacman::p_load(tmap, sf, DT, stplanr,
+               performance,
+               ggpubr, tidyverse)
+```
+
+## 15.3 Preparing the Flow Data
+
+### 15.3.1 Importing the Aspatial Data
+
+Firstly, we will import the *Passenger Volume by Origin Destination Bus Stops* data set downloaded from LTA DataMall by using `read_csv()` of **readr** package.
+
+```{r}
+odbus = read_csv("data/aspatial/origin_destination_bus_202310.csv")
+
+glimpse(odbus)
+```
+
+The values in "ORIGIN_PT_CODE" and "DESTINATON_PT_CODE" are in character data type. Hence, they are converted into factor data type.
+
+```{r}
+odbus$ORIGIN_PT_CODE = as.factor(odbus$ORIGIN_PT_CODE)
+
+odbus$DESTINATION_PT_CODE = as.factor(odbus$DESTINATION_PT_CODE) 
+```
+
+### 15.3.2 Extracting the Study Data
+
+The commuting flows on weekdays between 6am and 9am are extracted.
+
+```{r}
+odbus6_9 = odbus %>%
+  filter(DAY_TYPE == "WEEKDAY") %>%
+  filter(TIME_PER_HOUR >= 6 &
+           TIME_PER_HOUR <= 9) %>%
+  group_by(ORIGIN_PT_CODE,
+           DESTINATION_PT_CODE) %>%
+  summarise(TRIPS = sum(TOTAL_TRIPS))
+
+datatable(odbus6_9)
+```
+
+The output is saved in rds format. The rds file is then imported into the R environment.
+
+```{r}
+write_rds(odbus6_9, "data/rds/odbus6_9.rds")
+
+odbus6_9 = read_rds("data/rds/odbus6_9.rds")
+```
+
+## 15.4 Importing the Geospatial Data
+
+The two geospatial data sets used in this hands-on exercise are:
+
+-   *BusStop*: This data provides the locations of bus stops as at July 2023.
+
+-   *MPSZ-2019*: This data provides the sub-zone boundary of URA Master Plan 2019.
+
+Both data sets are in the ESRI shapefile format.
+
+They are imported and transformed using the `st_read()` and `st_transform()` functions in the **sf** package. The outputs are the `busstop` and `mpsz` sf data frames.
+
+```{r}
+busstop = st_read(dsn = "data/geospatial",
+                   layer = "BusStop") %>%
+  st_transform(crs = 3414)
+```
+
+```{r}
+mpsz = st_read(dsn = "data/geospatial",
+                   layer = "MPSZ-2019") %>%
+  st_transform(crs = 3414)
+
+mpsz
+```
+
+## 15.5 Data Wrangling - Combining Aspatial and Geospatial Data
+
+The planning subzone codes (i.e., "SUBZONE_C") of the `mpsz` sf data frame are populated into the `busstop` sf data frame using `st_intersection()` function in the **sf** package (for point and polygon overlay, with point sf object as output). The select() function in the dplyr package is then used to retain only the "BUS_STOP_N" and "SUBZON_C" columns in the combined sf data frame. Five bus stops are excluded in the combined sf data frame because they are outside the Singapore boundary.
+
+> ***Student Note***:
+>
+> -   The output of the `st_intersection()` function contains the geometry spatial objects that intersect between `busstop` and `mpsz`. Since one contains points, and the other contains polygons, the output will contain points (as the points are the common overlapping spatial objects).
+>
+> -   The `st_drop_geometry()` function is used to remove the geometry column from the combined sf data frame. The output is a regular data frame with only information of attributes.
+
+```{r}
+busstop_mpsz = st_intersection(busstop, mpsz) %>%
+  select(BUS_STOP_N, SUBZONE_C) %>%
+  st_drop_geometry()
+
+datatable(busstop_mpsz)
+```
+
+Again, the output is saved in rds format.
+
+```{r}
+write_rds(busstop_mpsz, "data/rds/busstop_mpsz.rds")
+```
+
+Next, the planning subzone codes from the `busstop_mpsz` are appended to the `odbus6_9` data frame's origin bus stops.
+
+```{r}
+od_data = left_join(odbus6_9 , busstop_mpsz,
+            by = c("ORIGIN_PT_CODE" = "BUS_STOP_N")) %>%
+  rename(ORIGIN_BS = ORIGIN_PT_CODE,
+         ORIGIN_SZ = SUBZONE_C,
+         DESTIN_BS = DESTINATION_PT_CODE)
+```
+
+A check for duplicates is then conducted. Since 1,186 records are found to be duplicates, they are removed and a confirmatory check is conducted.
+
+```{r}
+duplicate1 = od_data %>%
+  group_by_all() %>%
+  filter(n()>1) %>%
+  ungroup()
+
+duplicate1
+```
+
+```{r}
+od_data = unique(od_data)
+
+duplicate2 = od_data %>%
+  group_by_all() %>%
+  filter(n()>1) %>%
+  ungroup()
+
+duplicate2
+```
+
+Finally, the planning subzone codes from the `busstop_mpsz` are appended to the `odbus6_9` data frame's destination bus stops.
+
+```{r}
+od_data = left_join(od_data , busstop_mpsz,
+            by = c("DESTIN_BS" = "BUS_STOP_N")) 
+```
+
+Another check for duplicates is then conducted. Since 1,350 records are found to be duplicates, they are removed and a confirmatory check is conducted.
+
+```{r}
+duplicate3 = od_data %>%
+  group_by_all() %>%
+  filter(n()>1) %>%
+  ungroup()
+
+duplicate3
+```
+
+```{r}
+od_data = unique(od_data)
+
+duplicate4 = od_data %>%
+  group_by_all() %>%
+  filter(n()>1) %>%
+  ungroup()
+
+duplicate4
+```
+
+The data frame is then tidied up, saved in rds file format, and imported into the R environment.
+
+```{r}
+od_data = od_data %>%
+  rename(DESTIN_SZ = SUBZONE_C) %>%
+  drop_na() %>%
+  group_by(ORIGIN_SZ, DESTIN_SZ) %>%
+  summarise(MORNING_PEAK = sum(TRIPS))
+```
+
+```{r}
+write_rds(od_data, "data/rds/od_data.rds")
+
+od_data = read_rds("data/rds/od_data.rds")
+```
+
+## 15.6 Visualising Spatial Interaction
+
+### 15.6.1 Removing Intra-zonal Flows
+
+The intra-zonal flows are removed since they will not be plotted.
+
+```{r}
+od_data1 = od_data[od_data$ORIGIN_SZ!=od_data$DESTIN_SZ,]
+```
+
+### 15.6.2 Creating Desire Lines
+
+The `od2line()` function in the stplanr package is used to create the desire lines.
+
+> ***Student Note***:
+>
+> -   The `od2line()` function is specifically used to convert OD flow data into lines, typically referred to as desire lines. Desire lines represent the flow of movement between different zones or locations.
+>
+> -   The "flow" argument represents the OD flow data. It could be a data frame or a matrix containing information about the number of trips (flow) between pairs of zones or locations.
+>
+> -   The "zone" argument represents the spatial information of the zones. It is usually a spatial dataset (e.g., points, polygons) that defines the zones involved in the OD flow.
+>
+> -   The "zone_code" argument specifies the column in the zone data set that contains the zone or location codes.
+>
+> -   The output is a sf data frames, representing the desire lines - stored as linestrings under geometry.
+
+```{r}
+flowLine = od2line(flow = od_data1, 
+                    zones = mpsz,
+                    zone_code = "SUBZONE_C")
+```
+
+### 15.6.3 Visualising Desire Lines
+
+The desire lines are visualised using functions in the **tmap** package.
+
+-   The "lwd" argument means that the values in the "MORNING_PEAK" column are used to determine the line width.
+
+-   The "scale" argument serve as thresholds that define the ranges of quantiles (six in total, corresponding to "n" argument). The first and last values mean:
+
+    -   **0.1:** Lines with values up to 0.1 (10% quantile).
+
+    -   **10:** Lines with values between 7 and 10 (90-100% quantile).
+
+```{r}
+tm_shape(mpsz) +
+  tm_polygons() +
+flowLine %>%  
+tm_shape() +
+  tm_lines(lwd = "MORNING_PEAK",
+           style = "quantile",
+           scale = c(0.1, 1, 3, 5, 7, 10),
+           n = 6,
+           alpha = 0.3)
+```
+
+When the flow data are very messy and highly skewed like the one shown above, it is wiser to focus on selected flows, for example flow greater than or equal to 5,000 as shown below.
+
+```{r}
+tm_shape(mpsz) +
+  tm_polygons() +
+flowLine %>%  
+  filter(MORNING_PEAK >= 5000) %>%
+tm_shape() +
+  tm_lines(lwd = "MORNING_PEAK",
+           style = "quantile",
+           scale = c(0.1, 1, 3, 5, 7, 10),
+           n = 6,
+           alpha = 0.3)
+```
+
+> ***Student Note***: The desire lines above show a rather unexpected observation for the morning peak period for weekdays - the most movement happens between the east (Changi Airport) and the north (Woodlands Checkpoint) rather than heartlands to central Singapore (CBD). This indicates that there are commuters who enter Singapore through the Woodlands Checkpoint and head to Changi Airport for a flight out, or the reverse, commuters land in Changi Airport and head to the Woodlands Checkpoint to enter Malaysia.
+
+[**\~\~\~ End of Hands-on Exercise 3 \~\~\~**]{.smallcaps}

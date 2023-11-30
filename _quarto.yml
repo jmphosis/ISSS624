@@ -15,12 +15,21 @@ website:
             href: Hands-on_Ex/Hands-on_Ex2/Hands-on_Ex2A.html
           - text: Hands-on_Exercise 2B
             href: Hands-on_Ex/Hands-on_Ex2/Hands-on_Ex2B.html
+          - text: Hands-on_Exercise 3
+            href: Hands-on_Ex/Hands-on_Ex2/Hands-on_Ex3.html
       - text: In-class Exercise
         menu: 
           - text: In-class Exercise 1
             href: In-class_Ex/In-class_Ex1/In-class_Ex1.html
           - text: In-class Exercise 2
             href: In-class_Ex/In-class_Ex2/In-class_Ex2.html
+          - text: In-class Exercise 3
+            href: In-class_Ex/In-class_Ex2/In-class_Ex3.html
+      - text: Take-home Exercise
+        menu: 
+          - text: Take-home Exercise 1
+            href: Take-home_Ex/Take-home_Ex1/Take-home_Ex1.html
+          - text: Take-home Exercise 2
     right:
       - href: index.qmd
         text: Home
