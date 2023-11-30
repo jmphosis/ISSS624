@@ -24,11 +24,10 @@ website:
           - text: In-class Exercise 2
             href: In-class_Ex/In-class_Ex2/In-class_Ex2.html
           - text: In-class Exercise 3
-            href: In-class_Ex/In-class_Ex2/In-class_Ex3.html
+            href: In-class_Ex/In-class_Ex3/In-class_Ex3.html
       - text: Take-home Exercise
         menu: 
           - text: Take-home Exercise 1
-            href: Take-home_Ex/Take-home_Ex1/Take-home_Ex1.html
           - text: Take-home Exercise 2
     right:
       - href: index.qmd
