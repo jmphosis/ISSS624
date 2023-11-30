@@ -1,6 +1,6 @@
 ---
-title: "Hands-on Exercise 2B"
-date: "21 November 2023"
+title: "Hands-on Exercise 3"
+date: "30 November 2023"
 format: html
 execute: 
   echo: true #shows the code
