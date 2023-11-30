@@ -477,7 +477,19 @@ map_wdAMOct
 
 #### 4.1.3 Deriving Insights on Weekday Morning Peak
 
-xxx
+The passenger trips by origin bus stops for the weekday morning peak period shows that the largest numbers of passenger trips originate from bus interchanges in the heartland areas, namely:
+
+-   West: Boon Lay Bus Interchange (409,412 passenger trips in Aug 2023; Grid ID: 1251) and Clementi Bus Interchange (202,467 passenger trips in Aug 2023; Grid ID: 2054).
+
+-   North: Woodlands Bus Interchange (313,192 passenger trips in Aug 2023; Grid ID: 2411).
+
+-   Central: Ang Mo Kio Bus Interchange (212,340 passenger trips in Aug 2023; Grid ID: 3239).
+
+-   East: Tampines Bus Interchange (202,366 passenger trips in Aug 2023; Grid ID: 4539).
+
+The only non-bus interchange bus stop is the one in the north-east region at "After Punggol Road" (Grid ID: 4018) leading to Tampines Expressway (TPE), with 207,583 passenger trips in Aug 2023. This is possibly due to the large number of commuters heading to work at Changi Airport in the east.
+
+The above observation underscores the importance of bus interchanges in the weekday morning peak period as major transportation hubs for commuters to get to work. This is given that they are the first bus stop for a large number of bus routes. This provides useful information for urban planners and transport authorities in that they could examine whether the existing bus interchanges need to be expanded or improved to accommodate such high demands.
 
 ### 4.2 Weekday Afternoon Peak (5pm to 8.59pm)
 
@@ -571,10 +583,11 @@ map_wdPMOct = tm_shape(wdPMOct_ct) +
   tm_layout(title = "Weekday Afternoon Peak in Oct 2023")
 ```
 
-#### 4.2.2 Visualising Passenger Trips by Origin {.tabset}
+#### 4.2.2 Visualising Passenger Trips by Origin
 
 The plots from the three months are then visualised in the interactive **tmap** mode below.
 
+::: panel-tabset
 ##### Aug 2023
 
 ```{r}
@@ -592,12 +605,21 @@ map_wdPMSep
 ```{r}
 map_wdPMOct
 ```
-
-####  {.unnumbered}
+:::
 
 #### 4.2.3 Deriving Insights on Weekday Afternoon Peak
 
-xxx
+The passenger trips by origin bus stops for the weekday afternoon peak period also shows that the largest numbers of passenger trips originate from bus interchanges in the heartland areas, namely:
+
+-   West: Boon Lay Bus Interchange (554,436 passenger trips in Aug 2023; Grid ID: 1251).
+
+-   North: Woodlands Bus Interchange (474,311 passenger trips in Aug 2023; Grid ID: 2411).
+
+-   Central: Ang Mo Kio Bus Interchange (325,858 passenger trips in Aug 2023; Grid ID: 3239).
+
+-   East: Tampines Bus Interchange (446,207 passenger trips in Aug 2023; Grid ID: 4539).
+
+Again, the above observation underscores the importance of bus interchanges in the weekday afternoon peak period as major transportation hubs for commuters to get home from work. This is given that they are the first bus stop for a large number of bus routes. This provides useful information for urban planners and transport authorities in that they could examine whether the existing bus interchanges need to be expanded or improved to accommodate such high demands.
 
 ### 4.3 Weekend/Holiday Morning Peak (11am to 2.59pm)
 
@@ -690,10 +712,11 @@ map_weAMOct = tm_shape(weAMOct_ct) +
   tm_layout(title = "Weekend/Holiday Morning Peak in Oct 2023")
 ```
 
-#### 4.3.2 Visualising Passenger Trips by Origin {.tabset}
+#### 4.3.2 Visualising Passenger Trips by Origin
 
 The plots from the three months are then visualised in the interactive **tmap** mode below.
 
+::: panel-tabset
 ##### Aug 2023
 
 ```{r}
@@ -711,8 +734,7 @@ map_weAMSep
 ```{r}
 map_weAMOct
 ```
-
-####  {.unnumbered}
+:::
 
 #### 4.3.3 Deriving Insights on Weekend/Holiday Morning Peak
 
@@ -810,10 +832,11 @@ map_wePMOct = tm_shape(wePMOct_ct) +
   tm_layout(title = "Weekend/Holiday Evening Peak in Oct 2023")
 ```
 
-#### 4.4.2 Visualising Passenger Trips by Origin {.tabset}
+#### 4.4.2 Visualising Passenger Trips by Origin
 
 The plots from the three months are then visualised in the interactive **tmap** mode below.
 
+::: panel-tabset
 ##### Aug 2023
 
 ```{r}
@@ -831,8 +854,7 @@ map_wePMSep
 ```{r}
 map_wePMOct
 ```
-
-####  {.unnumbered}
+:::
 
 #### 4.4.3 Deriving Insights on Weekend/Holiday Evening Peak
 
@@ -840,10 +862,11 @@ xxx
 
 ### 4.5 Comparing Between Different Peak Periods
 
-#### 4.5.1 Weekday Morning versus Afternoon {.tabset}
+#### 4.5.1 Weekday Morning versus Afternoon
 
 The plots from the three months are visualised in the interactive **tmap** mode below.
 
+::: panel-tabset
 ##### Aug 2023
 
 ```{r}
@@ -861,13 +884,13 @@ tmap_arrange(map_wdAMSep, map_wdPMSep, ncol = 2)
 ```{r}
 tmap_arrange(map_wdAMOct, map_wdPMOct, ncol = 2)
 ```
+:::
 
-####  {.unnumbered}
-
-#### 4.5.2 Weekend/Holiday Morning versus Evening {.tabset}
+#### 4.5.2 Weekend/Holiday Morning versus Evening
 
 The plots from the three months are visualised in the interactive **tmap** mode below.
 
+::: panel-tabset
 ##### Aug 2023
 
 ```{r}
@@ -885,13 +908,13 @@ tmap_arrange(map_weAMSep, map_wePMSep, ncol = 2)
 ```{r}
 tmap_arrange(map_weAMOct, map_wePMOct, ncol = 2)
 ```
+:::
 
-####  {.unnumbered}
-
-#### 4.5.3 Weekday versus Weekend/Holiday Morning {.tabset}
+#### 4.5.3 Weekday versus Weekend/Holiday Morning
 
 The plots from the three months are visualised in the interactive **tmap** mode below.
 
+::: panel-tabset
 ##### Aug 2023
 
 ```{r}
@@ -909,13 +932,13 @@ tmap_arrange(map_wdAMSep, map_weAMSep, ncol = 2)
 ```{r}
 tmap_arrange(map_wdAMOct, map_weAMOct, ncol = 2)
 ```
+:::
 
-####  {.unnumbered}
-
-#### 4.5.4 Weekday Afternoon versus Weekend/Holiday Evening {.tabset}
+#### 4.5.4 Weekday Afternoon versus Weekend/Holiday Evening
 
 The plots from the three months are visualised in the interactive **tmap** mode below.
 
+::: panel-tabset
 ##### Aug 2023
 
 ```{r}
@@ -934,8 +957,7 @@ tmap_arrange(map_wdPMSep, map_wePMSep, ncol = 2)
 ```{r}
 tmap_arrange(map_weAMOct, map_wePMOct, ncol = 2)
 ```
-
-####  {.unnumbered}
+:::
 
 #### 4.5.4 Insights from Comparing Different Peak Periods
 
@@ -1403,10 +1425,11 @@ wePMOct_lisamap = tm_shape(wePMOct_lisasig) +
 
 ### 5.4 Comparing Between Different Peak Periods
 
-#### 5.4.1 Weekday Morning versus Afternoon {.tabset}
+#### 5.4.1 Weekday Morning versus Afternoon
 
 The plots from the three months are visualised in the interactive **tmap** mode below.
 
+::: panel-tabset
 ##### Aug 2023
 
 ```{r}
@@ -1424,13 +1447,13 @@ tmap_arrange(wdAMSep_lisamap, wdPMSep_lisamap, ncol = 2)
 ```{r}
 tmap_arrange(wdAMOct_lisamap, wdPMOct_lisamap, ncol = 2)
 ```
+:::
 
-####  {.unnumbered}
-
-#### 5.4.2 Weekend/Holiday Morning versus Evening {.tabset}
+#### 5.4.2 Weekend/Holiday Morning versus Evening
 
 The plots from the three months are visualised in the interactive **tmap** mode below.
 
+::: panel-tabset
 ##### Aug 2023
 
 ```{r}
@@ -1448,13 +1471,13 @@ tmap_arrange(weAMSep_lisamap, wePMSep_lisamap, ncol = 2)
 ```{r}
 tmap_arrange(weAMOct_lisamap, wePMOct_lisamap, ncol = 2)
 ```
+:::
 
-####  {.unnumbered}
-
-#### 5.4.3 Weekday versus Weekend/Holiday Morning {.tabset}
+#### 5.4.3 Weekday versus Weekend/Holiday Morning
 
 The plots from the three months are visualised in the interactive **tmap** mode below.
 
+::: panel-tabset
 ##### Aug 2023
 
 ```{r}
@@ -1472,13 +1495,13 @@ tmap_arrange(wdAMSep_lisamap, weAMSep_lisamap, ncol = 2)
 ```{r}
 tmap_arrange(wdAMOct_lisamap, weAMOct_lisamap, ncol = 2)
 ```
+:::
 
-####  {.unnumbered}
-
-#### 5.4.4 Weekday Afternoon versus Weekend/Holiday Evening {.tabset}
+#### 5.4.4 Weekday Afternoon versus Weekend/Holiday Evening
 
 The plots from the three months are visualised in the interactive **tmap** mode below.
 
+::: panel-tabset
 ##### Aug 2023
 
 ```{r}
@@ -1496,8 +1519,7 @@ tmap_arrange(wdPMSep_lisamap, wePMSep_lisamap, ncol = 2)
 ```{r}
 tmap_arrange(wdPMOct_lisamap, wePMOct_lisamap, ncol = 2)
 ```
-
-####  {.unnumbered}
+:::
 
 #### 5.4.5 Insights from Comparing Different Peak Periods
 
