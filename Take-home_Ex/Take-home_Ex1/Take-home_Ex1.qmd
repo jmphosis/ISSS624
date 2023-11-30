@@ -137,6 +137,8 @@ The three csv files are imported and combined into a tibble data frame, `odbus`,
 1.  Generate list of file names of csv files using the `list.files()` function in the **base** package.
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
 filenames = list.files(path="data/aspatial/", pattern="*.csv")
 
 filenames
@@ -145,6 +147,8 @@ filenames
 2.  Generate path to csv files using the `file.path()` function in the **base** package.
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
 path = file.path("data/aspatial", filenames)
 
 path
@@ -153,12 +157,16 @@ path
 3.  Merge the three csv files using the `do.call()` and `lapply()` functions in the **base** package and the `read.csv()` function from the **readr** package.
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
 odbus = do.call("rbind", lapply(path, FUN=function(files){ read.csv(files)}))
 ```
 
 4.  Check using the `unique()` function in the **base** package to confirm that the data sets for each of the three months have been incorporated. \[[*Note*]{.underline}: Although the three data sets have been merged into a single data frame, the observations would be analysed month by month, instead of aggregating all observations.\]
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
 unique(odbus$YEAR_MONTH)
 ```
 
@@ -179,13 +187,26 @@ Once the combined data set has been obtained, the `n_distinct()` function in the
 -   The "TOTAL_TRIPS" column contains values that reflect the number of passengers for each unique month, type of day, origin bus stop, destination bus stop. The minimum value is 1, i.e., there are no rows with zero values.
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
 sapply(odbus, function(x) n_distinct(x))
 ```
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
 sum(odbus$YEAR_MONTH == "2023-08")
 sum(odbus$YEAR_MONTH == "2023-09")
 sum(odbus$YEAR_MONTH == "2023-10")
+```
+
+The output is saved in rds format. The rds file is then imported into the R environment.
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+write_rds(odbus, "data/rds/odbus.rds")  
+odbus = read_rds("data/rds/odbus.rds")
 ```
 
 ### 3.2 Importing and Transforming the Geospatial Data - Bus Stop Location
@@ -193,6 +214,8 @@ sum(odbus$YEAR_MONTH == "2023-10")
 The Bus Stop Location shapefile is imported using `st_read()` in the **sf** package. The output is a simple feature data frame, `busstop`, which is in the SVY21 projected coordinates systems. It has 5,161 features and 3 fields, which include the geometry points indicating the bus stop locations.
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
 busstop = st_read(dsn = "data/geospatial",
                   layer = "BusStop")
 
@@ -202,12 +225,16 @@ glimpse(busstop)
 The `st_crs()` function in the **sf** package is then used to check the coordinate system of the `busstop` simple feature data frame. The output shows that although it is projected in SVY21, the EPSG is indicated as 9001, which is incorrect given that it should be 3414 instead.
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
 st_crs(busstop)
 ```
 
 To correct the EPSG, the `st_set_crs()` function in the **sf** package is applied. A check to confirm that the projection transformation has been applied is then made using the `st_crs()` function again.
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
 busstop = st_set_crs(busstop, 3414)
 st_crs(busstop)
 ```
@@ -219,16 +246,22 @@ The data sets from the LTA DataMall are expected to be relatively clean. Neverth
 -   The `duplicated()` function in the **base** package is used to check for duplicates in `odbus`. There are no duplicates in the tibble data frame.
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
 odbus[duplicated(odbus), ]
 ```
 
 -   The `duplicated()` function in the **base** package and `st_geometry()` function in the **sf** package are used to check for duplicates in `busstop`. The output returned Bus Stop No. 96319 at row 3265. On closer inspection of the simple feature data frame, rows 3264 and 3265 are found to be duplicates. Hence, the row 3264 is removed using the `row_number()` function in the **dplyr** package. The same check is conducted again to confirm that there are no more duplicates.
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
 busstop[duplicated(st_geometry(busstop)), ]
 ```
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
 busstop = busstop %>%
   filter(row_number() != 3264)
 
@@ -238,6 +271,8 @@ busstop[duplicated(st_geometry(busstop)), ]
 -   The `is.na()` and `sum()` functions in the **base** package and the `summarise_all()` function in the **dplyr** package are used to check for missing values in `odbus`. There are no missing values in the tibble data frame.
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
 odbus %>% 
   summarise_all(~ sum(is.na(.)))
 ```
@@ -245,6 +280,8 @@ odbus %>%
 -   The `is.na()` and `sum()` functions in the **base** package are used to check for missing values in `busstop`. There are no missing values in the simple feature data frame.
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
 sum(is.na(st_geometry(busstop)))
 ```
 
@@ -253,6 +290,8 @@ sum(is.na(st_geometry(busstop)))
 Given that the analysis focuses on passenger volume by origin bus stop, the `group_by()` and `summarise()` functions in the **dplyr** package are used to sum the "TOTAL_TRIPS" values (i.e., total passengers) by "ORIGIN_PT_CODE", "YEAR_MONTH", "DAY_TYPE", and "TIME_PER_HOUR" in `odbus`. At the same time, the columns "DESTINATION_PT_CODE" and "PT_TYPE" are dropped as they are not required. The number of rows (observations) are condensed from 17,118,005 into 571,696.
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
 odbus = odbus %>%
   group_by(ORIGIN_PT_CODE, YEAR_MONTH, DAY_TYPE, TIME_PER_HOUR) %>%
   summarise(TOTAL_TRIPS = sum(TOTAL_TRIPS))
@@ -261,6 +300,8 @@ odbus = odbus %>%
 The `select()` function in **dplyr** package is used to drop the "BUS_ROOF_N" column in `busstop` since it is not required.
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
 busstop = busstop %>%
   select(-BUS_ROOF_N)
 ```
@@ -269,7 +310,7 @@ busstop = busstop %>%
 
 The simple feature data frame, `busstop`, and the tibble data frame, `odbus`, are combined using the `inner_join()` function in the **dplyr** package, by matching the "BUS_STOP_N" column in `busstop` with the "ORIGIN_PT_CODE" in `odbus`. However, as the "BUS_STOP_N" values are character values, they would need to be converted to integer values first before the join, so that values such as "01012" in `busstop` can be matched to values such as "1012" in `odbus`.
 
-Upon joining the two data frames, the output is the simple feature data frame (since `busstop` was placed as the first argument in the `inner_join()` function), `bus`. The number of rows (observations) was reduced from 571,696 to 567,725, i.e., 3,841 rows are dropped. This is likely because some new bus stops such as Bus Stop No. 3549 (Shenton Way Stn Exit 3) and Bus Stop No. 96461 (Bef Aviation Pk Rd) were not included in the Bus Stop Location shapefile that was last updated in July 2023. This means that the analysis in this take-home exercise is limited in this aspect.
+Upon joining the two data frames, the output is the simple feature data frame (since `busstop` was placed as the first argument in the `inner_join()` function), `bus`. The number of rows (observations) was reduced from 571,696 to 567,725, i.e., 3,841 rows are dropped. This is likely because some newer bus stops such as Bus Stop No. 3549 (Shenton Way Stn Exit 3) and Bus Stop No. 96461 (Bef Aviation Pk Rd) were not included in the Bus Stop Location shapefile that was last updated in July 2023. This means that the analysis in this take-home exercise is limited in this aspect.
 
 ```{r}
 busstop = busstop %>%
@@ -277,6 +318,15 @@ busstop = busstop %>%
 
 bus = inner_join(busstop, odbus, 
                 by = c("BUS_STOP_N" = "ORIGIN_PT_CODE"))
+```
+
+The output is saved in rds format. The rds file is then imported into the R environment.
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+write_rds(bus, "data/rds/bus.rds")
+bus = read_rds("data/rds/bus.rds")
 ```
 
 ### 3.6 Creating Spatial Hexagon Grid
@@ -296,19 +346,31 @@ hgrid = st_sf(area_hexagon_grid) %>%
 
 ## 4 Exploratory Data Analysis - Computing, Visualising, and Deriving Insights on Passenger Trips by Origin
 
-The same steps for 4.1 are repeated for the three other time periods studied in 4.2, 4.3, and 4.4.
+The steps in 4.1 are repeated for the other three peak periods studied in this take-home exercise.
 
 ### 4.1 Weekday Morning Peak (6am to 9.59am)
 
-The same steps for 4.1.1 are repeated for the two other months studied in 4.1.2, and 4.1.3.
+#### 4.1.1 Computing Passenger Trips by Origin
 
-#### 4.1.1 August 2023
-
-The `filter()` function in the **dplyr** package is used to obtain a subset of the simple feature data frame, `wdAM_Aug`, for the passenger trips by origin during weekday morning peak periods in August 2023.
+The `filter()` function in the **dplyr** package is used to obtain a subset of the simple feature data frames, `wdAMAug`, `wdAMSep`, and `wdAMOct` for the passenger trips by origin during weekday morning peak periods in August, September, and October 2023 respectively.
 
 ```{r}
 wdAMAug = bus %>%
   filter(YEAR_MONTH == "2023-08") %>%
+  filter(DAY_TYPE == "WEEKDAY") %>%
+  filter(TIME_PER_HOUR >= 6 & TIME_PER_HOUR <= 9)
+```
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code for Sep and Oct"
+wdAMSep = bus %>%
+  filter(YEAR_MONTH == "2023-09") %>%
+  filter(DAY_TYPE == "WEEKDAY") %>%
+  filter(TIME_PER_HOUR >= 6 & TIME_PER_HOUR <= 9)
+
+wdAMOct = bus %>%
+  filter(YEAR_MONTH == "2023-10") %>%
   filter(DAY_TYPE == "WEEKDAY") %>%
   filter(TIME_PER_HOUR >= 6 & TIME_PER_HOUR <= 9)
 ```
@@ -322,15 +384,27 @@ wdAMAug_ct = st_join(hgrid, wdAMAug) %>%
   summarise(TOTAL_TRIPS = sum(TOTAL_TRIPS))
 ```
 
-The output is then plotted use functions in the **tmap** package. To facilitate comparisons between different peak periods, the breaks are set at fixed intervals of 50,000 passengers.
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code for Sep and Oct"
+wdAMSep_ct = st_join(hgrid, wdAMSep) %>%
+  drop_na() %>%
+  group_by(grid_id) %>%
+  summarise(TOTAL_TRIPS = sum(TOTAL_TRIPS))
+
+wdAMOct_ct = st_join(hgrid, wdAMOct) %>%
+  drop_na() %>%
+  group_by(grid_id) %>%
+  summarise(TOTAL_TRIPS = sum(TOTAL_TRIPS))
+```
+
+The output is then plotted using functions in the **tmap** package. To facilitate comparisons between different peak periods, the breaks are set at fixed intervals of 100,000 passengers.
 
 ```{r}
-brk = c(1, 50000, 100000, 150000, 200000, 250000, 300000, 350000)
+brk = c(1, 100000, 200000, 300000, 400000, 500000, 600000)
 ```
 
 ```{r}
-tmap_mode("view")
-
 map_wdAMAug = tm_shape(wdAMAug_ct) +
   tm_fill(col = "TOTAL_TRIPS",
     palette = "Reds",
@@ -343,34 +417,11 @@ map_wdAMAug = tm_shape(wdAMAug_ct) +
     popup.format = list(TOTAL_TRIPS = list(format = "f", digits = 0))) +
   tm_borders(col = "grey40", lwd = 0.7) +
   tm_layout(title = "Weekday Morning Peak in Aug 2023")
-
-map_wdAMAug
 ```
 
-#### 4.1.2 September 2023
-
-The `filter()` function in the **dplyr** package is used to obtain a subset of the simple feature data frame, `wdAM_Sep`, for the passenger trips by origin during weekday morning peak periods in September 2023.
-
 ```{r}
-wdAMSep = bus %>%
-  filter(YEAR_MONTH == "2023-09") %>%
-  filter(DAY_TYPE == "WEEKDAY") %>%
-  filter(TIME_PER_HOUR >= 6 & TIME_PER_HOUR <= 8)
-```
-
-The `st_join()` function in the **sf** package and the `drop.na()` function in the **tidyr** package are used to match the bus stops points with the hexagons in the grid. The `group_by()` and `summarise()` functions in the **dplyr** package are used to sum the "TOTAL_TRIPS" values (i.e., total passengers) for each hexagon in the grid.
-
-```{r}
-wdAMSep_ct = st_join(hgrid, wdAMSep) %>%
-  drop_na() %>%
-  group_by(grid_id) %>%
-  summarise(TOTAL_TRIPS = sum(TOTAL_TRIPS))
-```
-
-The output is then plotted use functions in the **tmap** package.
-
-```{r}
-tmap_mode("view")
+#| code-fold: true
+#| code-summary: "Show the code for Sep and Oct"
 
 map_wdAMSep = tm_shape(wdAMSep_ct) +
   tm_fill(col = "TOTAL_TRIPS",
@@ -385,34 +436,6 @@ map_wdAMSep = tm_shape(wdAMSep_ct) +
   tm_borders(col = "grey40", lwd = 0.7) +
   tm_layout(title = "Weekday Morning Peak in Sep 2023")
 
-map_wdAMSep
-```
-
-#### 4.1.3 October 2023
-
-The `filter()` function in the **dplyr** package is used to obtain a subset of the simple feature data frame, `wdAM_Oct`, for the passenger trips by origin during weekday morning peak periods in October 2023.
-
-```{r}
-wdAMOct = bus %>%
-  filter(YEAR_MONTH == "2023-10") %>%
-  filter(DAY_TYPE == "WEEKDAY") %>%
-  filter(TIME_PER_HOUR >= 6 & TIME_PER_HOUR <= 8)
-```
-
-The `st_join()` function in the **sf** package and the `drop.na()` function in the **tidyr** package are used to match the bus stops points with the hexagons in the grid. The `group_by()` and `summarise()` functions in the **dplyr** package are used to sum the "TOTAL_TRIPS" values (i.e., total passengers) for each hexagon in the grid.
-
-```{r}
-wdAMOct_ct = st_join(hgrid, wdAMOct) %>%
-  drop_na() %>%
-  group_by(grid_id) %>%
-  summarise(TOTAL_TRIPS = sum(TOTAL_TRIPS))
-```
-
-The output is then plotted use functions in the **tmap** package.
-
-```{r}
-tmap_mode("view")
-
 map_wdAMOct = tm_shape(wdAMOct_ct) +
   tm_fill(col = "TOTAL_TRIPS",
     palette = "Reds",
@@ -425,43 +448,88 @@ map_wdAMOct = tm_shape(wdAMOct_ct) +
     popup.format = list(TOTAL_TRIPS = list(format = "f", digits = 0))) +
   tm_borders(col = "grey40", lwd = 0.7) +
   tm_layout(title = "Weekday Morning Peak in Oct 2023")
+```
 
+#### 4.1.2 Visualising Passenger Trips by Origin {.tabset}
+
+The plots from the three months are then visualised in the interactive **tmap** mode below.
+
+##### Aug 2023
+
+```{r}
+tmap_mode("view")
+map_wdAMAug
+```
+
+##### Sep 2023
+
+```{r}
+map_wdAMSep
+```
+
+##### Oct 2023
+
+```{r}
 map_wdAMOct
 ```
 
-#### 4.1.4 Insights
+####  {.unnumbered}
+
+#### 4.1.3 Deriving Insights on Weekday Morning Peak
 
 xxx
 
-### 4.2 Weekday Afternoon Peak (5pm to 7.59pm)
+### 4.2 Weekday Afternoon Peak (5pm to 8.59pm)
 
-The same steps for 4.2.1 are repeated for the two other months studied in 4.2.2, and 4.2.3.
+#### 4.2.1 Computing Passenger Trips by Origin
 
-#### 4.2.1 August 2023
-
-The `filter()` function in the **dplyr** package is used to obtain a subset of the simple feature data frame, `wdPM_Aug`, for the passenger trips by origin during weekday afternoon peak periods in August 2023.
+The `filter()` function in the **dplyr** package is used to obtain a subset of the simple feature data frames, `wdPMAug`, `wdPMSep`, and `wdPMOct` for the passenger trips by origin during weekday afternoon peak periods in August, September, and October 2023 respectively.
 
 ```{r}
+#| code-fold: true 
+#| code-summary: "Show the code"
 wdPMAug = bus %>%
   filter(YEAR_MONTH == "2023-08") %>% 
   filter(DAY_TYPE == "WEEKDAY") %>%
-  filter(TIME_PER_HOUR >= 17 & TIME_PER_HOUR <= 19)
+  filter(TIME_PER_HOUR >= 17 & TIME_PER_HOUR <= 20)
+
+wdPMSep = bus %>%
+  filter(YEAR_MONTH == "2023-09") %>%
+  filter(DAY_TYPE == "WEEKDAY") %>%
+  filter(TIME_PER_HOUR >= 17 & TIME_PER_HOUR <= 20)
+
+wdPMOct = bus %>%
+  filter(YEAR_MONTH == "2023-10") %>%
+  filter(DAY_TYPE == "WEEKDAY") %>%
+  filter(TIME_PER_HOUR >= 17 & TIME_PER_HOUR <= 20)
 ```
 
 The `st_join()` function in the **sf** package and the `drop.na()` function in the **tidyr** package are used to match the bus stops points with the hexagons in the grid. The `group_by()` and `summarise()` functions in the **dplyr** package are used to sum the "TOTAL_TRIPS" values (i.e., total passengers) for each hexagon in the grid.
 
 ```{r}
+#| code-fold: true 
+#| code-summary: "Show the code" 
 wdPMAug_ct = st_join(hgrid, wdPMAug) %>%
+  drop_na() %>%
+  group_by(grid_id) %>%
+  summarise(TOTAL_TRIPS = sum(TOTAL_TRIPS))
+
+wdPMSep_ct = st_join(hgrid, wdPMSep) %>%
+  drop_na() %>%
+  group_by(grid_id) %>%
+  summarise(TOTAL_TRIPS = sum(TOTAL_TRIPS))
+
+wdPMOct_ct = st_join(hgrid, wdPMOct) %>%
   drop_na() %>%
   group_by(grid_id) %>%
   summarise(TOTAL_TRIPS = sum(TOTAL_TRIPS))
 ```
 
-The output is then plotted use functions in the **tmap** package.
+The output is then plotted using functions in the **tmap** package.
 
 ```{r}
-tmap_mode("view")
-
+#| code-fold: true 
+#| code-summary: "Show the code" 
 map_wdPMAug = tm_shape(wdPMAug_ct) +
   tm_fill(col = "TOTAL_TRIPS",
     palette = "Reds",
@@ -474,34 +542,6 @@ map_wdPMAug = tm_shape(wdPMAug_ct) +
     popup.format = list(TOTAL_TRIPS = list(format = "f", digits = 0))) +
   tm_borders(col = "grey40", lwd = 0.7) +
   tm_layout(title = "Weekday Afternoon Peak in Aug 2023")
-
-map_wdPMAug
-```
-
-#### 4.2.2 September 2023
-
-The `filter()` function in the **dplyr** package is used to obtain a subset of the simple feature data frame, `wdPM_Sep`, for the passenger trips by origin during weekday afternoon peak periods in September 2023.
-
-```{r}
-wdPMSep = bus %>%
-  filter(YEAR_MONTH == "2023-09") %>%
-  filter(DAY_TYPE == "WEEKDAY") %>%
-  filter(TIME_PER_HOUR >= 17 & TIME_PER_HOUR <= 19)
-```
-
-The `st_join()` function in the **sf** package and the `drop.na()` function in the **tidyr** package are used to match the bus stops points with the hexagons in the grid. The `group_by()` and `summarise()` functions in the **dplyr** package are used to sum the "TOTAL_TRIPS" values (i.e., total passengers) for each hexagon in the grid.
-
-```{r}
-wdPMSep_ct = st_join(hgrid, wdPMSep) %>%
-  drop_na() %>%
-  group_by(grid_id) %>%
-  summarise(TOTAL_TRIPS = sum(TOTAL_TRIPS))
-```
-
-The output is then plotted use functions in the **tmap** package.
-
-```{r}
-tmap_mode("view")
 
 map_wdPMSep = tm_shape(wdPMSep_ct) +
   tm_fill(col = "TOTAL_TRIPS",
@@ -516,33 +556,6 @@ map_wdPMSep = tm_shape(wdPMSep_ct) +
   tm_borders(col = "grey40", lwd = 0.7) +
   tm_layout(title = "Weekday Afternoon Peak in Sep 2023")
 
-map_wdPMSep
-```
-
-#### 4.2.3 October 2023
-
-The `filter()` function in the **dplyr** package is used to obtain a subset of the simple feature data frame, `wdPM_Oct`, for the passenger trips by origin during weekday afternoon peak periods in October 2023.
-
-```{r}
-wdPMOct = bus %>%
-  filter(YEAR_MONTH == "2023-10") %>%
-  filter(DAY_TYPE == "WEEKDAY") %>%
-  filter(TIME_PER_HOUR >= 17 & TIME_PER_HOUR <= 19)
-```
-
-The `st_join()` function in the **sf** package and the `drop.na()` function in the **tidyr** package are used to match the bus stops points with the hexagons in the grid. The `group_by()` and `summarise()` functions in the **dplyr** package are used to sum the "TOTAL_TRIPS" values (i.e., total passengers) for each hexagon in the grid.
-
-```{r}
-wdPMOct_ct = st_join(hgrid, wdPMOct) %>%
-  drop_na() %>%
-  group_by(grid_id) %>%
-  summarise(TOTAL_TRIPS = sum(TOTAL_TRIPS))
-```
-
-The output is then plotted use functions in the **tmap** package.
-
-```{r}
-tmap_mode("view")
 
 map_wdPMOct = tm_shape(wdPMOct_ct) +
   tm_fill(col = "TOTAL_TRIPS",
@@ -556,43 +569,87 @@ map_wdPMOct = tm_shape(wdPMOct_ct) +
     popup.format = list(TOTAL_TRIPS = list(format = "f", digits = 0))) +
   tm_borders(col = "grey40", lwd = 0.7) +
   tm_layout(title = "Weekday Afternoon Peak in Oct 2023")
+```
 
+#### 4.2.2 Visualising Passenger Trips by Origin {.tabset}
+
+The plots from the three months are then visualised in the interactive **tmap** mode below.
+
+##### Aug 2023
+
+```{r}
+map_wdPMAug
+```
+
+##### Sep 2023
+
+```{r}
+map_wdPMSep
+```
+
+##### Oct 2023
+
+```{r}
 map_wdPMOct
 ```
 
-#### 4.2.4 Insights
+####  {.unnumbered}
+
+#### 4.2.3 Deriving Insights on Weekday Afternoon Peak
 
 xxx
 
-### 4.3 Weekend/Holiday Morning Peak (11am to 1.59pm)
+### 4.3 Weekend/Holiday Morning Peak (11am to 2.59pm)
 
-The same steps for 4.3.1 are repeated for the two other months studied in 4.3.2, and 4.3.3.
+#### 4.3.1 Computing Passenger Trips by Origin
 
-#### 4.3.1 August 2023
-
-The `filter()` function in the **dplyr** package is used to obtain a subset of the simple feature data frame, `weAM_Aug`, for the passenger trips by origin during weekend/holiday morning peak periods in August 2023.
+The `filter()` function in the **dplyr** package is used to obtain a subset of the simple feature data frames, `weAMAug`, `weAMSep`, and `weAMOct` for the passenger trips by origin during weekend/holiday morning peak periods in August, September, and October 2023 respectively.
 
 ```{r}
+#| code-fold: true  
+#| code-summary: "Show the code"   
 weAMAug = bus %>%
   filter(YEAR_MONTH == "2023-08") %>%
   filter(DAY_TYPE == "WEEKENDS/HOLIDAY") %>%
-  filter(TIME_PER_HOUR >= 11 & TIME_PER_HOUR <= 13)
+  filter(TIME_PER_HOUR >= 11 & TIME_PER_HOUR <= 14)
+
+weAMSep = bus %>%
+  filter(YEAR_MONTH == "2023-09") %>% 
+  filter(DAY_TYPE == "WEEKENDS/HOLIDAY") %>%
+  filter(TIME_PER_HOUR >= 11 & TIME_PER_HOUR <= 14)
+
+weAMOct = bus %>%
+  filter(YEAR_MONTH == "2023-10") %>% 
+  filter(DAY_TYPE == "WEEKENDS/HOLIDAY") %>%
+  filter(TIME_PER_HOUR >= 11 & TIME_PER_HOUR <= 14)
 ```
 
 The `st_join()` function in the **sf** package and the `drop.na()` function in the **tidyr** package are used to match the bus stops points with the hexagons in the grid. The `group_by()` and `summarise()` functions in the **dplyr** package are used to sum the "TOTAL_TRIPS" values (i.e., total passengers) for each hexagon in the grid.
 
 ```{r}
+#| code-fold: true  
+#| code-summary: "Show the code"   
 weAMAug_ct = st_join(hgrid, weAMAug) %>%
+  drop_na() %>%
+  group_by(grid_id) %>%
+  summarise(TOTAL_TRIPS = sum(TOTAL_TRIPS))
+
+weAMSep_ct = st_join(hgrid, weAMSep) %>%
+  drop_na() %>%
+  group_by(grid_id) %>%
+  summarise(TOTAL_TRIPS = sum(TOTAL_TRIPS))
+
+weAMOct_ct = st_join(hgrid, weAMOct) %>%
   drop_na() %>%
   group_by(grid_id) %>%
   summarise(TOTAL_TRIPS = sum(TOTAL_TRIPS))
 ```
 
-The output is then plotted use functions in the **tmap** package.
+The output is then plotted using functions in the **tmap** package.
 
 ```{r}
-tmap_mode("view")
-
+#| code-fold: true  
+#| code-summary: "Show the code"   
 map_weAMAug = tm_shape(weAMAug_ct) +
   tm_fill(col = "TOTAL_TRIPS",
     palette = "Reds",
@@ -605,34 +662,6 @@ map_weAMAug = tm_shape(weAMAug_ct) +
     popup.format = list(TOTAL_TRIPS = list(format = "f", digits = 0))) +
   tm_borders(col = "grey40", lwd = 0.7) +
   tm_layout(title = "Weekend/Holiday Morning Peak in Aug 2023")
-
-map_weAMAug
-```
-
-#### 4.3.2 September 2023
-
-The `filter()` function in the **dplyr** package is used to obtain a subset of the simple feature data frame, `weAM_Sep`, for the passenger trips by origin during weekend/holiday morning peak periods in September 2023.
-
-```{r}
-weAMSep = bus %>%
-  filter(YEAR_MONTH == "2023-09") %>% 
-  filter(DAY_TYPE == "WEEKENDS/HOLIDAY") %>%
-  filter(TIME_PER_HOUR >= 11 & TIME_PER_HOUR <= 13)
-```
-
-The `st_join()` function in the **sf** package and the `drop.na()` function in the **tidyr** package are used to match the bus stops points with the hexagons in the grid. The `group_by()` and `summarise()` functions in the **dplyr** package are used to sum the "TOTAL_TRIPS" values (i.e., total passengers) for each hexagon in the grid.
-
-```{r}
-weAMSep_ct = st_join(hgrid, weAMSep) %>%
-  drop_na() %>%
-  group_by(grid_id) %>%
-  summarise(TOTAL_TRIPS = sum(TOTAL_TRIPS))
-```
-
-The output is then plotted use functions in the **tmap** package.
-
-```{r}
-tmap_mode("view")
 
 map_weAMSep = tm_shape(weAMSep_ct) +
   tm_fill(col = "TOTAL_TRIPS",
@@ -647,34 +676,6 @@ map_weAMSep = tm_shape(weAMSep_ct) +
   tm_borders(col = "grey40", lwd = 0.7) +
   tm_layout(title = "Weekend/Holiday Morning Peak in Sep 2023")
 
-map_weAMSep
-```
-
-#### 4.3.3 October 2023
-
-The `filter()` function in the **dplyr** package is used to obtain a subset of the simple feature data frame, `weAM_Oct`, for the passenger trips by origin during weekend/holiday morning peak periods in October 2023.
-
-```{r}
-weAMOct = bus %>%
-  filter(YEAR_MONTH == "2023-10") %>%
-  filter(DAY_TYPE == "WEEKENDS/HOLIDAY") %>%
-  filter(TIME_PER_HOUR >= 11 & TIME_PER_HOUR <= 13)
-```
-
-The `st_join()` function in the **sf** package and the `drop.na()` function in the **tidyr** package are used to match the bus stops points with the hexagons in the grid. The `group_by()` and `summarise()` functions in the **dplyr** package are used to sum the "TOTAL_TRIPS" values (i.e., total passengers) for each hexagon in the grid.
-
-```{r}
-weAMOct_ct = st_join(hgrid, weAMOct) %>%
-  drop_na() %>%
-  group_by(grid_id) %>%
-  summarise(TOTAL_TRIPS = sum(TOTAL_TRIPS))
-```
-
-The output is then plotted use functions in the **tmap** package.
-
-```{r}
-tmap_mode("view")
-
 map_weAMOct = tm_shape(weAMOct_ct) +
   tm_fill(col = "TOTAL_TRIPS",
     palette = "Reds",
@@ -687,43 +688,87 @@ map_weAMOct = tm_shape(weAMOct_ct) +
     popup.format = list(TOTAL_TRIPS = list(format = "f", digits = 0))) +
   tm_borders(col = "grey40", lwd = 0.7) +
   tm_layout(title = "Weekend/Holiday Morning Peak in Oct 2023")
+```
 
+#### 4.3.2 Visualising Passenger Trips by Origin {.tabset}
+
+The plots from the three months are then visualised in the interactive **tmap** mode below.
+
+##### Aug 2023
+
+```{r}
+map_weAMAug
+```
+
+##### Sep 2023
+
+```{r}
+map_weAMSep
+```
+
+##### Oct 2023
+
+```{r}
 map_weAMOct
 ```
 
-#### 4.3.4 Insights
+####  {.unnumbered}
+
+#### 4.3.3 Deriving Insights on Weekend/Holiday Morning Peak
 
 xxx
 
-### 4.4 Weekend/Holiday Evening Peak (4pm to 6.59pm)
+### 4.4 Weekend/Holiday Evening Peak (4pm to 7.59pm)
 
-The same steps for 4.4.1 are repeated for the two other months studied in 4.4.2, and 4.4.3.
+#### 4.4.1 Computing Passenger Trips by Origin
 
-#### 4.4.1 August 2023
-
-The `filter()` function in the **dplyr** package is used to obtain a subset of the simple feature data frame, `wePM_Aug`, for the passenger trips by origin during weekend/holiday evening peak periods in August 2023.
+The `filter()` function in the **dplyr** package is used to obtain a subset of the simple feature data frames, `wePMAug`, `wePMSep`, and `wePMOct` for the passenger trips by origin during weekend/holiday evening peak periods in August, September, and October 2023 respectively.
 
 ```{r}
+#| code-fold: true   
+#| code-summary: "Show the code"    
 wePMAug = bus %>%
   filter(YEAR_MONTH == "2023-08") %>%
   filter(DAY_TYPE == "WEEKENDS/HOLIDAY") %>%
-  filter(TIME_PER_HOUR >= 16 & TIME_PER_HOUR <= 18)
+  filter(TIME_PER_HOUR >= 16 & TIME_PER_HOUR <= 19)
+
+wePMSep = bus %>%
+  filter(YEAR_MONTH == "2023-09") %>%
+  filter(DAY_TYPE == "WEEKENDS/HOLIDAY") %>%
+  filter(TIME_PER_HOUR >= 16 & TIME_PER_HOUR <= 19)
+
+wePMOct = bus %>%
+  filter(YEAR_MONTH == "2023-10") %>%
+  filter(DAY_TYPE == "WEEKENDS/HOLIDAY") %>%
+  filter(TIME_PER_HOUR >= 16 & TIME_PER_HOUR <= 19)
 ```
 
 The `st_join()` function in the **sf** package and the `drop.na()` function in the **tidyr** package are used to match the bus stops points with the hexagons in the grid. The `group_by()` and `summarise()` functions in the **dplyr** package are used to sum the "TOTAL_TRIPS" values (i.e., total passengers) for each hexagon in the grid.
 
 ```{r}
+#| code-fold: true   
+#| code-summary: "Show the code"    
 wePMAug_ct = st_join(hgrid, wePMAug) %>%
+  drop_na() %>%
+  group_by(grid_id) %>%
+  summarise(TOTAL_TRIPS = sum(TOTAL_TRIPS))
+
+wePMSep_ct = st_join(hgrid, wePMSep) %>%
+  drop_na() %>%
+  group_by(grid_id) %>%
+  summarise(TOTAL_TRIPS = sum(TOTAL_TRIPS))
+
+wePMOct_ct = st_join(hgrid, wePMOct) %>%
   drop_na() %>%
   group_by(grid_id) %>%
   summarise(TOTAL_TRIPS = sum(TOTAL_TRIPS))
 ```
 
-The output is then plotted use functions in the **tmap** package.
+The output is then plotted using functions in the **tmap** package.
 
 ```{r}
-tmap_mode("view")
-
+#| code-fold: true   
+#| code-summary: "Show the code"    
 map_wePMAug = tm_shape(wePMAug_ct) +
   tm_fill(col = "TOTAL_TRIPS",
     palette = "Reds",
@@ -737,33 +782,6 @@ map_wePMAug = tm_shape(wePMAug_ct) +
   tm_borders(col = "grey40", lwd = 0.7) +
   tm_layout(title = "Weekend/Holiday Evening Peak in Aug 2023")
 
-map_wePMAug
-```
-
-#### 4.4.2 September 2023
-
-The `filter()` function in the **dplyr** package is used to obtain a subset of the simple feature data frame, `wePM_Sep`, for the passenger trips by origin during weekend/holiday evening peak periods in September 2023.
-
-```{r}
-wePMSep = bus %>%
-  filter(YEAR_MONTH == "2023-09") %>%
-  filter(DAY_TYPE == "WEEKENDS/HOLIDAY") %>%
-  filter(TIME_PER_HOUR >= 16 & TIME_PER_HOUR <= 18)
-```
-
-The `st_join()` function in the **sf** package and the `drop.na()` function in the **tidyr** package are used to match the bus stops points with the hexagons in the grid. The `group_by()` and `summarise()` functions in the **dplyr** package are used to sum the "TOTAL_TRIPS" values (i.e., total passengers) for each hexagon in the grid.
-
-```{r}
-wePMSep_ct = st_join(hgrid, wePMSep) %>%
-  drop_na() %>%
-  group_by(grid_id) %>%
-  summarise(TOTAL_TRIPS = sum(TOTAL_TRIPS))
-```
-
-The output is then plotted use functions in the **tmap** package.
-
-```{r}
-tmap_mode("view")
 
 map_wePMSep = tm_shape(wePMSep_ct) +
   tm_fill(col = "TOTAL_TRIPS",
@@ -778,34 +796,6 @@ map_wePMSep = tm_shape(wePMSep_ct) +
   tm_borders(col = "grey40", lwd = 0.7) +
   tm_layout(title = "Weekend/Holiday Evening Peak in Sep 2023")
 
-map_wePMSep
-```
-
-#### 4.4.3 October 2023
-
-The `filter()` function in the **dplyr** package is used to obtain a subset of the simple feature data frame, `wePM_Oct`, for the passenger trips by origin during weekend/holiday evening peak periods in October 2023.
-
-```{r}
-wePMOct = bus %>%
-  filter(YEAR_MONTH == "2023-10") %>%
-  filter(DAY_TYPE == "WEEKENDS/HOLIDAY") %>%
-  filter(TIME_PER_HOUR >= 16 & TIME_PER_HOUR <= 18)
-```
-
-The `st_join()` function in the **sf** package and the `drop.na()` function in the **tidyr** package are used to match the bus stops points with the hexagons in the grid. The `group_by()` and `summarise()` functions in the **dplyr** package are used to sum the "TOTAL_TRIPS" values (i.e., total passengers) for each hexagon in the grid.
-
-```{r}
-wePMOct_ct = st_join(hgrid, wePMOct) %>%
-  drop_na() %>%
-  group_by(grid_id) %>%
-  summarise(TOTAL_TRIPS = sum(TOTAL_TRIPS))
-```
-
-The output is then plotted use functions in the **tmap** package.
-
-```{r}
-tmap_mode("view")
-
 map_wePMOct = tm_shape(wePMOct_ct) +
   tm_fill(col = "TOTAL_TRIPS",
     palette = "Reds",
@@ -818,59 +808,136 @@ map_wePMOct = tm_shape(wePMOct_ct) +
     popup.format = list(TOTAL_TRIPS = list(format = "f", digits = 0))) +
   tm_borders(col = "grey40", lwd = 0.7) +
   tm_layout(title = "Weekend/Holiday Evening Peak in Oct 2023")
+```
 
+#### 4.4.2 Visualising Passenger Trips by Origin {.tabset}
+
+The plots from the three months are then visualised in the interactive **tmap** mode below.
+
+##### Aug 2023
+
+```{r}
+map_wePMAug
+```
+
+##### Sep 2023
+
+```{r}
+map_wePMSep
+```
+
+##### Oct 2023
+
+```{r}
 map_wePMOct
 ```
 
-#### 4.4.4 Insights
+####  {.unnumbered}
+
+#### 4.4.3 Deriving Insights on Weekend/Holiday Evening Peak
 
 xxx
 
-### 4.5 Comparison Between Different Peak Periods
+### 4.5 Comparing Between Different Peak Periods
 
-#### 4.5.1 August 2023
+#### 4.5.1 Weekday Morning versus Afternoon {.tabset}
 
-Weekday AM versus Weekday PM:
+The plots from the three months are visualised in the interactive **tmap** mode below.
+
+##### Aug 2023
 
 ```{r}
 tmap_arrange(map_wdAMAug, map_wdPMAug, ncol = 2)
 ```
 
-Weekend/Holiday AM versus Weekend/Holiday PM:
-
-```{r}
-tmap_arrange(map_weAMAug, map_wePMAug, ncol = 2)
-```
-
-#### 4.5.2 September 2023
-
-Weekday AM versus Weekday PM:
+##### Sep 2023
 
 ```{r}
 tmap_arrange(map_wdAMSep, map_wdPMSep, ncol = 2)
 ```
 
-Weekend/Holiday AM versus Weekend/Holiday PM:
-
-```{r}
-tmap_arrange(map_weAMSep, map_wePMSep, ncol = 2)
-```
-
-#### 4.5.3 October 2023
-
-Weekday AM versus Weekday PM:
+##### Oct 2023
 
 ```{r}
 tmap_arrange(map_wdAMOct, map_wdPMOct, ncol = 2)
 ```
 
-Weekend/Holiday AM versus Weekend/Holiday PM:
+####  {.unnumbered}
+
+#### 4.5.2 Weekend/Holiday Morning versus Evening {.tabset}
+
+The plots from the three months are visualised in the interactive **tmap** mode below.
+
+##### Aug 2023
+
+```{r}
+tmap_arrange(map_weAMAug, map_wePMAug, ncol = 2)
+```
+
+##### Sep 2023
+
+```{r}
+tmap_arrange(map_weAMSep, map_wePMSep, ncol = 2)
+```
+
+##### Oct 2023
 
 ```{r}
 tmap_arrange(map_weAMOct, map_wePMOct, ncol = 2)
 ```
 
-#### 4.5.4 Insights
+####  {.unnumbered}
+
+#### 4.5.3 Weekday versus Weekend/Holiday Morning {.tabset}
+
+The plots from the three months are visualised in the interactive **tmap** mode below.
+
+##### Aug 2023
+
+```{r}
+tmap_arrange(map_wdAMAug, map_weAMAug, ncol = 2)
+```
+
+##### Sep 2023
+
+```{r}
+tmap_arrange(map_wdAMSep, map_weAMSep, ncol = 2)
+```
+
+##### Oct 2023
+
+```{r}
+tmap_arrange(map_wdAMOct, map_weAMOct, ncol = 2)
+```
+
+####  {.unnumbered}
+
+#### 4.5.4 Weekday Afternoon versus Weekend/Holiday Evening {.tabset}
+
+The plots from the three months are visualised in the interactive **tmap** mode below.
+
+##### Aug 2023
+
+```{r}
+tmap_arrange(map_wdPMAug, map_wePMAug, ncol = 2)
+```
+
+##### Sep 2023
+
+```{r}
+tmap_arrange(map_wdPMSep, map_wePMSep, ncol = 2)
+
+```
+
+##### Oct 2023
+
+```{r}
+tmap_arrange(map_weAMOct, map_wePMOct, ncol = 2)
+```
+
+####  {.unnumbered}
+
+#### 4.5.4 Insights from Comparing Different Peak Periods
 
 xxx
 
@@ -899,7 +966,11 @@ wdAMAug_wt = wdAMAug_ct %>%
                                    scale = 1, 
                                    alpha = 1), 
          .before = 1)
+```
 
+```{r}
+#| code-fold: true   
+#| code-summary: "Show the code for Sep and Oct"   
 wdAMSep_wt = wdAMSep_ct %>% 
   mutate(nb = st_knn(area_hexagon_grid,
                      k=8),
@@ -922,6 +993,8 @@ wdAMOct_wt = wdAMOct_ct %>%
 For Weekday Afternoon Peak:
 
 ```{r}
+#| code-fold: true   
+#| code-summary: "Show the code" 
 wdPMAug_wt = wdPMAug_ct %>% 
   mutate(nb = st_knn(area_hexagon_grid,
                      k=8),
@@ -953,6 +1026,8 @@ wdPMOct_wt = wdPMOct_ct %>%
 For Weekend/Holiday Morning Peak:
 
 ```{r}
+#| code-fold: true   
+#| code-summary: "Show the code" 
 weAMAug_wt = weAMAug_ct %>% 
   mutate(nb = st_knn(area_hexagon_grid,
                      k=8),
@@ -984,6 +1059,8 @@ weAMOct_wt = weAMOct_ct %>%
 For Weekend/Holiday Evening Peak:
 
 ```{r}
+#| code-fold: true   
+#| code-summary: "Show the code" 
 wePMAug_wt = wePMAug_ct %>% 
   mutate(nb = st_knn(area_hexagon_grid,
                      k=8),
@@ -1048,7 +1125,11 @@ wdAMAug_lisa = wdAMAug_wt %>%
     TOTAL_TRIPS, nb, wt, nsim = 99),
     .before = 1) %>%
   unnest(local_moran)
+```
 
+```{r}
+#| code-fold: true   
+#| code-summary: "Show the code for Sep and Oct" 
 wdAMSep_lisa = wdAMSep_wt %>%
   mutate(local_moran = local_moran(
     TOTAL_TRIPS, nb, wt, nsim = 99),
@@ -1065,6 +1146,8 @@ wdAMOct_lisa = wdAMOct_wt %>%
 For Weekday Afternoon Peak:
 
 ```{r}
+#| code-fold: true   
+#| code-summary: "Show the code" 
 wdPMAug_lisa = wdPMAug_wt %>%
   mutate(local_moran = local_moran(
     TOTAL_TRIPS, nb, wt, nsim = 99),
@@ -1087,6 +1170,8 @@ wdPMOct_lisa = wdPMOct_wt %>%
 For Weekend/Holiday Morning Peak:
 
 ```{r}
+#| code-fold: true   
+#| code-summary: "Show the code" 
 weAMAug_lisa = weAMAug_wt %>%
   mutate(local_moran = local_moran(
     TOTAL_TRIPS, nb, wt, nsim = 99),
@@ -1109,6 +1194,8 @@ weAMOct_lisa = weAMOct_wt %>%
 For Weekend/Holiday Evening Peak:
 
 ```{r}
+#| code-fold: true   
+#| code-summary: "Show the code" 
 wePMAug_lisa = wePMAug_wt %>%
   mutate(local_moran = local_moran(
     TOTAL_TRIPS, nb, wt, nsim = 99),
@@ -1147,7 +1234,11 @@ wdAMAug_lisamap = tm_shape(wdAMAug_lisasig) +
     popup.vars = c("Cluster/Outlier: " = "mean")) +
   tm_borders(col = "grey40", lwd = 0.7) +
   tm_layout(title = "LISA Map of Weekday Morning Peak in Aug 2023")
+```
 
+```{r}
+#| code-fold: true   
+#| code-summary: "Show the code for Sep and Oct" 
 wdAMSep_lisasig = wdAMSep_lisa  %>%
   filter(p_ii_sim < 0.05)
 
@@ -1173,13 +1264,13 @@ wdAMOct_lisamap = tm_shape(wdAMOct_lisasig) +
     popup.vars = c("Cluster/Outlier: " = "mean")) +
   tm_borders(col = "grey40", lwd = 0.7) +
   tm_layout(title = "LISA Map of Weekday Morning Peak in Oct 2023")
-
-
 ```
 
 For Weekday Afternoon Peak:
 
 ```{r}
+#| code-fold: true   
+#| code-summary: "Show the code" 
 wdPMAug_lisasig = wdPMAug_lisa  %>%
   filter(p_ii_sim < 0.05)
 
@@ -1223,6 +1314,8 @@ wdPMOct_lisamap = tm_shape(wdPMOct_lisasig) +
 For Weekend/Holiday Morning Peak:
 
 ```{r}
+#| code-fold: true   
+#| code-summary: "Show the code" 
 weAMAug_lisasig = weAMAug_lisa  %>%
   filter(p_ii_sim < 0.05)
 
@@ -1266,6 +1359,8 @@ weAMOct_lisamap = tm_shape(weAMOct_lisasig) +
 For Weekend/Holiday Evening Peak:
 
 ```{r}
+#| code-fold: true   
+#| code-summary: "Show the code" 
 wePMAug_lisasig = wePMAug_lisa  %>%
   filter(p_ii_sim < 0.05)
 
@@ -1306,51 +1401,107 @@ wePMOct_lisamap = tm_shape(wePMOct_lisasig) +
   tm_layout(title = "LISA Map of Weekend/Holiday Evening Peak in Oct 2023")
 ```
 
-### 5.4 Comparison Between Different Peak Periods
+### 5.4 Comparing Between Different Peak Periods
 
-#### 5.4.1 August 2023
+#### 5.4.1 Weekday Morning versus Afternoon {.tabset}
 
-Weekday AM versus Weekday PM:
+The plots from the three months are visualised in the interactive **tmap** mode below.
+
+##### Aug 2023
 
 ```{r}
 tmap_arrange(wdAMAug_lisamap, wdPMAug_lisamap, ncol = 2)
 ```
 
-Weekend/Holiday AM versus Weekend/Holiday PM:
-
-```{r}
-tmap_arrange(weAMAug_lisamap, wePMAug_lisamap, ncol = 2)
-```
-
-#### 5.4.2 September 2023
-
-Weekday AM versus Weekday PM:
+##### Sep 2023
 
 ```{r}
 tmap_arrange(wdAMSep_lisamap, wdPMSep_lisamap, ncol = 2)
 ```
 
-Weekend/Holiday AM versus Weekend/Holiday PM:
-
-```{r}
-tmap_arrange(weAMSep_lisamap, wePMSep_lisamap, ncol = 2)
-```
-
-#### 5.4.3 October 2023
-
-Weekday AM versus Weekday PM:
+##### Oct 2023
 
 ```{r}
 tmap_arrange(wdAMOct_lisamap, wdPMOct_lisamap, ncol = 2)
 ```
 
-Weekend/Holiday AM versus Weekend/Holiday PM:
+####  {.unnumbered}
+
+#### 5.4.2 Weekend/Holiday Morning versus Evening {.tabset}
+
+The plots from the three months are visualised in the interactive **tmap** mode below.
+
+##### Aug 2023
+
+```{r}
+tmap_arrange(weAMAug_lisamap, wePMAug_lisamap, ncol = 2)
+```
+
+##### Sep 2023
+
+```{r}
+tmap_arrange(weAMSep_lisamap, wePMSep_lisamap, ncol = 2)
+```
+
+##### Oct 2023
 
 ```{r}
 tmap_arrange(weAMOct_lisamap, wePMOct_lisamap, ncol = 2)
 ```
 
-### Drawing Statistical Conclusions for Analysis Results (200 words per visual)
+####  {.unnumbered}
+
+#### 5.4.3 Weekday versus Weekend/Holiday Morning {.tabset}
+
+The plots from the three months are visualised in the interactive **tmap** mode below.
+
+##### Aug 2023
+
+```{r}
+tmap_arrange(wdAMAug_lisamap, weAMAug_lisamap, ncol = 2)
+```
+
+##### Sep 2023
+
+```{r}
+tmap_arrange(wdAMSep_lisamap, weAMSep_lisamap, ncol = 2)
+```
+
+##### Oct 2023
+
+```{r}
+tmap_arrange(wdAMOct_lisamap, weAMOct_lisamap, ncol = 2)
+```
+
+####  {.unnumbered}
+
+#### 5.4.4 Weekday Afternoon versus Weekend/Holiday Evening {.tabset}
+
+The plots from the three months are visualised in the interactive **tmap** mode below.
+
+##### Aug 2023
+
+```{r}
+tmap_arrange(wdPMAug_lisamap, wePMAug_lisamap, ncol = 2)
+```
+
+##### Sep 2023
+
+```{r}
+tmap_arrange(wdPMSep_lisamap, wePMSep_lisamap, ncol = 2)
+```
+
+##### Oct 2023
+
+```{r}
+tmap_arrange(wdPMOct_lisamap, wePMOct_lisamap, ncol = 2)
+```
+
+####  {.unnumbered}
+
+#### 5.4.5 Insights from Comparing Different Peak Periods
+
+xxx
 
 ## Extra: 6 Emerging Hot Spot Analysis (EHSA)
 
