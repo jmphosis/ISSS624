@@ -299,6 +299,6 @@ tm_shape() +
            alpha = 0.3)
 ```
 
-> ***Student Note***: The desire lines above show a rather unexpected observation for the morning peak period for weekdays - the most movement happens between the east (Changi Airport) and the north (Woodlands Checkpoint) rather than heartlands to central Singapore (CBD). This indicates that there are commuters who enter Singapore through the Woodlands Checkpoint and head to Changi Airport for a flight out, or the reverse, commuters land in Changi Airport and head to the Woodlands Checkpoint to enter Malaysia.
+> ***Student Note***: The desire lines above show a rather unexpected observation for the morning peak period for weekdays - the most movement happens between the east (Changi Airport and Tampines) and the north (Woodlands Checkpoint) rather than heartlands to central Singapore (CBD). This indicates that there are commuters who enter Singapore through the Woodlands Checkpoint and head to Changi Airport for a flight out, or the reverse, commuters land in Changi Airport and head to the Woodlands Checkpoint to enter Malaysia.
 
 [**\~\~\~ End of Hands-on Exercise 3 \~\~\~**]{.smallcaps}
