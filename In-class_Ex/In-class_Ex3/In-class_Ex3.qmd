@@ -87,21 +87,99 @@ mpsz
 
 There are at least two ways to compute the required distance matrix. One is based on sf and the other is based on sp. Past experience shown that computing distance matrix by using sf function took relatively longer time that sp method especially the data set is large. In view of this, sp method is used in the code chunks below.
 
-First [`as.Spatial()`](https://r-spatial.github.io/sf/reference/coerce-methods.html) will be used to convert *mpsz* from sf tibble data frame to SpatialPolygonsDataFrame of sp object as shown in the code chunk below.
+First `as.Spatial()` will be used to convert *mpsz* from sf tibble data frame to SpatialPolygonsDataFrame of sp object as shown in the code chunk below.
+
+> ***Student Note***: For SpatialPolygonsDataFrame, in order to select a variable within a dataframe within the object, we will need to use something like mpsz\@data\$var_name.
+
+```{r}
+mpsz_sp = as(mpsz, "Spatial")
+mpsz_sp
+```
 
 ### 16.5.2 Computing the Distance Matrix
 
-### 
+Next, `spDists()` of **sp** package will be used to compute the Euclidean distance between the centroids of the planning subzones.
+
+> ***Student Note***: Using centroid-to-centroid distance is a simplification and may not always capture the full complexity of spatial relationships. Calculating the distance between centroids is computationally less intensive compared to more detailed spatial analyses.
+
+Notice that the output *dist* is a matrix object class of R. Also notice that the column heanders and row headers are not labeled with the planning subzone codes.
+
+> ***Student Note***: If longlat = TRUE, longitude and latitude are used to calculate the distance.
+>
+> dist is a matrix 332 by 332 (from mpsz 332 observations).
+
+```{r}
+dist = spDists(mpsz_sp, 
+                longlat = FALSE)
+head(dist, n=c(10, 10))
+```
 
 ### 16.5.3 Labelling Column and Row Headers of a Distance Matrix
 
-### 
+First, a list sorted according to the the distance matrix by planning sub-zone code is created.
+
+```{r}
+sz_names = mpsz$SUBZONE_C
+```
+
+Next, the `SUBZONE_C` is attached to row and column for distance matrix matching ahead
+
+```{r}
+colnames(dist) = paste0(sz_names)
+rownames(dist) = paste0(sz_names)
+```
 
 ### 16.5.4 Pivoting Distance Value by SUBZONE_C
 
-### 
+Next, we will pivot the distance matrix into a long table by using the row and column subzone codes as show in the code chunk below.
+
+Notice that the within zone distance is 0.
+
+```{r}
+distPair = melt(dist) %>%
+  rename(dist = value)
+head(distPair, 10)
+```
 
 ### 16.5.5 Updating Intra-zonal Distances
+
+In this section, we are going to append a constant value to replace the intra-zonal distance of 0.
+
+First, we will select and find out the minimum value of the distance by using `summary()`.
+
+```{r}
+distPair %>%
+  filter(dist > 0) %>%
+  summary()
+```
+
+Next, a constant distance value of 50m is added into intra-zones distance.
+
+```{r}
+distPair$dist = ifelse(distPair$dist == 0,
+                        50, distPair$dist)
+```
+
+The code chunk below will be used to check the result data.frame.
+
+```{r}
+distPair %>%
+  summary()
+```
+
+The code chunk below is used to rename the origin and destination fields.
+
+```{r}
+distPair = distPair %>%
+  rename(orig = Var1,
+         dest = Var2)
+```
+
+Lastly, the code chunk below is used to save the dataframe for future use.
+
+```{r}
+write_rds(distPair, "data/rds/distPair.rds") 
+```
 
 ## 16.6 Preparing Flow Data
 
