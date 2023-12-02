@@ -40,16 +40,24 @@ In this exercise, we are going to calibrate SIM to determine factors affecting t
 
 For the purpose of this exercise, four r packages will be used. They are:
 
--   sf for importing, integrating, processing and transforming geospatial data.
+-   **sf** for importing, integrating, processing and transforming geospatial data.
 
--   tidyverse for importing, integrating, wrangling and visualising data.
+-   **tidyverse** for importing, integrating, wrangling and visualising data.
 
--   tmap for creating thematic maps.
+-   **tmap** for creating thematic maps.
+
+-   **sp** handles spatial data (efficient in terms of computation).
+
+-   **performance** provides utilities for computing measures to assess model quality,
+
+-   **reshape2** handles matrix format (predecessor of tidyr).
+
+-   **ggpubr** for publication ready plots.
 
 ```{r}
-pacman::p_load(tmap, sf, sp, DT, stplanr,
+pacman::p_load(tmap, sf, sp, DT,
                performance, reshape2,
-               ggpubr, units, tidyverse)
+               ggpubr, tidyverse)
 ```
 
 ## 16.4 The Data
@@ -60,15 +68,26 @@ This exercise is a continuation of **Chapter 15: Processing and Visualising Flow
 
 -   *mpsz.rds*, URA Master Plan 2019 Planning Subzone boundary in simple feature tibble data frame format.
 
-Beside these two data sets, an additional attribute data file called pop.csv will be provided. It
+Beside these two data sets, an additional attribute data file called pop.csv will be provided.
 
 ## 16.5 Computing Distance Matrix
 
-## 
+In spatial interaction, a distance matrix is a table that shows the distance between pairs of locations. For example, in the table below we can see an Euclidean distance of 3926.0025 between MESZ01 and RVSZ05, of 3939.1079 between MESZ01 and SRSZ01, and so on. By definition, an location\'s distance from itself, which is shown in the main diagonal of the table, is 0.
+
+In this section, we will compute a distance matrix by using URA Master Plan 2019 Planning Subzone boundary in which you saved as an rds file called *mpsz*.
+
+First, let us import *mpsz.rds* into R environemnt by using the code chunk below. This is a sf tibble dataframe object class.
+
+```{r}
+mpsz = read_rds("data/rds/mpsz.rds")
+mpsz
+```
 
 ### 16.5.1 Converting from sf data.table to SpatialPolygonsDataFrame
 
-### 
+There are at least two ways to compute the required distance matrix. One is based on sf and the other is based on sp. Past experience shown that computing distance matrix by using sf function took relatively longer time that sp method especially the data set is large. In view of this, sp method is used in the code chunks below.
+
+First [`as.Spatial()`](https://r-spatial.github.io/sf/reference/coerce-methods.html) will be used to convert *mpsz* from sf tibble data frame to SpatialPolygonsDataFrame of sp object as shown in the code chunk below.
 
 ### 16.5.2 Computing the Distance Matrix
 
