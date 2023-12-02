@@ -127,6 +127,12 @@ mpsz = st_read(dsn = "data/geospatial",
 mpsz
 ```
 
+The `mpsz` sf tibble data frame is then written into an rds file for future use.
+
+```{r}
+mpsz = write_rds(mpsz, "data/rds/mpsz.rds")
+```
+
 ## 15.5 Data Wrangling - Combining Aspatial and Geospatial Data
 
 The planning subzone codes (i.e., "SUBZONE_C") of the `mpsz` sf data frame are populated into the `busstop` sf data frame using `st_intersection()` function in the **sf** package (for point and polygon overlay, with point sf object as output). The select() function in the dplyr package is then used to retain only the "BUS_STOP_N" and "SUBZON_C" columns in the combined sf data frame. Five bus stops are excluded in the combined sf data frame because they are outside the Singapore boundary.

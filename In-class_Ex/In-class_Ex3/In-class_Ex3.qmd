@@ -12,4 +12,128 @@ background-color: lightgrey;
 font-family:  Palatino Linotype;
 ---
 
+# 16 Calibrating Spatial Interaction Models with R
+
+## 16.1 Overview
+
+Spatial Interaction Models (SIMs) are mathematical models for estimating flows between spatial entities developed by Alan Wilson in the late 1960s and early 1970, with considerable uptake and refinement for transport modelling since then Boyce and Williams (2015).
+
+There are four main types of traditional SIMs (Wilson 1971):
+
+-   Unconstrained
+
+-   Production-constrained
+
+-   Attraction-constrained
+
+-   Doubly-constrained
+
+Ordinary least square (OLS), log-normal, Poisson and negative binomial (NB) regression methods have been used extensively to calibrate OD flow models by processing flow data as different types of dependent variables. In this chapter, you will gain hands-on experiences on using appropriate R packages to calibrate SIM by using there four regression methods.
+
+***Note***: Calibration is the process of adjusting parameters in the model to try and get the estimates to agree with the observed data as much as possible. Adjusting the parameters is the sort of iterative process that computers are particularly good at and the goodness-of-fit statistics can be used to indicate when the optimum solution is found. Historically this process required a researcher with the requisite programming skills to write a computer algorithm to iteratively adjust each parameter, check the goodness-of-fit, and then start all over again until the goodness-of-fit statistic was maximised/minimised. (Adam Dennett, 2018)
+
+## 16.2 The Case Study and Data
+
+In this exercise, we are going to calibrate SIM to determine factors affecting the public bus passenger flows during the morning peak in Singapore.
+
+## 16.3 Getting Started
+
+For the purpose of this exercise, four r packages will be used. They are:
+
+-   sf for importing, integrating, processing and transforming geospatial data.
+
+-   tidyverse for importing, integrating, wrangling and visualising data.
+
+-   tmap for creating thematic maps.
+
+```{r}
+pacman::p_load(tmap, sf, sp, DT, stplanr,
+               performance, reshape2,
+               ggpubr, units, tidyverse)
+```
+
+## 16.4 The Data
+
+This exercise is a continuation of **Chapter 15: Processing and Visualising Flow Data** and the following data will be used:
+
+-   *od_data.rds*, weekday morning peak passenger flows at planning subzone level.
+
+-   *mpsz.rds*, URA Master Plan 2019 Planning Subzone boundary in simple feature tibble data frame format.
+
+Beside these two data sets, an additional attribute data file called pop.csv will be provided. It
+
+## 16.5 Computing Distance Matrix
+
+## 
+
+### 16.5.1 Converting from sf data.table to SpatialPolygonsDataFrame
+
+### 
+
+### 16.5.2 Computing the Distance Matrix
+
+### 
+
+### 16.5.3 Labelling Column and Row Headers of a Distance Matrix
+
+### 
+
+### 16.5.4 Pivoting Distance Value by SUBZONE_C
+
+### 
+
+### 16.5.5 Updating Intra-zonal Distances
+
+## 16.6 Preparing Flow Data
+
+### 16.6.1 Separating Intra-flow from Passenger Volume df
+
+### 
+
+### 16.6.2 Combining Passenger Volume Data with Distance Value
+
+## 16.7 Preparing Origin and Destination Attributes
+
+### 16.7.1 Importing Population Data
+
+### 16.7.2 Geospatial Data Wrangling
+
+### 16.7.3 Preparing Origin Attribute
+
+### 16.7.4 Preparing Destination Attribute
+
+## 16.8 Calibrating Spatial Interaction Models
+
+### 16.8.1 Importing the Modelling Data
+
+### 16.8.2 Visualising the Dependent Variable
+
+### 16.8.3 Checking for Variables with Zero Values
+
+### 16.8.4 Unconstrained Spatial Interaction Model
+
+### 16.8.5 R-squared Function
+
+### 
+
+### 16.8.6 Origin (Production) Constrained Spatial Interaction Model
+
+### 
+
+### 16.8.7 Destination Constrained Spatial Interaction Model
+
+### 
+
+### 16.8.8 Doubly Constrained Spatial Interaction Model
+
+### 
+
+### 16.8.9 Model Comparison
+
+### 
+
+### 16.8.10 Visualising Fitted Values
+
+### 
+
 [**\~\~\~ End of In-class Exercise 3 \~\~\~**]{.smallcaps}
