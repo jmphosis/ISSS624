@@ -16,7 +16,7 @@ font-family:  Palatino Linotype;
 
 ## 16.1 Overview
 
-Spatial Interaction Models (SIMs) are mathematical models for estimating flows between spatial entities developed by Alan Wilson in the late 1960s and early 1970, with considerable uptake and refinement for transport modelling since then Boyce and Williams (2015).
+Spatial Interaction Models (SIMs) are mathematical models for estimating flows between spatial entities. They were developed by Alan Wilson in the late 1960s and early 1970, with considerable uptake and refinement for transport modelling since then (Boyce and Williams, 2015).
 
 There are four main types of traditional SIMs (Wilson 1971):
 
@@ -28,34 +28,36 @@ There are four main types of traditional SIMs (Wilson 1971):
 
 -   Doubly-constrained
 
-Ordinary least square (OLS), log-normal, Poisson and negative binomial (NB) regression methods have been used extensively to calibrate OD flow models by processing flow data as different types of dependent variables. In this chapter, you will gain hands-on experiences on using appropriate R packages to calibrate SIM by using there four regression methods.
+Ordinary least square (OLS), log-normal, Poisson and negative binomial (NB) regression methods have been used extensively to calibrate OD flow models by processing flow data as different types of dependent variables.
 
-***Note***: Calibration is the process of adjusting parameters in the model to try and get the estimates to agree with the observed data as much as possible. Adjusting the parameters is the sort of iterative process that computers are particularly good at and the goodness-of-fit statistics can be used to indicate when the optimum solution is found. Historically this process required a researcher with the requisite programming skills to write a computer algorithm to iteratively adjust each parameter, check the goodness-of-fit, and then start all over again until the goodness-of-fit statistic was maximised/minimised. (Adam Dennett, 2018)
+In this in-class exercise, the appropriate R packages are used to calibrate SIM by using there four regression methods.
+
+***Note***: Calibration is the process of adjusting parameters in the model to try and get the estimates to agree with the observed data as much as possible. Adjusting the parameters is the sort of iterative process that computers are particularly good at and the goodness-of-fit statistics can be used to indicate when the optimum solution is found. Historically, this process required a researcher with the requisite programming skills to write a computer algorithm to iteratively adjust each parameter, check the goodness-of-fit, and then start all over again until the goodness-of-fit statistic was maximised or minimised (Adam Dennett, 2018).
 
 ## 16.2 The Case Study and Data
 
-In this exercise, we are going to calibrate SIM to determine factors affecting the public bus passenger flows during the morning peak in Singapore.
+In this in-class exercise, a SIM is calibrated to determine the factors affecting the public bus passenger flows during the morning peak in Singapore.
 
 ## 16.3 Getting Started
 
-For the purpose of this exercise, four r packages will be used. They are:
+For the purpose of this exercise, the following R packages are used:
 
--   **sf** for importing, integrating, processing and transforming geospatial data.
+-   **sf** for importing, integrating, processing and transforming geospatial data;
 
--   **tidyverse** for importing, integrating, wrangling and visualising data.
+-   **tidyverse** for importing, integrating, wrangling and visualising data;
 
--   **tmap** for creating thematic maps.
+-   **tmap** for creating thematic maps;
 
--   **sp** handles spatial data (efficient in terms of computation).
+-   **sp** for handling spatial data in computationally efficient ways;
 
--   **performance** provides utilities for computing measures to assess model quality,
+-   **performance** for computing measures to assess model quality;
 
--   **reshape2** handles matrix format (predecessor of tidyr).
+-   **reshape2** for handling matrix format; and
 
 -   **ggpubr** for publication ready plots.
 
 ```{r}
-pacman::p_load(tmap, sf, sp, DT,
+pacman::p_load(tmap, sf, sp,
                performance, reshape2,
                ggpubr, tidyverse)
 ```
@@ -64,19 +66,17 @@ pacman::p_load(tmap, sf, sp, DT,
 
 This exercise is a continuation of **Chapter 15: Processing and Visualising Flow Data** and the following data will be used:
 
--   *od_data.rds*, weekday morning peak passenger flows at planning subzone level.
+-   `od_data.rds`: weekday morning peak passenger flows at planning subzone level.
 
--   *mpsz.rds*, URA Master Plan 2019 Planning Subzone boundary in simple feature tibble data frame format.
+-   `mpsz.rds`: URA Master Plan 2019 Planning Subzone boundary in simple feature tibble data frame format.
 
-Beside these two data sets, an additional attribute data file called pop.csv will be provided.
+Besides these two data sets, an additional attribute data file called `pop.csv` will be used.
 
 ## 16.5 Computing Distance Matrix
 
-In spatial interaction, a distance matrix is a table that shows the distance between pairs of locations. For example, in the table below we can see an Euclidean distance of 3926.0025 between MESZ01 and RVSZ05, of 3939.1079 between MESZ01 and SRSZ01, and so on. By definition, an location\'s distance from itself, which is shown in the main diagonal of the table, is 0.
+In spatial interaction, a distance matrix is a table that shows the distance between pairs of locations. For example, in the table below we can see an Euclidean distance of 3926.0025 between MESZ01 and RVSZ05, of 3939.1079 between MESZ01 and SRSZ01, and so on. By definition, an location's distance from itself, which is shown in the main diagonal of the table, is 0.
 
-In this section, we will compute a distance matrix by using URA Master Plan 2019 Planning Subzone boundary in which you saved as an rds file called *mpsz*.
-
-First, let us import *mpsz.rds* into R environemnt by using the code chunk below. This is a sf tibble dataframe object class.
+In this section,a distance matrix is computed by using the `mpsz`, which is first imported as a sf tibble dataframe object class.
 
 ```{r}
 mpsz = read_rds("data/rds/mpsz.rds")
@@ -85,11 +85,11 @@ mpsz
 
 ### 16.5.1 Converting from sf data.table to SpatialPolygonsDataFrame
 
-There are at least two ways to compute the required distance matrix. One is based on sf and the other is based on sp. Past experience shown that computing distance matrix by using sf function took relatively longer time that sp method especially the data set is large. In view of this, sp method is used in the code chunks below.
+There are at least two ways to compute the required distance matrix. One is based on **sf** and the other is based on **sp**. Past experience shown that computing distance matrix by using **sf** function took a relatively longer time than the **sp** method, especially when the data set is large. In view of this, the **sp** method is used in the code chunks below.
 
-First `as.Spatial()` will be used to convert *mpsz* from sf tibble data frame to SpatialPolygonsDataFrame of sp object as shown in the code chunk below.
+The `as()` function with "Class" argument set as "Spatial" is used to convert `mpsz` from sf tibble data frame to SpatialPolygonsDataFrame of **sp** object
 
-> ***Student Note***: For SpatialPolygonsDataFrame, in order to select a variable within a dataframe within the object, we will need to use something like mpsz\@data\$var_name.
+> ***Student Note***: For SpatialPolygonsDataFrame, in order to select a variable within a data.frame within the object, we will need to use something like mpsz\@data\$var_name.
 
 ```{r}
 mpsz_sp = as(mpsz, "Spatial")
@@ -98,15 +98,17 @@ mpsz_sp
 
 ### 16.5.2 Computing the Distance Matrix
 
-Next, `spDists()` of **sp** package will be used to compute the Euclidean distance between the centroids of the planning subzones.
+The `spDists()` function in the **sp** package is used to compute the Euclidean distance between the centroids of the planning subzones.
 
-> ***Student Note***: Using centroid-to-centroid distance is a simplification and may not always capture the full complexity of spatial relationships. Calculating the distance between centroids is computationally less intensive compared to more detailed spatial analyses.
+> ***Student Note***: Calculating the distance between centroids is computationally less intensive compared to more detailed spatial analyses. However, using centroid-to-centroid distance is a simplification and may not always capture the full complexity of spatial relationships.
 
-Notice that the output *dist* is a matrix object class of R. Also notice that the column heanders and row headers are not labeled with the planning subzone codes.
+Notice that the output `dist` is a matrix object class of R. Also, notice that the column headers and row headers are not labeled with the planning subzone codes.
 
-> ***Student Note***: If longlat = TRUE, longitude and latitude are used to calculate the distance.
+> ***Student Note***:
 >
-> dist is a matrix 332 by 332 (from mpsz 332 observations).
+> -   If longlat = TRUE, longitude and latitude are used to calculate the distance.
+>
+> -   `dist` is a matrix 332 by 332 (based on 332 observations from `mpsz`).
 
 ```{r}
 dist = spDists(mpsz_sp, 
@@ -116,13 +118,13 @@ head(dist, n=c(10, 10))
 
 ### 16.5.3 Labelling Column and Row Headers of a Distance Matrix
 
-First, a list sorted according to the the distance matrix by planning sub-zone code is created.
+A list sorted according to the the distance matrix by planning sub-zone code is created to hold the sub-zone codes.
 
 ```{r}
 sz_names = mpsz$SUBZONE_C
 ```
 
-Next, the `SUBZONE_C` is attached to row and column for distance matrix matching ahead
+Next, the sub-zone codes are attached to row and column to facilitate distance matrix matching later on.
 
 ```{r}
 colnames(dist) = paste0(sz_names)
@@ -131,9 +133,9 @@ rownames(dist) = paste0(sz_names)
 
 ### 16.5.4 Pivoting Distance Value by SUBZONE_C
 
-Next, we will pivot the distance matrix into a long table by using the row and column subzone codes as show in the code chunk below.
+Next, the distance matrix is pivoted into a long table by using the row and column subzone codes.
 
-Notice that the within zone distance is 0.
+Note that the within zone (i.e., when Var1 and Var2 are the same) distance is 0.
 
 > ***Student Note***: Do not use code to sort the data, otherwise the sequence will be messed up.
 
@@ -145,9 +147,9 @@ head(distPair, 10)
 
 ### 16.5.5 Updating Intra-zonal Distances
 
-In this section, we are going to append a constant value to replace the intra-zonal distance of 0.
+A constant value is then used to replace the intra-zonal distance of 0.
 
-First, we will select and find out the minimum value of the distance by using `summary()`.
+The minimum value of the inter-zonal distance is derived using the `summary()` function. The value is 173.8. Hence, by quick estimation, an intra-zonal distance proxy value of less than half of 173.8 would be appropriate.
 
 ```{r}
 distPair %>%
@@ -155,45 +157,35 @@ distPair %>%
   summary()
 ```
 
-Next, a constant distance value of 50m is added into intra-zones distance.
+Hence, a constant distance value of 50m is added as the intra-zonal distance. The resulting data.frame is checked using the `summary()` function, showing that the minimum distance is now 50m.
 
 ```{r}
 distPair$dist = ifelse(distPair$dist == 0,
                         50, distPair$dist)
-```
 
-The code chunk below will be used to check the result data.frame.
-
-```{r}
 distPair %>%
   summary()
 ```
 
-The code chunk below is used to rename the origin and destination fields.
+The origin (Var1) and destination (Var2) fields are renamed, and the output is saved as in rds format for future use.
 
 ```{r}
 distPair = distPair %>%
   rename(orig = Var1,
          dest = Var2)
-```
 
-Lastly, the code chunk below is used to save the dataframe for future use.
-
-```{r}
 write_rds(distPair, "data/rds/distPair.rds") 
 ```
 
 ## 16.6 Preparing Flow Data
 
-The code chunk below is used import *od_data* save in Chapter 15 into R environment.
+The code chunk below is used import the `od_data`.
 
 ```{r}
 od_data = read_rds("data/rds/od_data.rds")
 ```
 
-Next, we will compute the total passenger trip between and within planning subzones by using the code chunk below. The output is all *flow_data*.
-
-Use the code chunk below to display flow_data dataframe.
+The total passenger trip between and within planning subzones is computed using `group_by()` and `summarise()` functions in the **dplyr** package. The output is all `flow_data`, which is shown below using the `head()` function.
 
 ```{r}
 flow_data = od_data %>%
@@ -203,14 +195,17 @@ flow_data = od_data %>%
 head(flow_data, 10)
 ```
 
-### 16.6.1 Separating Intra-flow from Passenger Volume df
+### 16.6.1 Separating Intra-flow from Passenger Volume data.frame
 
-Code chunk below is used to add three new fields in `flow_data` dataframe.
+A new field, "FlowNoIntra", is created to either hold the value 0 if there was an intra-zonal flow, or hold the value of the number of inter-zonal trips.
+
+Another new field, "offset", is created to hold the value of 0.000001 if there was intra-zonal flow, or hold the value of 1 if there was no inter-zonal flow.
 
 ```{r}
 flow_data$FlowNoIntra = ifelse(
   flow_data$ORIGIN_SZ == flow_data$DESTIN_SZ, 
   0, flow_data$TRIPS)
+
 flow_data$offset = ifelse(
   flow_data$ORIGIN_SZ == flow_data$DESTIN_SZ, 
   0.000001, 1)
@@ -218,14 +213,14 @@ flow_data$offset = ifelse(
 
 ### 16.6.2 Combining Passenger Volume Data with Distance Value
 
-Before we can join *flow_data* and *distPair*, we need to convert data value type of *ORIGIN_SZ* and *DESTIN_SZ* fields of flow_data dataframe into factor data type.
+The data value type of "ORINGIN_SZ" and "DESTIN_SZ" in the flow_data are converted to factor data type.
 
 ```{r}
 flow_data$ORIGIN_SZ = as.factor(flow_data$ORIGIN_SZ)
 flow_data$DESTIN_SZ = as.factor(flow_data$DESTIN_SZ)
 ```
 
-Now, `left_join()` of **dplyr** will be used to *flow_data* dataframe and *distPair* dataframe. The output is called *flow_data1*.
+Then, the `left_join()` function in the **dplyr** package is used to combine the `flow_data` data.frame and the `distPair` data.frame. The output is `flow_data1`.
 
 ```{r}
 flow_data1 = flow_data %>%
@@ -238,11 +233,15 @@ flow_data1 = flow_data %>%
 
 ### 16.7.1 Importing Population Data
 
+The pre-prepared population data by planning sub-zone is imported using the `read_csv()` function in the **readr** package as `pop`, which is a sf tibble data.frame. It divides the population into three age groups: ages 7-12, 13-24, and 25-64.
+
 ```{r}
 pop = read_csv("data/aspatial/pop.csv")
 ```
 
 ### 16.7.2 Geospatial Data Wrangling
+
+The `pop` data.frame is then joined with the `mpsz` data.frame. The relevant columns are selected, and two are renamed.
 
 ```{r}
 pop = pop %>%
@@ -256,6 +255,8 @@ pop = pop %>%
 
 ### 16.7.3 Preparing Origin Attribute
 
+The origin attribute is then prepared by combining `flow_data1` and `pop` by matching "ORIGIN_SZ" to "SZ"
+
 ```{r}
 flow_data1 = flow_data1 %>%
   left_join(pop,
@@ -268,6 +269,8 @@ flow_data1 = flow_data1 %>%
 
 ### 16.7.4 Preparing Destination Attribute
 
+The destination attribute is then prepared by combining `flow_data1` and `pop` by matching "DESTIN_SZ" to "SZ"
+
 ```{r}
 flow_data1 = flow_data1 %>%
   left_join(pop,
@@ -278,7 +281,7 @@ flow_data1 = flow_data1 %>%
   select(-c(PA, SZ_NAME))
 ```
 
-We will called the output data file *SIM_data*. it is in rds data file format.
+The output data file is then saved as `SIM_data` in rds data file format.
 
 ```{r}
 write_rds(flow_data1, "data/rds/SIM_data")
@@ -286,11 +289,11 @@ write_rds(flow_data1, "data/rds/SIM_data")
 
 ## 16.8 Calibrating Spatial Interaction Models
 
-In this section, we will calibrate Spatial Interaction Models by using Poisson Regression method.
+SIMs are calibrated using Poisson Regression methods below.
 
 ### 16.8.1 Importing the Modelling Data
 
-Firstly, let us import the modelling data by using the code chunk below.
+The modelling data in rds file format is first imported.
 
 ```{r}
 SIM_data = read_rds("data/rds/SIM_data.rds")
@@ -298,9 +301,9 @@ SIM_data = read_rds("data/rds/SIM_data.rds")
 
 ### 16.8.2 Visualising the Dependent Variable
 
-Firstly, let us plot the distribution of the dependent variable (i.e. TRIPS) by using histogram method by using the code chunk below.
+Then, the distribution of the dependent variable (i.e. "TRIPS") is plotted by using the histogram method.
 
-Notice that the distribution is highly skewed and not resemble bell shape or also known as normal distribution.
+The historgram shows that the distribution is highly skewed and does not resemble normal distribution.
 
 ```{r}
 ggplot(data = SIM_data,
@@ -308,9 +311,9 @@ ggplot(data = SIM_data,
   geom_histogram()
 ```
 
-Next, let us visualise the relation between the dependent variable and one of the key independent variable in Spatial Interaction Model, namely distance.
+The relation between the dependent variable and one of the key independent variable in SIM, namely distance is then visualised using the scatterplot method.
 
-Notice that their relationship hardly resemble linear relationship.
+The scatterplot shows that their relationship hardly resembles a linear relationship.
 
 ```{r}
 ggplot(data = SIM_data,
@@ -320,7 +323,7 @@ ggplot(data = SIM_data,
   geom_smooth(method = lm)
 ```
 
-On the other hand, if we plot the scatter plot by using the log transformed version of both variables, we can see that their relationship is more resemble linear relationship.
+However, if the log transformed version of both variables are plotted, the result better resembles a linear relationship.
 
 ```{r}
 ggplot(data = SIM_data,
@@ -332,17 +335,15 @@ ggplot(data = SIM_data,
 
 ### 16.8.3 Checking for Variables with Zero Values
 
-Since Poisson Regression is based of log and log 0 is undefined, it is important for us to ensure that no 0 values in the explanatory variables.
+Since Poisson Regression is based on log transformation, and log 0 is undefined, it is important for us to ensure that there are no zero values in the explanatory variables.
 
-In the code chunk below, summary() of Base R is used to compute the summary statistics of all variables in *SIM_data* data frame.
+The `summary()` function is used to compute the summary statistics of all variables in `SIM_data` data.frame. This revealed that the variables "ORIGIN_AGE7_12", "ORIGIN_AGE13_24", "ORIGIN_AGE25_64", "DESTIN_AGE7_12", "DESTIN_AGE13_24", "DESTIN_AGE25_64" have zero values.
 
 ```{r}
 summary(SIM_data)
 ```
 
-The print report above reveals that variables ORIGIN_AGE7_12, ORIGIN_AGE13_24, ORIGIN_AGE25_64,DESTIN_AGE7_12, DESTIN_AGE13_24, DESTIN_AGE25_64 consist of 0 values.
-
-In view of this, code chunk below will be used to replace zero values with 0.99.
+In view of this, these zero values are replaced with the value of 0.99.
 
 ```{r}
 SIM_data$DESTIN_AGE7_12 = ifelse(
@@ -369,9 +370,7 @@ summary(SIM_data)
 
 ### 16.8.4 Unconstrained Spatial Interaction Model
 
-In this section, you will learn how to calibrate an unconstrained spatial interaction model by using `glm()` of Base Stats. The explanatory variables are origin population by different age cohort, destination population by different age cohort (i.e. *ORIGIN_AGE25_64*) and distance between origin and destination in km (i.e. *dist*).
-
-The code chunk used to calibrate to model is shown below:
+An unconstrained SIM is calibrated below by using the `glm()` function of the **stats** package. The explanatory variables are origin population by different age cohorts (e.g., "ORIGIN_AGE25_64"), destination population by different age cohorts (e.g., "DESTIN_AGE25_64"), and the distance between the origin and destination in km (i.e., "dist").
 
 ```{r}
 uncSIM = glm(formula = TRIPS ~ 
@@ -386,7 +385,7 @@ uncSIM
 
 ### 16.8.5 R-squared Function
 
-In order to measure how much variation of the trips can be accounted by the model we will write a function to calculate R-Squared value as shown below.
+The R-Squared value is calculated to measure how much variation of the trips can be accounted by the unconstrained SIM.
 
 ```{r}
 CalcRSquared = function(observed,estimated){
@@ -394,21 +393,15 @@ CalcRSquared = function(observed,estimated){
   R2 = r^2
   R2
 }
-```
 
-Next, we will compute the R-squared of the unconstrained SIM by using the code chunk below.
-
-```{r}
 CalcRSquared(uncSIM$data$TRIPS, uncSIM$fitted.values)
-```
 
-```{r}
 r2_mcfadden(uncSIM)
 ```
 
 ### 16.8.6 Origin (Production) Constrained Spatial Interaction Model
 
-In this section, we will fit an origin constrained SIM by using the code chunk below.
+An origin constrained SIM is fitted.
 
 ```{r}
 orcSIM = glm(formula = TRIPS ~ 
@@ -421,7 +414,7 @@ orcSIM = glm(formula = TRIPS ~
 summary(orcSIM)
 ```
 
-We can examine how the constraints hold for destinations this time.
+The R-squared value is then calculated to examine how the constraints hold for destinations this time.
 
 ```{r}
 CalcRSquared(orcSIM$data$TRIPS, orcSIM$fitted.values)
@@ -429,7 +422,7 @@ CalcRSquared(orcSIM$data$TRIPS, orcSIM$fitted.values)
 
 ### 16.8.7 Destination Constrained Spatial Interaction Model
 
-In this section, we will fit a destination constrained SIM by using the code chunk below.
+A destination constrained SIM is fitted.
 
 ```{r}
 decSIM = glm(formula = TRIPS ~ 
@@ -442,7 +435,7 @@ decSIM = glm(formula = TRIPS ~
 summary(decSIM)
 ```
 
-We can examine how the constraints hold for destinations this time.
+The R-squared value is then calculated to examine how the constraints hold for destinations this time.
 
 ```{r}
 CalcRSquared(decSIM$data$TRIPS, decSIM$fitted.values)
@@ -450,7 +443,7 @@ CalcRSquared(decSIM$data$TRIPS, decSIM$fitted.values)
 
 ### 16.8.8 Doubly Constrained Spatial Interaction Model
 
-In this section, we will fit a doubly constrained SIM by using the code chunk below.
+A doubly constrained SIM is fitted.
 
 ```{r}
 dbcSIM = glm(formula = TRIPS ~ 
@@ -463,9 +456,9 @@ dbcSIM = glm(formula = TRIPS ~
 summary(dbcSIM)
 ```
 
-We can examine how the constraints hold for destinations this time.
+The R-squared value is then calculated to examine how the constraints hold for destinations this time.
 
-Notice that there is a relatively greater improvement in the R\^2 value.
+Note that there is a relatively greater improvement in the R-squared value.
 
 ```{r}
 CalcRSquared(dbcSIM$data$TRIPS, dbcSIM$fitted.values)
@@ -473,9 +466,9 @@ CalcRSquared(dbcSIM$data$TRIPS, dbcSIM$fitted.values)
 
 ### 16.8.9 Model Comparison
 
-Another useful model performance measure for continuous dependent variable is Root Mean Squared Error. In this sub-section, you will learn how to use `compare_performance()` of **performance** package
+Another useful model performance measure for continuous dependent variable is the Root Mean Squared Error. The `compare_performance()` in the **performance** package is used to compare the different models.
 
-First of all, let us create a list called *model_list* by using the code chun below.
+A list called `model_list` is created to hold the four models.
 
 ```{r}
 model_list = list(unconstrained=uncSIM,
@@ -484,9 +477,7 @@ model_list = list(unconstrained=uncSIM,
                    doublyConstrained=dbcSIM)
 ```
 
-Next, we will compute the RMSE of all the models in *model_list* file by using the code chunk below.
-
-The print below reveals that doubly constrained SIM is the best model among all the four SIMs because it has the smallest RMSE value of 1487.111.
+The RMSE of the models are computed using the compare_performance() function. The output reveals that doubly constrained SIM is the best model among the four SIMs because it has the smallest RMSE value of 1487.111.
 
 ```{r}
 compare_performance(model_list,
@@ -495,16 +486,16 @@ compare_performance(model_list,
 
 ### 16.8.10 Visualising Fitted Values
 
-In this section, you will learn how to visualise the observed values and the fitted values.
+The observed values and the fitted values are visualised below.
 
-Firstly we will extract the fitted values from each model by using the code chunk below.
+The fitted values from each model are extracted.
 
 ```{r}
 df = as.data.frame(uncSIM$fitted.values) %>%
   round(digits = 0)
 ```
 
-Next, we will join the values to *SIM_data* data frame.
+The values are then joined to the `SIM_data` data.frame.
 
 ```{r}
 SIM_data = SIM_data %>%
@@ -512,7 +503,7 @@ SIM_data = SIM_data %>%
   rename(uncTRIPS = "uncSIM$fitted.values")
 ```
 
-Repeat the same step by for Origin Constrained SIM (i.e. orcSIM), Destination Constrained SIM (i.e. decSIM), and Doubly Constrained SIM (i.e. dbcSIM).
+The same steps are repeated for the three other SIMs - Origin Constrained SIM (i.e. `orcSIM`), Destination Constrained SIM (i.e. `decSIM`), and Doubly Constrained SIM (i.e. `dbcSIM`).
 
 ```{r}
 df = as.data.frame(orcSIM$fitted.values) %>%
