@@ -398,7 +398,64 @@ wdAMOct_ct = st_join(hgrid, wdAMOct) %>%
   summarise(TOTAL_TRIPS = sum(TOTAL_TRIPS))
 ```
 
-The output is then plotted using functions in the **tmap** package. To facilitate comparisons between different peak periods, the breaks are set at fixed intervals of 100,000 passengers.
+The output is then plotted using functions in the **tmap** package.
+
+For illustration purposes, three common types of inputs for the "style" argument are tried out below for Aug 2023 weekday morning peak period. They are:
+
+-   style = "quantile" - the number of categories is taken from the "n" argument, which has a default value of 5.
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
+tm_shape(wdAMAug_ct) +
+  tm_fill(col = "TOTAL_TRIPS",
+    palette = "Reds",
+    style = "quantile",
+    title = "No. of Passenger Trips",
+    id = "grid_id",
+    showNA = FALSE,
+    alpha = 0.5,
+    popup.vars = c("No. of Passenger Trips: " = "TOTAL_TRIPS"),
+    popup.format = list(TOTAL_TRIPS = list(format = "f", digits = 0))) +
+  tm_borders(col = "grey40", lwd = 0.7) +
+  tm_layout(title = "Weekday Morning Peak in Aug 2023: style = quantile")
+```
+
+-   style = "jenks" - this produces a map based on natural breaks.
+
+```{r}
+tm_shape(wdAMAug_ct) +
+  tm_fill(col = "TOTAL_TRIPS",
+    palette = "Reds",
+    style = "jenks",
+    title = "No. of Passenger Trips",
+    id = "grid_id",
+    showNA = FALSE,
+    alpha = 0.5,
+    popup.vars = c("No. of Passenger Trips: " = "TOTAL_TRIPS"),
+    popup.format = list(TOTAL_TRIPS = list(format = "f", digits = 0))) +
+  tm_borders(col = "grey40", lwd = 0.7) +
+  tm_layout(title = "Weekday Morning Peak in Aug 2023: style = jenks")
+```
+
+-   style = "equal" - which produces a map with equal intervals for each category.
+
+```{r}
+tm_shape(wdAMAug_ct) +
+  tm_fill(col = "TOTAL_TRIPS",
+    palette = "Reds",
+    style = "equal",
+    title = "No. of Passenger Trips",
+    id = "grid_id",
+    showNA = FALSE,
+    alpha = 0.5,
+    popup.vars = c("No. of Passenger Trips: " = "TOTAL_TRIPS"),
+    popup.format = list(TOTAL_TRIPS = list(format = "f", digits = 0))) +
+  tm_borders(col = "grey40", lwd = 0.7) +
+  tm_layout(title = "Weekday Morning Peak in Aug 2023: style = equal")
+```
+
+To facilitate comparisons between different peak periods, the custom breaks approach is employed, with the breaks set at fixed intervals of 100,000 passengers.
 
 ```{r}
 brk = c(1, 100000, 200000, 300000, 400000, 500000, 600000)
@@ -619,7 +676,9 @@ The passenger trips by origin bus stops for the weekday afternoon peak period al
 
 -   East: Tampines Bus Interchange (446,207 passenger trips in Aug 2023; Grid ID: 4539).
 
-Again, the above observation underscores the importance of bus interchanges in the weekday afternoon peak period as major transportation hubs for commuters to get home from work. This is given that they are the first bus stop for a large number of bus routes. This provides useful information for urban planners and transport authorities in that they could examine whether the existing bus interchanges need to be expanded or improved to accommodate such high demands.
+Again, the above observation underscores the importance of bus interchanges in the weekday afternoon peak period as major transportation hubs for commuters to get home from work. This is likely because of commuters returning from work who take buses from these bus interchanges which are beside MRT stations, i.e., the different bus routes are like the spoke of a bicycle wheel, with the MRT station as the hub. This provides useful information for urban planners and transport authorities in that they could examine whether the existing bus interchanges need to be expanded or improved to accommodate such high demands.
+
+The observation could also reflect that these various towns are not just heartland areas where people live but are economic hubs with offices nearby where people work. This indicates that the Government's efforts to decentralise economic activities away has some effect. However, this hands-on exercise does not analyse MRT commuter patterns (which is another major public transport mode). Hence, the extent of the said effect cannot be ascertained. In addition, it is also not possible to determine whether the observation was due to commuters taking the bus to leave their offices situated these towns or transferring to buses after returning from the town area on the MRT.
 
 ### 4.3 Weekend/Holiday Morning Peak (11am to 2.59pm)
 
@@ -738,7 +797,17 @@ map_weAMOct
 
 #### 4.3.3 Deriving Insights on Weekend/Holiday Morning Peak
 
-xxx
+The passenger trips by origin bus stops for the weekend/holiday morning peak period shows that the numbers are generally lower. The bus stops (which are interchanges) with the highest numbers of passenger trips are:
+
+-   West: Boon Lay Bus Interchange (121,029 passenger trips in Sep 2023; Grid ID: 1251).
+
+-   North: Woodlands Bus Interchange (108,572 passenger trips in Sep 2023; Grid ID: 2411).
+
+-   East: Bedok Bus Interchange (111,194 passenger trips in Sep 2023; Grid ID: 4349).and Tampines Bus Interchange (107,719 passenger trips in Sep 2023; Grid ID: 4539).
+
+This shows that the bus interchanges in the north, east and west play a very important role in serving as origin hubs for commuters who may be heading to the town area (or other areas in Singapore) to enjoy their time off. This also indicates that these towns are likely to have large populations.
+
+The overall lower numbers on the weekend/holiday, even during the morning peak period shows that bus deployment can be kept relatively lean. Again, this is useful information for urban planners and transport authorities to understand and plan for the needs of bus commuters.
 
 ### 4.4 Weekend/Holiday Evening Peak (4pm to 7.59pm)
 
@@ -858,7 +927,19 @@ map_wePMOct
 
 #### 4.4.3 Deriving Insights on Weekend/Holiday Evening Peak
 
-xxx
+The passenger trips by origin bus stops for the weekend/holiday evening peak period shows that the numbers are generally lower. The bus stops (which are interchanges) with the highest numbers of passenger trips are:
+
+-   West: Boon Lay Bus Interchange (165,722 passenger trips in Sep 2023; Grid ID: 1251).
+
+-   North: Woodlands Bus Interchange (136,163 passenger trips in Sep 2023; Grid ID: 2411).
+
+-   Central: Ang Mo Kio Bus Interchange (105,693 passenger trips in Aug 2023; Grid ID: 3239).
+
+-   East: Bedok Bus Interchange (129,365 passenger trips in Sep 2023; Grid ID: 4349).and Tampines Bus Interchange (137,526 passenger trips in Aug 2023; Grid ID: 4539).
+
+This shows that the various bus interchanges in the play a very important role in serving as origin hubs for commuters who may be heading to the town area (or other areas in Singapore) to enjoy their time off, or heading home after visiting another heartland area in Singapore.
+
+The overall lower numbers on the weekend/holiday, even during the evening peak period shows that bus deployment can be kept relatively lean. Again, this is useful information for urban planners and transport authorities to understand and plan for the needs of bus commuters.
 
 ### 4.5 Comparing Between Different Peak Periods
 
@@ -960,6 +1041,20 @@ tmap_arrange(map_weAMOct, map_wePMOct, ncol = 2)
 :::
 
 #### 4.5.4 Insights from Comparing Different Peak Periods
+
+[Weekday Morning versus Afternoon]{.underline}
+
+xxx
+
+[Weekend/Holiday Morning versus Evening]{.underline}
+
+xxx
+
+[Weekday versus Weekend/Holiday Morning]{.underline}
+
+xxx
+
+[Weekday Afternoon versus Weekend/Holiday Evening]{.underline}
 
 xxx
 
