@@ -930,7 +930,8 @@ tmap_arrange(tm_shape(wdAMAug_ct %>% filter(TOTAL_TRIPS >= 50000)) +
 ##### Sep 2023
 
 ```{r}
-tmap_mode("view")
+#| code-fold: true
+#| code-summary: "Show the code"
 tmap_arrange(tm_shape(wdAMSep_ct %>% filter(TOTAL_TRIPS >= 50000)) +
   tm_fill(col = "TOTAL_TRIPS",
     palette = "Reds",
@@ -961,6 +962,8 @@ tmap_arrange(tm_shape(wdAMSep_ct %>% filter(TOTAL_TRIPS >= 50000)) +
 ##### Oct 2023
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
 tmap_mode("view")
 tmap_arrange(tm_shape(wdAMOct_ct %>% filter(TOTAL_TRIPS >= 50000)) +
   tm_fill(col = "TOTAL_TRIPS",
@@ -1002,6 +1005,8 @@ The plots from the three months for the weekend/holiday morning peak period vers
 ##### Aug 2023
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
 tmap_mode("view")
 tmap_arrange(tm_shape(weAMAug_ct %>% filter(TOTAL_TRIPS >= 50000)) +
   tm_fill(col = "TOTAL_TRIPS",
@@ -1033,6 +1038,8 @@ tmap_arrange(tm_shape(weAMAug_ct %>% filter(TOTAL_TRIPS >= 50000)) +
 ##### Sep 2023
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
 tmap_mode("view")
 tmap_arrange(tm_shape(weAMSep_ct %>% filter(TOTAL_TRIPS >= 50000)) +
   tm_fill(col = "TOTAL_TRIPS",
@@ -1064,6 +1071,8 @@ tmap_arrange(tm_shape(weAMSep_ct %>% filter(TOTAL_TRIPS >= 50000)) +
 ##### Oct 2023
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Show the code"
 tmap_mode("view")
 tmap_arrange(tm_shape(weAMOct_ct %>% filter(TOTAL_TRIPS >= 50000)) +
   tm_fill(col = "TOTAL_TRIPS",
