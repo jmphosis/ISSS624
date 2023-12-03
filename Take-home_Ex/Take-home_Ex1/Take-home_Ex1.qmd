@@ -493,7 +493,7 @@ The various subsets can then be plotted using functions in the **tmap** package.
 ```{r}
 #| code-fold: true
 #| code-summary: "Show the code"
-tmap_mode("view")
+tmap_mode("plot")
 tm_shape(wdAMAug_ct) +
   tm_fill(col = "TOTAL_TRIPS",
     palette = "Reds",
@@ -579,6 +579,7 @@ The plots from the three months for the weekday morning peak period are visualis
 ##### Aug 2023
 
 ```{r}
+tmap_mode("view")
 tm_shape(wdAMAug_ct) +
   tm_fill(col = "TOTAL_TRIPS",
     palette = "Reds",
@@ -598,6 +599,7 @@ tm_shape(wdAMAug_ct) +
 ```{r}
 #| code-fold: true
 #| code-summary: "Show the code"
+tmap_mode("view")
 tm_shape(wdAMSep_ct) +
   tm_fill(col = "TOTAL_TRIPS",
     palette = "Reds",
@@ -617,6 +619,7 @@ tm_shape(wdAMSep_ct) +
 ```{r}
 #| code-fold: true
 #| code-summary: "Show the code"
+tmap_mode("view")
 tm_shape(wdAMOct_ct) +
   tm_fill(col = "TOTAL_TRIPS",
     palette = "Reds",
@@ -656,6 +659,7 @@ The plots from the three months for the weekday afternoon peak period are visual
 ```{r}
 #| code-fold: true
 #| code-summary: "Show the code"
+tmap_mode("view")
 tm_shape(wdPMAug_ct) +
   tm_fill(col = "TOTAL_TRIPS",
     palette = "Reds",
@@ -675,6 +679,7 @@ tm_shape(wdPMAug_ct) +
 ```{r}
 #| code-fold: true
 #| code-summary: "Show the code"
+tmap_mode("view")
 tm_shape(wdPMSep_ct) +
   tm_fill(col = "TOTAL_TRIPS",
     palette = "Reds",
@@ -694,6 +699,7 @@ tm_shape(wdPMSep_ct) +
 ```{r}
 #| code-fold: true
 #| code-summary: "Show the code"
+tmap_mode("view")
 tm_shape(wdPMOct_ct) +
   tm_fill(col = "TOTAL_TRIPS",
     palette = "Reds",
@@ -733,6 +739,7 @@ The plots from the three months for the weekend/holiday morning peak period are 
 ```{r}
 #| code-fold: true
 #| code-summary: "Show the code"
+tmap_mode("view")
 tm_shape(weAMAug_ct) +
   tm_fill(col = "TOTAL_TRIPS",
     palette = "Reds",
@@ -752,6 +759,7 @@ tm_shape(weAMAug_ct) +
 ```{r}
 #| code-fold: true
 #| code-summary: "Show the code"
+tmap_mode("view")
 tm_shape(weAMSep_ct) +
   tm_fill(col = "TOTAL_TRIPS",
     palette = "Reds",
@@ -771,6 +779,7 @@ tm_shape(weAMSep_ct) +
 ```{r}
 #| code-fold: true
 #| code-summary: "Show the code"
+tmap_mode("view")
 tm_shape(weAMOct_ct) +
   tm_fill(col = "TOTAL_TRIPS",
     palette = "Reds",
@@ -808,6 +817,7 @@ The plots from the three months for the weekend/holiday evening peak period are 
 ```{r}
 #| code-fold: true
 #| code-summary: "Show the code"
+tmap_mode("view")
 tm_shape(wePMAug_ct) +
   tm_fill(col = "TOTAL_TRIPS",
     palette = "Reds",
@@ -827,6 +837,7 @@ tm_shape(wePMAug_ct) +
 ```{r}
 #| code-fold: true
 #| code-summary: "Show the code"
+tmap_mode("view")
 tm_shape(wePMSep_ct) +
   tm_fill(col = "TOTAL_TRIPS",
     palette = "Reds",
@@ -846,6 +857,7 @@ tm_shape(wePMSep_ct) +
 ```{r}
 #| code-fold: true
 #| code-summary: "Show the code"
+tmap_mode("view")
 tm_shape(wePMOct_ct) +
   tm_fill(col = "TOTAL_TRIPS",
     palette = "Reds",
@@ -887,6 +899,7 @@ The `filter()` function is applied so that only the hexagons with more than 50,0
 ##### Aug 2023
 
 ```{r}
+tmap_mode("view")
 tmap_arrange(tm_shape(wdAMAug_ct %>% filter(TOTAL_TRIPS >= 50000)) +
   tm_fill(col = "TOTAL_TRIPS",
     palette = "Reds",
@@ -917,6 +930,7 @@ tmap_arrange(tm_shape(wdAMAug_ct %>% filter(TOTAL_TRIPS >= 50000)) +
 ##### Sep 2023
 
 ```{r}
+tmap_mode("view")
 tmap_arrange(tm_shape(wdAMSep_ct %>% filter(TOTAL_TRIPS >= 50000)) +
   tm_fill(col = "TOTAL_TRIPS",
     palette = "Reds",
@@ -947,6 +961,7 @@ tmap_arrange(tm_shape(wdAMSep_ct %>% filter(TOTAL_TRIPS >= 50000)) +
 ##### Oct 2023
 
 ```{r}
+tmap_mode("view")
 tmap_arrange(tm_shape(wdAMOct_ct %>% filter(TOTAL_TRIPS >= 50000)) +
   tm_fill(col = "TOTAL_TRIPS",
     palette = "Reds",
@@ -987,6 +1002,7 @@ The plots from the three months for the weekend/holiday morning peak period vers
 ##### Aug 2023
 
 ```{r}
+tmap_mode("view")
 tmap_arrange(tm_shape(weAMAug_ct %>% filter(TOTAL_TRIPS >= 50000)) +
   tm_fill(col = "TOTAL_TRIPS",
     palette = "Reds",
@@ -1017,6 +1033,7 @@ tmap_arrange(tm_shape(weAMAug_ct %>% filter(TOTAL_TRIPS >= 50000)) +
 ##### Sep 2023
 
 ```{r}
+tmap_mode("view")
 tmap_arrange(tm_shape(weAMSep_ct %>% filter(TOTAL_TRIPS >= 50000)) +
   tm_fill(col = "TOTAL_TRIPS",
     palette = "Reds",
@@ -1047,6 +1064,7 @@ tmap_arrange(tm_shape(weAMSep_ct %>% filter(TOTAL_TRIPS >= 50000)) +
 ##### Oct 2023
 
 ```{r}
+tmap_mode("view")
 tmap_arrange(tm_shape(weAMOct_ct %>% filter(TOTAL_TRIPS >= 50000)) +
   tm_fill(col = "TOTAL_TRIPS",
     palette = "Reds",
@@ -1496,6 +1514,7 @@ The LISA plots from the three months for the weekday morning peak period are vis
 ```{r}
 #| code-fold: true
 #| code-summary: "Show the code for other subsets"
+tmap_mode("view")
 wdAMAug_lisamap
 ```
 
@@ -1504,6 +1523,7 @@ wdAMAug_lisamap
 ```{r}
 #| code-fold: true
 #| code-summary: "Show the code"
+tmap_mode("view")
 wdAMSep_lisamap
 ```
 
@@ -1512,6 +1532,7 @@ wdAMSep_lisamap
 ```{r}
 #| code-fold: true
 #| code-summary: "Show the code"
+tmap_mode("view")
 wdAMOct_lisamap
 ```
 :::
@@ -1532,6 +1553,7 @@ The LISA plots from the three months for the weekday afternoon peak period are v
 ```{r}
 #| code-fold: true
 #| code-summary: "Show the code"
+tmap_mode("view")
 wdPMAug_lisamap
 ```
 
@@ -1540,6 +1562,7 @@ wdPMAug_lisamap
 ```{r}
 #| code-fold: true
 #| code-summary: "Show the code"
+tmap_mode("view")
 wdPMSep_lisamap
 ```
 
@@ -1548,6 +1571,7 @@ wdPMSep_lisamap
 ```{r}
 #| code-fold: true
 #| code-summary: "Show the code"
+tmap_mode("view")
 wdPMOct_lisamap
 ```
 :::
@@ -1566,6 +1590,7 @@ The LISA plots from the three months for the weekend/holiday morning peak period
 ```{r}
 #| code-fold: true
 #| code-summary: "Show the code"
+tmap_mode("view")
 weAMAug_lisamap
 ```
 
@@ -1574,6 +1599,7 @@ weAMAug_lisamap
 ```{r}
 #| code-fold: true
 #| code-summary: "Show the code"
+tmap_mode("view")
 weAMSep_lisamap
 ```
 
@@ -1582,6 +1608,7 @@ weAMSep_lisamap
 ```{r}
 #| code-fold: true
 #| code-summary: "Show the code"
+tmap_mode("view")
 weAMOct_lisamap
 ```
 :::
@@ -1604,6 +1631,7 @@ The LISA plots from the three months for the weekend/holiday evening peak period
 ```{r}
 #| code-fold: true
 #| code-summary: "Show the code"
+tmap_mode("view")
 wePMAug_lisamap
 ```
 
@@ -1612,6 +1640,7 @@ wePMAug_lisamap
 ```{r}
 #| code-fold: true
 #| code-summary: "Show the code"
+tmap_mode("view")
 wePMSep_lisamap
 ```
 
@@ -1620,6 +1649,7 @@ wePMSep_lisamap
 ```{r}
 #| code-fold: true
 #| code-summary: "Show the code"
+tmap_mode("view")
 wePMOct_lisamap
 ```
 :::
