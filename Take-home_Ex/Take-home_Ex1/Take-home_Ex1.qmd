@@ -129,11 +129,11 @@ The data sets are placed under two sub-folders:
 
 These two sub-folders are within the data folder of my Take-home_Ex1 folder.
 
-## **3 Data Wrangling**
+## 3 Data Wrangling
 
-### **3.1 Preparing the Aspatial Data - Passenger Volume**
+### 3.1 Preparing the Aspatial Data - Passenger Volume
 
-#### **3.1.1 Importing and Merging Data**
+#### 3.1.1 Importing and Merging Data
 
 The three csv files are imported and combined into a tibble data frame, `odbus`, using functions from the **base** package as shown in the following codes:
 
@@ -234,9 +234,9 @@ write_rds(odbus, "data/rds/bus.rds")
 odbus = read_rds("data/rds/bus.rds")
 ```
 
-### **3.2 Preparing the Geospatial Data - Bus Stop Location**
+### 3.2 Preparing the Geospatial Data - Bus Stop Location
 
-#### **3.2.1 Importing and Transforming the Geospatial Data - Bus Stop Location**
+#### 3.2.1 Importing and Transforming the Geospatial Data - Bus Stop Location
 
 The Bus Stop Location shapefile is imported using `st_read()` in the **sf** package. The output is a simple feature data frame, `busstop`, which is in the SVY21 projected coordinates systems. It has 5,161 features and 3 fields, which include the geometry points indicating the bus stop locations.
 
@@ -262,7 +262,7 @@ busstop = st_set_crs(busstop, 3414)
 st_crs(busstop)
 ```
 
-#### **3.2.2 Checking for Duplicates and Missing Values**
+#### 3.2.2 Checking for Duplicates and Missing Values
 
 The data sets from the LTA DataMall are expected to be relatively clean. Nevertheless, due diligence checks for duplicates and missing values are still made to confirm the assumptions.
 
@@ -285,7 +285,7 @@ The `colSums()` function in the **base** package is used to check for missing va
 colSums(is.na(busstop))
 ```
 
-#### **3.2.3 Selecting Columns and** Removing Bus Stops in Malaysia
+#### 3.2.3 Selecting Columns and Removing Bus Stops in Malaysia
 
 The `select()` function in **dplyr** package is used to drop the "BUS_ROOF_N" column in `busstop` since it is not required. As there are bus stops situated in Johor Bahru, Malaysia, they are removed using the filter() function in the **dplyr** package.
 
@@ -304,7 +304,7 @@ write_rds(busstop, "data/rds/busstop.rds")
 busstop = read_rds("data/rds/busstop.rds")
 ```
 
-### **3.3 Performing Relational Join**
+### 3.3 Performing Relational Join
 
 The simple feature data frame, `busstop`, and the tibble data frame, `odbus`, are combined using the `left_join()` function in the **dplyr** package, by matching the "BUS_STOP_N" column in `busstop` with the "ORIGIN_PT_CODE" in `odbus`. However, as the "BUS_STOP_N" values are character values, they would need to be converted to integer values first before the join, so that values such as "01012" in `busstop` can be matched to values such as "1012" in `odbus`.
 
@@ -329,7 +329,7 @@ bus = read_rds("data/rds/bus.rds")
 rm(odbus, busstop)
 ```
 
-### **3.6 Creating Spatial Hexagon Grid**
+### 3.4 Creating Spatial Hexagon Grid
 
 Spatial grids are commonly used in spatial analysis. Regularly shaped grids may comprise of equilateral triangles, squares, or hexagons. The hexagon is the most circular-shaped polygon that can tessellate to form an evenly spaced grid, providing a low perimeter-to-area ratio that reduces sampling bias due to edge effects of the grid shape.
 
@@ -344,7 +344,7 @@ hgrid = st_sf(geo) %>%
   mutate(grid_id = 1:length(lengths(geo)))
 ```
 
-## **4 Exploratory Data Analysis - Computing, Visualising, and Deriving Insights on Passenger Trips by Origin**
+## 4 Exploratory Data Analysis - Computing, Visualising, and Deriving Insights on Passenger Trips by Origin
 
 ### 4.1 Computing Passenger Trips by Origin
 
@@ -493,7 +493,7 @@ The various subsets can then be plotted using functions in the **tmap** package.
 ```{r}
 #| code-fold: true
 #| code-summary: "Show the code"
-tmap_mode("plot")
+tmap_mode("view")
 tm_shape(wdAMAug_ct) +
   tm_fill(col = "TOTAL_TRIPS",
     palette = "Reds",
@@ -569,7 +569,7 @@ tm_shape(wdAMAug_ct) +
   tm_layout(title = "Weekday Morning Peak in Aug 2023: custom breaks")
 ```
 
-### **4.3 Weekday Morning Peak (6am to 9.59am)**
+### 4.3 Weekday Morning Peak (6am to 9.59am)
 
 The custom breaks approach for mapping the passenger trips by origin bus stops are used for descriptive analysis.
 
@@ -1079,11 +1079,11 @@ The key difference between the weekend/holiday morning versus evening peak perio
 
 Similarly, another important difference is that the key bus interchanges highlighted previously for weekend morning and evening peak periods generally face higher volumes in the evening than morning. This could mean that more commuters head home in that 4-hour evening peak period as compared to the morning peak period. This could mean that the morning peak hour commuter crowd is more spread out (i.e., beyond the 4-hour period).
 
-## **5 Local Indicators of Spatial Association (LISA) Analysis**
+## 5 Local Indicators of Spatial Association (LISA) Analysis
 
 Local Indicators of Spatial Association (LISA) are statistics that evaluate the existence of clusters in the spatial arrangement of a given variable. The appropriate LISA, including local Moran's I, are applied to detect cluster(s) and/or outlier(s) for the Bus Passenger Trips in the `bus` simple feature data frame, month by month.
 
-### **5.1 Computing Distance-based Weights**
+### 5.1 Computing Distance-based Weights
 
 **Distance-based weights** are used in this take-home exercise. Distance-based weights are more appropriate than contiguity spatial weights in this context given that the hexagons are spread out across Singapore, and some hexagons may not have immediate neighbours (i.e., contiguous) due to reasons such as being separated by reservoirs or waterways.
 
@@ -1207,7 +1207,7 @@ wePMOct_wt = wePMOct_ct %>%
          .before = 1)
 ```
 
-### **5.2 Computing Local Indicators of Spatial Association (LISA) of Passenger Trips by Origin**
+### 5.2 Computing Local Indicators of Spatial Association (LISA) of Passenger Trips by Origin
 
 The `local_moran()` function in the **sfdep** package is used to compute the local Moran's I value of "TOTAL_TRIPS" at the hexagon level. The output is a tibble data frame, lisa.
 
@@ -1319,7 +1319,7 @@ wePMOct_lisa = wePMOct_wt %>%
   unnest(local_moran)
 ```
 
-### **5.3 Creating Local Indicators of Spatial Association (LISA) Maps of Passenger Trips by Origin**
+### 5.3 Creating Local Indicators of Spatial Association (LISA) Maps of Passenger Trips by Origin
 
 The LISA map is a categorical map showing outliers and clusters. There are two types of outliers namely: High-Low and Low-High outliers. Likewise, there are two type of clusters namely: High-High and Low-Low clusters. **The LISA map is an interpreted map combining local Moran's I of geographical areas and their respective p-values.**
 
@@ -1486,7 +1486,7 @@ wePMOct_lisamap = tm_shape(wePMOct_lisasig) +
   tm_layout(title = "LISA Map of Weekend/Holiday Evening Peak in Oct 2023")
 ```
 
-### **5.4 Weekday Morning Peak (6am to 9.59am)**
+### 5.4 Weekday Morning Peak (6am to 9.59am)
 
 The LISA plots from the three months for the weekday morning peak period are visualised using functions from the **tmap** package:
 
