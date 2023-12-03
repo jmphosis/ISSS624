@@ -82,7 +82,7 @@ hunan2012 = read_csv("data/aspatial/Hunan_2012.csv")
 
 ### 3.3 Performing Relational Join
 
-The attribute table of the spatial polygons data frame, `hunan`, is updated using the attribute fields of the tibble data frame, `hunan2012` using **left_join()** (under dplyr package). In order to retain the geospatial properties, the left data frame must the sf data.frame (i.e. `hunan`)
+The attribute table of the spatial polygons data frame, `hunan`, is updated using the attribute fields of the tibble data frame, `hunan2012` using **left_join()** (under dplyr package). In order to retain the geospatial properties, the left data frame must be the sf data.frame (i.e. `hunan`)
 
 > ***Student Note***: Without explicitly stating the "by" argument for left_join(), the two tables are joined by the 'County' columns.
 
