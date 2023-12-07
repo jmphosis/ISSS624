@@ -1,0 +1,15 @@
+---
+title: "In-class Exercise 4"
+date: "9 December 2023"
+date-modified: "last-modified" #allows for updating to the latest date
+format: html
+execute: 
+  echo: true #shows the code
+  eval: true #shows the outcomes of the code
+  warning: false #does not show the warnings
+editor: visual
+background-color: lightgrey;
+font-family:  Palatino Linotype;
+---
+
+[**\~\~\~ End of In-class Exercise 4 \~\~\~**]{.smallcaps}
