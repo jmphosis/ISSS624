@@ -16,23 +16,49 @@ font-family:  Palatino Linotype;
 
 ## 1 Overview
 
-In this in-class exercise, the following tasks are performed:
+A well calibrated Spatial Interaction Model (SIM) requires conceptually logical and well-prepared propulsiveness and attractiveness variables.
 
-1.  Perform geocoding using data downloaded from Data.gov.sg; and
+In this in-class exercise, the tasks are:
 
-2.  Calibrate Geographically Weighted Poisson Regression.
+-   Perform geocoding using SLA OneMap API;
+
+-   Convert an aspatial data set into a simple feature tibble data.frame;
+
+-   Perform point-in-polygon count analysis;
+
+-   Append the propulsiveness and attractiveness variables onto a flow data set; and
+
+-   Calibrate Geographically Weighted Poisson Regression models.
 
 ## 2 Getting Started
 
 The following packages are loaded into the R environment:
 
+-   **sf** for importing, managing, and processing geospatial data;
+
+-   **tidyverse** (i.e. readr, tidyr, dplyr) for performing data science tasks such as importing, tidying, and wrangling data;
+
+-   **tmap** for thematic mapping; and
+
+-   **httr** for making HTTP requests.
+
 ```{r}
 pacman::p_load(tidyverse, sf, httr, tmap)
 ```
 
-## 3 Geocoding using SLA API
+## 3 Geocoding with SLA API
 
-Address geocoding, or simply geocoding, is the process of taking an aspatial description of a location, such as an address or postcode, and returning geographic coordinate, frequently
+The data set, *Generalinformationofschools.csv*, is downloaded from Data.gov.sg.
+
+Geocoding is the process of taking an aspatial description of a location, such as an address or postcode, and returning geographic coordinates, frequently latitude-longitude pair, to identify a location on the Earth's surface.
+
+The Singapore Land Authority (SLA) supports an online geocoding service called OneMap API. The Search API looks up the address data or 6-digit postal code for an entered value. It then returns both latitude, longitude and x,y coordinates of the searched location.
+
+The code chunks below perform geocoding using SLA OneMap API. The input data is in csv file format, and imported into the R environment using the `read_csv()` function in the **readr** package. A collection of http call functions in the **httr** package is then used to pass the individual records to the geocoding server on OneMap.
+
+The output is two tibble data.frames - `found` and `not_found`. The `found` data.frame contains all records that are geocoded correctly, and the `not_found` data.frame contains postal code(s) that fail to be geocoded.
+
+The `found` data table is joined with the original csv data table using a unique identifier (i.e. POSTAL) that is common to both data tables. The output data table is saved as a csv file, `found`.
 
 ```{r}
 url = "https://www.onemap.gov.sg/api/common/elastic/search"
@@ -54,7 +80,7 @@ for(postcode in postcodes){
 }
 ```
 
-xxx
+Next, both the `found` and `not_found` data.frames are combined into a single tibble data.frame, `merged`. At the same time, `merged` and `not_found` tibble data.frames are written into two separate csv files, *schools* and *not_found* respectively.
 
 ```{r}
 merged = merge(csv, found, by.x = 'postal_code', by.y = 'results.POSTAL', all = TRUE)
@@ -64,7 +90,7 @@ write.csv(not_found, file = 'data/aspatial/not_found.csv')
 
 ## 4 Converting Aspatial Data into simple feature tibble data.frame
 
-### 4.1 Importing and Tidying *schools* Data
+### 4.1 Tidying *schools* Data Frame
 
 In this sub-section, the schools.csv is imported into the R environment and only the necessary fields are selected and renamed.
 
@@ -75,15 +101,17 @@ schools = read_csv('data/aspatial/schools.csv') %>%
   select(postal_code, school_name, latitude, longitude)
 ```
 
-### 4.2 Converting Aspatial Data into sf tibble data.frame
-
-Next, the aspatial data is converted into a simple feature tibble data.frame, *schools_sf*.
+> ***Student Note***: Using Google Map, the latitude and longitude of the school (Zhenghua Secondary School) that was not geocoded are 1.389279 and 103.7651 respectively. This is manually coded into the schools data frame.
 
 ```{r}
 schools = schools %>%
   mutate(latitude = ifelse(school_name == "ZHENGHUA SECONDARY SCHOOL", 1.389279, latitude)) %>%
   mutate(longitude = ifelse(school_name == "ZHENGHUA SECONDARY SCHOOL", 103.7651, longitude))
 ```
+
+### 4.2 Converting Aspatial Data into Simple Feature Tibble Data Frame
+
+Next, the schools tibble data.frame is converted into a simple feature tibble data.frame, schools_sf, using the `st_as_sf()` function in the **sf** package and the values in the latitude and longitude fields.
 
 ```{r}
 schools_sf = st_as_sf(schools,
@@ -94,87 +122,145 @@ schools_sf = st_as_sf(schools,
 
 ### 4.3 Plotting A Point Simple Feature Layer
 
+To ensure that the *schools* sf tibble data.frame has been projected and converted correctly, the schools point data are plotted for visual inspection.
+
+First, the Master Plan Subzone Boundary shapefile is imported as the `mpsz` sf tibble data.frame.
+
 ```{r}
-tmap_mode("view")
+mpsz = st_read(dsn = "data/geospatial/",
+                layer = "MPSZ-2019") %>%
+  st_transform(crs = 3414)
+```
+
+A point symbol map is then plotted to show the locations of the schools.
+
+```{r}
+tmap_options(check.and.fix = TRUE)
+tm_shape(mpsz) +
+  tm_polygons() +
 tm_shape(schools_sf) +
-  tm_dots() +
-  tm_view(set.zoom.limits = c(11, 14))
-tmap_mode("plot")
+  tm_dots()
 ```
 
-## 5 Preparing Data
+### 4.4 Performing Point-in-Polygon Count for Schools
 
-xxx
+The number of schools in each planning subzone is then counted using the `lengths()` function in the **base** pacakge and the `st_intersects()` function in the **sf** package.
 
-```{r}
-mpsz = read_rds("data/rds/mpsz.rds")
-```
-
-xxx
+The summary statistics reveal that there are excessive 0 values in "SCHOOL_COUNT" field. If the `log()` function is used to transform this field, these 0 values would need to be replaced with a value between 0 and 1 (exclusive).
 
 ```{r}
 mpsz$`SCHOOL_COUNT` = lengths(
   st_intersects(mpsz, schools_sf)
 )
-```
 
-The summary statistics of the derived variable shows that the minimum value is 0, maximum value is 12. The data is skewed as the median and 1Q values are also 0 and the mean value is 1.054.
-
-```{r}
 summary(mpsz$SCHOOL_COUNT)
 ```
 
-xxx
+## 5 Data Integration and Final Touch-Up
+
+### 5.1 Performing Point-in-Polygon Count for Businesses
+
+The number of business locations are also counted for each planning subzone using the same steps earlier.
 
 ```{r}
 biz_sf = st_read(dsn = "data/geospatial",
-                 layer = "business")
+                 layer = "Business")
 ```
 
-xxx
+The points are visualised.
 
 ```{r}
 tmap_options(check.and.fix = TRUE)
-tm_shape(mpsz) + 
+tm_shape(mpsz) +
   tm_polygons() +
-  tm_shape(biz_sf) +
+tm_shape(biz_sf) +
   tm_dots()
 ```
 
-## 6 Data Integration and Wrangling
-
-xxx
+Again, the summary statistics show that there are 0 values.
 
 ```{r}
-# flow_data = flow_data %>%
-#  left_join(mpsz_tidy,
-#            by = c("DESTIN_SZ" = "SUBZONE_C"))
+mpsz$`BIZ_COUNT` = lengths(
+  st_intersects(
+    mpsz, biz_sf))
+
+summary(mpsz$BIZ_COUNT)
 ```
 
-6.1 Checking for Variables with Zero Values
+### 5.2 Performing Join to Incorporate Counts of Schools and Businesses
 
-xxx
+The origin-destination bus passengers flow data is imported
 
 ```{r}
-# summary(flow_data)
+flow_data = read_rds("data/rds/flow_data.rds")
 ```
 
-xxx
+The derived fields of "SCHOOL_COUNT" and "BIZ_COUNT" are added to the `flow_data` sf tibble data.frame.
+
+> ***Student Note***: The unique join fields are "DESTIN_SZ" of `flow_data` and SUBZONE_C of `mpsz_tidy` because the "SCHOOL_COUNT" and "BIZ_COUNT" values are pull factors that attract bus commuters to the destinations.
 
 ```{r}
+mpsz_tidy = mpsz %>%
+  st_drop_geometry() %>%
+  select(SUBZONE_C, SCHOOL_COUNT, BIZ_COUNT)
+```
 
+```{r}
+flow_data = flow_data %>%
+  left_join(mpsz_tidy,
+            by = c("DESTIN_SZ" = "SUBZONE_C")) %>%
+  rename(TRIPS = MORNING_PEAK,
+         DIST = dist)
+```
+
+### 5.3 Checking for and Replacing Variables with Zero Values
+
+Since the Poisson Regression is based off log, and log 0 is undefined, it is important to ensure that there are no 0 values in the explanatory variables.
+
+The `summary()` function in the base package is used to compute the summary statistics of all variables. As mentioned earlier, the "SCHOOL_COUNT" and "BIZ_COUNT" variables consist of 0 values.
+
+```{r}
+summary(flow_data)
+```
+
+The 0 values are replaced with 0.99.
+
+```{r}
+flow_data$SCHOOL_COUNT = ifelse(
+  flow_data$SCHOOL_COUNT == 0,
+  0.99, flow_data$SCHOOL_COUNT)
+flow_data$BIZ_COUNT = ifelse(
+  flow_data$BIZ_COUNT == 0,
+  0.99, flow_data$BIZ_COUNT)
+```
+
+The summary() function in the base package is used again to check that the replacements are been made.
+
+```{r}
+summary(flow_data)
+```
+
+The tidied flow_data is then saved into an rds file, `flow_data_tidy`.
+
+```{r}
+write_rds(flow_data,
+          "data/rds/flow_data_tidy.rds")
 ```
 
 ------------------------------------------------------------------------
 
-2 Getting Started
+## 6 Calibrating Spatial Interaction Models
+
+### 6.1 Preparation
+
+The required packages are loaded.
 
 ```{r}
 pacman::p_load(tmap, sf, performance,
                ggpubr, tidyverse)
 ```
 
-3 Data
+The earlier prepared `flow_data_tidy` is imported.
 
 ```{r}
 flow_data = read_rds("data/rds/flow_data_tidy.rds")
@@ -184,12 +270,13 @@ flow_data = read_rds("data/rds/flow_data_tidy.rds")
 glimpse(flow_data)
 ```
 
-xxx
+The intra-subzone flows are filtered away.
 
 ```{r}
 flow_data$FlowNoIntra = ifelse(
   flow_data$ORIGIN_SZ == flow_data$DESTIN_SZ,
-  0, flow_data$MORNING_PEAK)
+  0, flow_data$TRIPS)
+
 flow_data$offset = ifelse(
   flow_data$ORIGIN_SZ == flow_data$DESTIN_SZ,
   0.000001, 1)
@@ -200,14 +287,7 @@ inter_zonal_flow = flow_data %>%
   filter(FlowNoIntra > 0)
 ```
 
-```{r}
-inter_zonal_flow = inter_zonal_flow %>%
-  rename(TRIPS = MORNING_PEAK,
-         DIST = dist,
-         BIZ_COUNT = RETAIL_COUNT)
-```
-
-### Unconstrained Spatial Interaction Model
+### 6.2 Unconstrained Spatial Interaction Model
 
 ```{r}
 uncSIM_Poisson = glm(formula = TRIPS ~ 
@@ -227,9 +307,7 @@ uncSIM_Poisson = glm(formula = TRIPS ~
 summary(uncSIM_Poisson)
 ```
 
-### Origin (Production) Constrained Spatial Interaction Model
-
-xxx
+### 6.3 Origin (Production) Constrained Spatial Interaction Model
 
 ```{r}
 orcSIM_Poisson = glm(formula = TRIPS ~
@@ -266,16 +344,12 @@ performance_rmse(orcSIM_Poisson,
                  normalized = FALSE) # use raw values (not normalised to mean = 0, sd = 1)
 ```
 
-xxx
-
 ```{r}
 performance_rmse(orcSIM_Poisson,
                  normalized = TRUE)
 ```
 
-### Destination Constrained Spatial Interaction Model
-
-xxx
+### 6.4 Destination Constrained Spatial Interaction Model
 
 ```{r}
 decSIM_Poisson = glm(formula = TRIPS ~
@@ -291,7 +365,7 @@ options(max.print=10000)
 summary(decSIM_Poisson)
 ```
 
-### Doubly Constrained Spatial Interaction Model
+### 6.5 Doubly Constrained Spatial Interaction Model
 
 ```{r}
 dbcSIM_Poisson = glm(formula = TRIPS ~
@@ -305,7 +379,7 @@ options(max.print=10000)
 summary(dbcSIM_Poisson)
 ```
 
-### Model Comparison
+### 6.6 Model Comparison
 
 ```{r}
 model_list = list(unconstrained = uncSIM_Poisson,
