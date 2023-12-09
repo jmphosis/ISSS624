@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2023-11-07">
+
+<title>ISSS624 - Take-home Exercise 2: Applied Spatial Interaction Models: A Case Study of Singapore Public Bus Commuter Flows</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">ISSS624</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-hands-on-exercises" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">Hands-on Exercises</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-hands-on-exercises">    
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex1A/Hands-on_Ex1A.html" rel="" target="">
+ <span class="dropdown-text">Hands-on Exercise 1A</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex1B/Hands-on_Ex1B.html" rel="" target="">
+ <span class="dropdown-text">Hands-on Exercise 1B</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex2/Hands-on_Ex2A.html" rel="" target="">
+ <span class="dropdown-text">Hands-on Exercise 2A</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex2/Hands-on_Ex2B.html" rel="" target="">
+ <span class="dropdown-text">Hands-on Exercise 2B</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex3/Hands-on_Ex3.html" rel="" target="">
+ <span class="dropdown-text">Hands-on Exercise 3</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex4/Hands-on_Ex4.html" rel="" target="">
+ <span class="dropdown-text">Hands-on Exercise 4</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5.html" rel="" target="">
+ <span class="dropdown-text">Hands-on Exercise 5</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-in-class-exercise" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">In-class Exercise</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-in-class-exercise">    
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex1/In-class_Ex1.html" rel="" target="">
+ <span class="dropdown-text">In-class Exercise 1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex2/In-class_Ex2.html" rel="" target="">
+ <span class="dropdown-text">In-class Exercise 2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex3/In-class_Ex3.html" rel="" target="">
+ <span class="dropdown-text">In-class Exercise 3</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex4/In-class_Ex4.html" rel="" target="">
+ <span class="dropdown-text">In-class Exercise 4</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex5/In-class_Ex5.html" rel="" target="">
+ <span class="dropdown-text">In-class Exercise 5</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-take-home-exercise" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">Take-home Exercise</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-take-home-exercise">    
+        <li>
+    <a class="dropdown-item" href="../../Take-home_Ex/Take-home_Ex1/Take-home_Ex1.html" rel="" target="">
+ <span class="dropdown-text">Take-home Exercise 1</span></a>
+  </li>  
+        <li class="dropdown-header">Take-home Exercise 2</li>
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">1 Introduction</a>
+  <ul class="collapse">
+  <li><a href="#background" id="toc-background" class="nav-link" data-scroll-target="#background">1.1 Background</a></li>
+  <li><a href="#the-study-area" id="toc-the-study-area" class="nav-link" data-scroll-target="#the-study-area">1.2 The Study Area</a></li>
+  <li><a href="#the-analytical-questions" id="toc-the-analytical-questions" class="nav-link" data-scroll-target="#the-analytical-questions">1.3 The Analytical Questions</a></li>
+  <li><a href="#objectives-and-tasks" id="toc-objectives-and-tasks" class="nav-link" data-scroll-target="#objectives-and-tasks">1.4 Objectives and Tasks</a></li>
+  </ul></li>
+  <li><a href="#getting-started" id="toc-getting-started" class="nav-link" data-scroll-target="#getting-started">2 Getting Started</a>
+  <ul class="collapse">
+  <li><a href="#setting-the-analytical-tools" id="toc-setting-the-analytical-tools" class="nav-link" data-scroll-target="#setting-the-analytical-tools">2.1 Setting the Analytical Tools</a></li>
+  <li><a href="#data-sources" id="toc-data-sources" class="nav-link" data-scroll-target="#data-sources">2.2 Data Sources</a></li>
+  </ul></li>
+  <li><a href="#data-wrangling" id="toc-data-wrangling" class="nav-link" data-scroll-target="#data-wrangling">3 Data Wrangling</a>
+  <ul class="collapse">
+  <li><a href="#preparing-the-aspatial-data---passenger-volume" id="toc-preparing-the-aspatial-data---passenger-volume" class="nav-link" data-scroll-target="#preparing-the-aspatial-data---passenger-volume">3.1 Preparing the Aspatial Data - Passenger Volume</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Take-home Exercise 2: Applied Spatial Interaction Models: A Case Study of Singapore Public Bus Commuter Flows</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 7, 2023</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">December 9, 2023</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+</header>
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">1 Introduction</h2>
+<section id="background" class="level3">
+<h3 class="anchored" data-anchor-id="background">1.1 Background</h3>
+<p>Buses and the Mass Rapid Transit (MRT) system are the main modes of transport used by Singaporeans for their daily commutes. With an ever increasing population, the key challenge for public bus operators is balancing supply against demand by optimising its services, fleets, and manpower for different bus routes.</p>
+<p>Hence, the identification and analysis of the movement patterns of public buses can provide insights on commuting in Singapore, allowing for the development of better urban management strategies by both the public and private sectors.</p>
+</section>
+<section id="the-study-area" class="level3">
+<h3 class="anchored" data-anchor-id="the-study-area">1.2 The Study Area</h3>
+<p>The study area is Singapore, a city-state in Southeast Asia, with a total land area of about 730 square kilometres and a total population of 5.92 million (as at June 2023).</p>
+<p>Commuting by public bus is the most common mode of transport in Singapore, with an average daily ridership of about 3.461 million in 2022, according to the LTA. The public bus fleet is approximately 5,800, plying more than 300 routes and 5,000 bus stops.</p>
+</section>
+<section id="the-analytical-questions" class="level3">
+<h3 class="anchored" data-anchor-id="the-analytical-questions">1.3 The Analytical Questions</h3>
+<p>In this take-home exercise, I aim to answer the following analytical questions:</p>
+<ul>
+<li><p>Is the flow of public bus commuters evenly distributed geographically (between different origins and destinations)?</p></li>
+<li><p>Which type of spatial interaction models are best suited for modelling public bus commuter flows</p></li>
+<li><p>What factors affect the public bus commuter flows?</p></li>
+<li><p>Based on the analysis, what are the insights that can be derived for urban transport planning?</p></li>
+</ul>
+</section>
+<section id="objectives-and-tasks" class="level3">
+<h3 class="anchored" data-anchor-id="objectives-and-tasks">1.4 Objectives and Tasks</h3>
+<p>Hence, the objectives of this take-home exercise are to:</p>
+<ol type="1">
+<li><p>Conduct practice research on public bus commuter flows to show how disparate publicly available data can be integrated, analysed, and modelled to support policy making; and</p></li>
+<li><p>Apply techniques in geospatial data science and analysis (GDSA) and demonstrate the potential value of GDSA in integrating publicly available data from multiple sources for building spatial interaction models to determine the factors affecting urban mobility patterns of public bus commuters.</p></li>
+</ol>
+<p>The detailed tasks are:</p>
+<ol type="1">
+<li><p><u>Geospatial Data Science</u>:</p>
+<ul>
+<li><p>Derive an analytical hexagon data of 325m (i.e., perpendicular distance between the centre of the hexagon and its edges) to represent the traffic analysis zone (TAZ).</p></li>
+<li><p>Construct an origin-destination (O-D) matrix of commuter flows aggregated at the analytics hexagon level for one of the following time intervals by integrating <em>Passenger Volume by Origin Destination Bus Stops</em> and <em>Bus Stop Location</em> from the LTA DataMall:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Peak Hour Period</th>
+<th>Bus Tap On Time</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Weekday Morning Peak</td>
+<td>6am to 9am</td>
+</tr>
+<tr class="even">
+<td>Weekday Afternoon Peak</td>
+<td>5pm to 8pm</td>
+</tr>
+<tr class="odd">
+<td>Weekend/Holiday Morning Peak</td>
+<td>11am to 2pm</td>
+</tr>
+<tr class="even">
+<td>Weekend/Holiday Evening Peak</td>
+<td>4pm to 7pm</td>
+</tr>
+</tbody>
+</table></li>
+<li><p>Display the O-D flows of the passenger trips using the appropriate geovisualisation methods.</p></li>
+<li><p>Describe the spatial patterns revealed by the geovisualisation.</p></li>
+<li><p>Assemble at least three propulsive and three attractiveness variables using the aspatial and geospatial data from publicly available sources.</p></li>
+<li><p>Compute a distance matrix using the analytical hexagon data derived.</p></li>
+</ul></li>
+</ol>
+<!-- -->
+<ol start="2" type="1">
+<li><p><u>Spatial Interaction Modelling (SIM)</u>:</p>
+<ul>
+<li><p>Calibrate spatial interactive models to determine factors affecting urban commuting flows during the selected time interval.</p></li>
+<li><p>Present the modelling results using the appropriate geovisualisation and graphical visualisation methods.</p></li>
+<li><p>Describe the modelling results based on the spatial interaction model output tables, maps, and data visualisations prepared.</p></li>
+</ul></li>
+</ol>
+</section>
+</section>
+<section id="getting-started" class="level2">
+<h2 class="anchored" data-anchor-id="getting-started">2 Getting Started</h2>
+<section id="setting-the-analytical-tools" class="level3">
+<h3 class="anchored" data-anchor-id="setting-the-analytical-tools">2.1 Setting the Analytical Tools</h3>
+<p>The R packages used in this hands-on exercise are:</p>
+<ul>
+<li><p><strong>sf</strong> for importing, managing, and processing geospatial data;</p></li>
+<li><p><strong>sp</strong> for handling spatial data in computationally efficient ways;</p></li>
+<li><p><strong>tidyverse</strong> (i.e.&nbsp;readr, tidyr, dplyr) for performing data science tasks such as importing, tidying, and wrangling data;</p></li>
+<li><p><strong>tmap</strong> for thematic mapping;</p></li>
+<li><p><strong>reshape2</strong> for handling matrix format;</p></li>
+<li><p><strong>DT</strong> a wrapper of the JavaScript Library ‘DataTables’ for creating interactive and dynamic data tables;</p></li>
+<li><p><strong>stplanr</strong> for working with spatial data related to transportation and urban planning;</p></li>
+<li><p><strong>performance</strong> for the assessment of regression models performance; and</p></li>
+<li><p><strong>ggpubr</strong> for creating customised and annotated ggplot2 plots for better visualisation.</p></li>
+</ul>
+<p>They are loaded into the R environment:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, sp, tidyverse, tmap, </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>               reshape2, DT, stplanr,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>               performance, ggpubr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="data-sources" class="level3">
+<h3 class="anchored" data-anchor-id="data-sources">2.2 Data Sources</h3>
+<p>The Land Transport Authority (LTA) studies commuter movements using the data collected from the use of smart cards and the Global Positioning System (GPS) devices on public buses. The LTA DataMall shares some of these data publicly, which helps to speed up the development of practical solutions to enhance reliability and efficiency of the transport system by other stakeholders, such as the private sector and individuals.</p>
+<p>The data sets used in this take-home exercise are:</p>
+<p><u><strong>Open Government Data</strong></u></p>
+<ol type="1">
+<li><p><u>Passenger Volume by Origin Destination Bus Stops</u> from the LTA DataMall for August 2023 in csv format. It contains data on the number of trips by weekdays and weekends from origin to destination bus stops.</p></li>
+<li><p><u>Bus Stop Location</u> from the LTA DataMall that was last updated in July 2023. This is a geospatial data set in ESRI shapefile format. It contains point representations that indicate the position of each bus stop where buses stop to pick up or drop off passengers.</p></li>
+<li><p><u>Master Plan 2019 Subzone Boundary</u> from Data.gov. This is a geospatial data set in ESRI shapefile format. It contains polygon representations that outline the Urban Redevelopment Authority’s planning subzones.</p></li>
+</ol>
+<p><u><strong>Specially Collected Data</strong></u></p>
+<ol type="1">
+<li><p><u>Locations</u> of the following six categories:</p>
+<ul>
+<li><p>Businesses,</p></li>
+<li><p>Entertainment,</p></li>
+<li><p>Food &amp; Beverage,</p></li>
+<li><p>Financial Services,</p></li>
+<li><p>Leisure &amp; Recreation, and</p></li>
+<li><p>Retail.</p></li>
+</ul></li>
+<li><p><u>Property Information</u> by HDB from Data.gov from June 2023 (last updated on 8 October 2023). The data set is in csv format and has been geocoded with the longitude and latitude of the addresses.</p></li>
+</ol>
+<p>The data sets are placed under two sub-folders:</p>
+<ul>
+<li><p>geospatial (Bus Stop Location, Master Plan Subzone Boundary, and Locations), and</p></li>
+<li><p>aspatial (Passenger Volume by Origin Destination Bus Stops, and Property Information).</p></li>
+</ul>
+<p>These two sub-folders are within the data folder of my Take-home_Ex2 folder.</p>
+</section>
+</section>
+<section id="data-wrangling" class="level2">
+<h2 class="anchored" data-anchor-id="data-wrangling">3 Data Wrangling</h2>
+<section id="preparing-the-aspatial-data---passenger-volume" class="level3">
+<h3 class="anchored" data-anchor-id="preparing-the-aspatial-data---passenger-volume">3.1 Preparing the Aspatial Data - Passenger Volume</h3>
+<p>3.2 Preparing the Aspatial Data - Property Information</p>
+<p>3.3 Preparing the Geospatial Data - Bus Stop Location</p>
+<p>3.4 Preparing the Geospatial Data - Subzone Boundary</p>
+<p>3.5 Preparing the Geospatial Data - Locations</p>
+<p>3.6 Performing Relational Join</p>
+<p>3.7 Creating Spatial Hexagon Grid</p>
+<p>4 Geospatial Data Science</p>
+<p>4.1 Computing Origin-Destination Matrix of Bus Commuter Flows</p>
+<p>4.2 Visualising Origin-Destination Bus Commuter Flows</p>
+<p>4.3 Deriving Insights from Origin-Destination Bus Commuter Flows</p>
+<p>4.4 Selection of Push (Propulsion) and Pull (Attraction) Variables</p>
+<p>4.5 Computing Distance Matrix Using Analytical Hexagon Data</p>
+<p>5 Spatial Interaction Models</p>
+<p>5.1 Visualising Dependent Variable</p>
+<p>5.2 Building Unconstrained Spatial Interaction Model</p>
+<p>5.3 Building</p>
+<ul>
+<li>Compute a distance matrix using the analytical hexagon data derived.</li>
+</ul>
+<ol start="2" type="1">
+<li><p><u>Spatial Interaction Modelling (SIM)</u>:</p>
+<ul>
+<li><p>Calibrate spatial interactive models to determine factors affecting urban commuting flows during the selected time interval.</p></li>
+<li><p>Present the modelling results using the appropriate geovisualisation and graphical visualisation methods.</p></li>
+<li><p>Describe the modelling results based on the spatial interaction model output tables, maps, and data visualisations prepared.</p></li>
+</ul></li>
+</ol>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

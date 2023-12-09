@@ -12,4 +12,313 @@ background-color: lightgrey;
 font-family:  Palatino Linotype;
 ---
 
+# In-class Exercise 4: Geospatial Data Science with R
+
+## 1 Overview
+
+In this in-class exercise, the following tasks are performed:
+
+1.  Perform geocoding using data downloaded from Data.gov.sg; and
+
+2.  Calibrate Geographically Weighted Poisson Regression.
+
+## 2 Getting Started
+
+The following packages are loaded into the R environment:
+
+```{r}
+pacman::p_load(tidyverse, sf, httr, tmap)
+```
+
+## 3 Geocoding using SLA API
+
+Address geocoding, or simply geocoding, is the process of taking an aspatial description of a location, such as an address or postcode, and returning geographic coordinate, frequently
+
+```{r}
+url = "https://www.onemap.gov.sg/api/common/elastic/search"
+
+csv = read_csv("data/aspatial/Generalinformationofschools.csv")
+postcodes = csv$`postal_code`
+
+found = data.frame()
+not_found = data.frame()
+
+for(postcode in postcodes){
+  query = list('searchVal' = postcode, 'returnGeom' = 'Y', 'getAddrDetails' = 'Y', 'pageNum' = '1')
+  res = GET(url, query = query)
+  if((content(res)$found)!=0){
+  found = rbind(found, data.frame(content(res))[4:13])
+  } else{
+  not_found = data.frame(postcode)
+  }
+}
+```
+
+xxx
+
+```{r}
+merged = merge(csv, found, by.x = 'postal_code', by.y = 'results.POSTAL', all = TRUE)
+write.csv(merged, file = 'data/aspatial/schools.csv')
+write.csv(not_found, file = 'data/aspatial/not_found.csv')
+```
+
+## 4 Converting Aspatial Data into simple feature tibble data.frame
+
+### 4.1 Importing and Tidying *schools* Data
+
+In this sub-section, the schools.csv is imported into the R environment and only the necessary fields are selected and renamed.
+
+```{r}
+schools = read_csv('data/aspatial/schools.csv') %>%
+  rename(latitude = "results.LATITUDE", 
+         longitude = "results.LONGITUDE") %>%
+  select(postal_code, school_name, latitude, longitude)
+```
+
+### 4.2 Converting Aspatial Data into sf tibble data.frame
+
+Next, the aspatial data is converted into a simple feature tibble data.frame, *schools_sf*.
+
+```{r}
+schools = schools %>%
+  mutate(latitude = ifelse(school_name == "ZHENGHUA SECONDARY SCHOOL", 1.389279, latitude)) %>%
+  mutate(longitude = ifelse(school_name == "ZHENGHUA SECONDARY SCHOOL", 103.7651, longitude))
+```
+
+```{r}
+schools_sf = st_as_sf(schools,
+                      coords = c("longitude", "latitude"),
+                      crs = 4326) %>%
+  st_transform(crs = 3414)
+```
+
+### 4.3 Plotting A Point Simple Feature Layer
+
+```{r}
+tmap_mode("view")
+tm_shape(schools_sf) +
+  tm_dots() +
+  tm_view(set.zoom.limits = c(11, 14))
+tmap_mode("plot")
+```
+
+## 5 Preparing Data
+
+xxx
+
+```{r}
+mpsz = read_rds("data/rds/mpsz.rds")
+```
+
+xxx
+
+```{r}
+mpsz$`SCHOOL_COUNT` = lengths(
+  st_intersects(mpsz, schools_sf)
+)
+```
+
+The summary statistics of the derived variable shows that the minimum value is 0, maximum value is 12. The data is skewed as the median and 1Q values are also 0 and the mean value is 1.054.
+
+```{r}
+summary(mpsz$SCHOOL_COUNT)
+```
+
+xxx
+
+```{r}
+biz_sf = st_read(dsn = "data/geospatial",
+                 layer = "business")
+```
+
+xxx
+
+```{r}
+tmap_options(check.and.fix = TRUE)
+tm_shape(mpsz) + 
+  tm_polygons() +
+  tm_shape(biz_sf) +
+  tm_dots()
+```
+
+## 6 Data Integration and Wrangling
+
+xxx
+
+```{r}
+# flow_data = flow_data %>%
+#  left_join(mpsz_tidy,
+#            by = c("DESTIN_SZ" = "SUBZONE_C"))
+```
+
+6.1 Checking for Variables with Zero Values
+
+xxx
+
+```{r}
+# summary(flow_data)
+```
+
+xxx
+
+```{r}
+
+```
+
+------------------------------------------------------------------------
+
+2 Getting Started
+
+```{r}
+pacman::p_load(tmap, sf, performance,
+               ggpubr, tidyverse)
+```
+
+3 Data
+
+```{r}
+flow_data = read_rds("data/rds/flow_data_tidy.rds")
+```
+
+```{r}
+glimpse(flow_data)
+```
+
+xxx
+
+```{r}
+flow_data$FlowNoIntra = ifelse(
+  flow_data$ORIGIN_SZ == flow_data$DESTIN_SZ,
+  0, flow_data$MORNING_PEAK)
+flow_data$offset = ifelse(
+  flow_data$ORIGIN_SZ == flow_data$DESTIN_SZ,
+  0.000001, 1)
+```
+
+```{r}
+inter_zonal_flow = flow_data %>%
+  filter(FlowNoIntra > 0)
+```
+
+```{r}
+inter_zonal_flow = inter_zonal_flow %>%
+  rename(TRIPS = MORNING_PEAK,
+         DIST = dist,
+         BIZ_COUNT = RETAIL_COUNT)
+```
+
+### Unconstrained Spatial Interaction Model
+
+```{r}
+uncSIM_Poisson = glm(formula = TRIPS ~ 
+               log(ORIGIN_AGE7_12) +
+               log(ORIGIN_AGE13_24) +
+               log(ORIGIN_AGE25_64) +
+               log(DESTIN_AGE7_12) +
+               log(DESTIN_AGE13_24) +
+               log(DESTIN_AGE25_64) +
+               log(SCHOOL_COUNT) +
+               log(BIZ_COUNT) + 
+               log(DIST),
+             family = poisson(link = "log"),
+             data = inter_zonal_flow,
+             na.action = na.exclude)
+
+summary(uncSIM_Poisson)
+```
+
+### Origin (Production) Constrained Spatial Interaction Model
+
+xxx
+
+```{r}
+orcSIM_Poisson = glm(formula = TRIPS ~
+                       ORIGIN_SZ +
+                       log(SCHOOL_COUNT) +
+                       log(BIZ_COUNT) +
+                       log(DIST) -1, # no need for intercept for origin/dest constrained
+                     family = poisson(link = "log"),
+                     data = inter_zonal_flow,
+                     na.action = na.exclude)
+
+options(max.print=10000) 
+summary(orcSIM_Poisson)
+```
+
+```{r}
+CalcRSquared = function(observed, estimated){
+  r = cor(observed, estimated)
+  R2 = r^2
+  R2
+}
+```
+
+The calculated R-squared value shows how well the factors explain the flow.
+
+```{r}
+CalcRSquared(orcSIM_Poisson$data$TRIPS, orcSIM_Poisson$fitted.values)
+```
+
+The RMSE (root mean square error) shows how much error the model typically makes in its predictions, with a higher weight for large errors. 
+
+```{r}
+performance_rmse(orcSIM_Poisson,
+                 normalized = FALSE) # use raw values (not normalised to mean = 0, sd = 1)
+```
+
+xxx
+
+```{r}
+performance_rmse(orcSIM_Poisson,
+                 normalized = TRUE)
+```
+
+### Destination Constrained Spatial Interaction Model
+
+xxx
+
+```{r}
+decSIM_Poisson = glm(formula = TRIPS ~
+                       DESTIN_SZ +
+                       log(SCHOOL_COUNT) +
+                       log(BIZ_COUNT) +
+                       log(DIST) -1, # no need for intercept for origin/dest constrained
+                     family = poisson(link = "log"),
+                     data = inter_zonal_flow,
+                     na.action = na.exclude)
+
+options(max.print=10000) 
+summary(decSIM_Poisson)
+```
+
+### Doubly Constrained Spatial Interaction Model
+
+```{r}
+dbcSIM_Poisson = glm(formula = TRIPS ~
+                       ORIGIN_SZ +
+                       DESTIN_SZ +
+                       log(DIST), # note: -1 not required for doubly constrained SIM
+                     family = poisson(link = "log"),
+                     data = inter_zonal_flow,
+                     na.action = na.exclude)
+options(max.print=10000) 
+summary(dbcSIM_Poisson)
+```
+
+### Model Comparison
+
+```{r}
+model_list = list(unconstrained = uncSIM_Poisson,
+                  originConstrained = orcSIM_Poisson,
+                  destinationConstrained = decSIM_Poisson,
+                  doublyconstrained = dbcSIM_Poisson)
+```
+
+```{r}
+compare_performance(model_list,
+                    metrics = "RMSE")
+```
+
+The print above reveals that doubly constrained SIM is the best model among all the four SIMs because it has the smallest RMSE value of 1906.694.
+
 [**\~\~\~ End of In-class Exercise 4 \~\~\~**]{.smallcaps}

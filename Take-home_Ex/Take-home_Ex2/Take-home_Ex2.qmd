@@ -1,0 +1,198 @@
+---
+title: "Take-home Exercise 2: Applied Spatial Interaction Models: A Case Study of Singapore Public Bus Commuter Flows"
+date: "7 November 2023"
+date-modified: "last-modified" #allows for updating to the latest date
+format: html
+execute: 
+  echo: true #shows the code
+  eval: true #shows the outcomes of the code
+  warning: false #does not show the warnings
+editor: visual
+background-color: lightgrey;
+font-family:  Palatino Linotype;
+---
+
+## 1 Introduction
+
+### 1.1 Background
+
+Buses and the Mass Rapid Transit (MRT) system are the main modes of transport used by Singaporeans for their daily commutes. With an ever increasing population, the key challenge for public bus operators is balancing supply against demand by optimising its services, fleets, and manpower for different bus routes.
+
+Hence, the identification and analysis of the movement patterns of public buses can provide insights on commuting in Singapore, allowing for the development of better urban management strategies by both the public and private sectors.
+
+### 1.2 The Study Area
+
+The study area is Singapore, a city-state in Southeast Asia, with a total land area of about 730 square kilometres and a total population of 5.92 million (as at June 2023).
+
+Commuting by public bus is the most common mode of transport in Singapore, with an average daily ridership of about 3.461 million in 2022, according to the LTA. The public bus fleet is approximately 5,800, plying more than 300 routes and 5,000 bus stops.
+
+### 1.3 The Analytical Questions
+
+In this take-home exercise, I aim to answer the following analytical questions:
+
+-   Is the flow of public bus commuters evenly distributed geographically (between different origins and destinations)?
+
+-   Which type of spatial interaction models are best suited for modelling public bus commuter flows
+
+-   What factors affect the public bus commuter flows?
+
+-   Based on the analysis, what are the insights that can be derived for urban transport planning?
+
+### 1.4 Objectives and Tasks
+
+Hence, the objectives of this take-home exercise are to:
+
+1.  Conduct practice research on public bus commuter flows to show how disparate publicly available data can be integrated, analysed, and modelled to support policy making; and
+
+2.  Apply techniques in geospatial data science and analysis (GDSA) and demonstrate the potential value of GDSA in integrating publicly available data from multiple sources for building spatial interaction models to determine the factors affecting urban mobility patterns of public bus commuters.
+
+The detailed tasks are:
+
+1.  [Geospatial Data Science]{.underline}:
+
+    -   Derive an analytical hexagon data of 325m (i.e., perpendicular distance between the centre of the hexagon and its edges) to represent the traffic analysis zone (TAZ).
+
+    -   Construct an origin-destination (O-D) matrix of commuter flows aggregated at the analytics hexagon level for one of the following time intervals by integrating *Passenger Volume by Origin Destination Bus Stops* and *Bus Stop Location* from the LTA DataMall:
+
+        | Peak Hour Period             | Bus Tap On Time |
+        |------------------------------|-----------------|
+        | Weekday Morning Peak         | 6am to 9am      |
+        | Weekday Afternoon Peak       | 5pm to 8pm      |
+        | Weekend/Holiday Morning Peak | 11am to 2pm     |
+        | Weekend/Holiday Evening Peak | 4pm to 7pm      |
+
+    -   Display the O-D flows of the passenger trips using the appropriate geovisualisation methods.
+
+    -   Describe the spatial patterns revealed by the geovisualisation.
+
+    -   Assemble at least three propulsive and three attractiveness variables using the aspatial and geospatial data from publicly available sources.
+
+    -   Compute a distance matrix using the analytical hexagon data derived.
+
+<!-- -->
+
+2.  [Spatial Interaction Modelling (SIM)]{.underline}:
+
+    -   Calibrate spatial interactive models to determine factors affecting urban commuting flows during the selected time interval.
+
+    -   Present the modelling results using the appropriate geovisualisation and graphical visualisation methods.
+
+    -   Describe the modelling results based on the spatial interaction model output tables, maps, and data visualisations prepared.
+
+## 2 Getting Started
+
+### 2.1 Setting the Analytical Tools
+
+The R packages used in this hands-on exercise are:
+
+-   **sf** for importing, managing, and processing geospatial data;
+
+-   **sp** for handling spatial data in computationally efficient ways;
+
+-   **tidyverse** (i.e. readr, tidyr, dplyr) for performing data science tasks such as importing, tidying, and wrangling data;
+
+-   **tmap** for thematic mapping;
+
+-   **reshape2** for handling matrix format;
+
+-   **DT** a wrapper of the JavaScript Library 'DataTables' for creating interactive and dynamic data tables;
+
+-   **stplanr** for working with spatial data related to transportation and urban planning;
+
+-   **performance** for the assessment of regression models performance; and
+
+-   **ggpubr** for creating customised and annotated ggplot2 plots for better visualisation.
+
+They are loaded into the R environment:
+
+```{r}
+pacman::p_load(sf, sp, tidyverse, tmap, 
+               reshape2, DT, stplanr,
+               performance, ggpubr)
+```
+
+### 2.2 Data Sources
+
+The Land Transport Authority (LTA) studies commuter movements using the data collected from the use of smart cards and the Global Positioning System (GPS) devices on public buses. The LTA DataMall shares some of these data publicly, which helps to speed up the development of practical solutions to enhance reliability and efficiency of the transport system by other stakeholders, such as the private sector and individuals.
+
+The data sets used in this take-home exercise are:
+
+[**Open Government Data**]{.underline}
+
+1.  [Passenger Volume by Origin Destination Bus Stops]{.underline} from the LTA DataMall for August 2023 in csv format. It contains data on the number of trips by weekdays and weekends from origin to destination bus stops.
+
+2.  [Bus Stop Location]{.underline} from the LTA DataMall that was last updated in July 2023. This is a geospatial data set in ESRI shapefile format. It contains point representations that indicate the position of each bus stop where buses stop to pick up or drop off passengers.
+
+3.  [Master Plan 2019 Subzone Boundary]{.underline} from Data.gov. This is a geospatial data set in ESRI shapefile format. It contains polygon representations that outline the Urban Redevelopment Authority's planning subzones.
+
+[**Specially Collected Data**]{.underline}
+
+1.  [Locations]{.underline} of the following six categories:
+
+    -   Businesses,
+
+    -   Entertainment,
+
+    -   Food & Beverage,
+
+    -   Financial Services,
+
+    -   Leisure & Recreation, and
+
+    -   Retail.
+
+2.  [Property Information]{.underline} by HDB from Data.gov from June 2023 (last updated on 8 October 2023). The data set is in csv format and has been geocoded with the longitude and latitude of the addresses.
+
+The data sets are placed under two sub-folders:
+
+-   geospatial (Bus Stop Location, Master Plan Subzone Boundary, and Locations), and
+
+-   aspatial (Passenger Volume by Origin Destination Bus Stops, and Property Information).
+
+These two sub-folders are within the data folder of my Take-home_Ex2 folder.
+
+## 3 Data Wrangling
+
+### 3.1 Preparing the Aspatial Data - Passenger Volume
+
+3.2 Preparing the Aspatial Data - Property Information
+
+3.3 Preparing the Geospatial Data - Bus Stop Location
+
+3.4 Preparing the Geospatial Data - Subzone Boundary
+
+3.5 Preparing the Geospatial Data - Locations
+
+3.6 Performing Relational Join
+
+3.7 Creating Spatial Hexagon Grid
+
+4 Geospatial Data Science
+
+4.1 Computing Origin-Destination Matrix of Bus Commuter Flows
+
+4.2 Visualising Origin-Destination Bus Commuter Flows
+
+4.3 Deriving Insights from Origin-Destination Bus Commuter Flows
+
+4.4 Selection of Push (Propulsion) and Pull (Attraction) Variables
+
+4.5 Computing Distance Matrix Using Analytical Hexagon Data
+
+5 Spatial Interaction Models
+
+5.1 Visualising Dependent Variable
+
+5.2 Building Unconstrained Spatial Interaction Model
+
+5.3 Building
+
+-   Compute a distance matrix using the analytical hexagon data derived.
+
+2.  [Spatial Interaction Modelling (SIM)]{.underline}:
+
+    -   Calibrate spatial interactive models to determine factors affecting urban commuting flows during the selected time interval.
+
+    -   Present the modelling results using the appropriate geovisualisation and graphical visualisation methods.
+
+    -   Describe the modelling results based on the spatial interaction model output tables, maps, and data visualisations prepared.
