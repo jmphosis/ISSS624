@@ -169,11 +169,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">In-class Exercise 3</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex3/In-class_Ex4.html" rel="" target="">
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex4/In-class_Ex4.html" rel="" target="">
  <span class="dropdown-text">In-class Exercise 4</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex3/In-class_Ex5.html" rel="" target="">
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex5/In-class_Ex5.html" rel="" target="">
  <span class="dropdown-text">In-class Exercise 5</span></a>
   </li>  
     </ul>
@@ -278,7 +278,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">December 2, 2023</p>
+      <p class="date-modified">December 15, 2023</p>
     </div>
   </div>
     
@@ -793,8 +793,8 @@ Residual Deviance: 19960000     AIC: 20040000</code></pre>
 <h3 class="anchored" data-anchor-id="r-squared-function">16.8.5 R-squared Function</h3>
 <p>The R-Squared value is calculated to measure how much variation of the trips can be accounted by the unconstrained SIM.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>CalcRSquared <span class="ot">=</span> <span class="cf">function</span>(observed,estimated){</span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">=</span> <span class="fu">cor</span>(observed,estimated)</span>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>CalcRSquared <span class="ot">=</span> <span class="cf">function</span>(observed, estimated){</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">=</span> <span class="fu">cor</span>(observed, estimated)</span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  R2 <span class="ot">=</span> r<span class="sc">^</span><span class="dv">2</span></span>
 <span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  R2</span>
 <span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>}</span>
