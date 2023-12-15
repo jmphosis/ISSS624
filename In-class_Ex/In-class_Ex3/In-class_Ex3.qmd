@@ -388,8 +388,8 @@ uncSIM
 The R-Squared value is calculated to measure how much variation of the trips can be accounted by the unconstrained SIM.
 
 ```{r}
-CalcRSquared = function(observed,estimated){
-  r = cor(observed,estimated)
+CalcRSquared = function(observed, estimated){
+  r = cor(observed, estimated)
   R2 = r^2
   R2
 }

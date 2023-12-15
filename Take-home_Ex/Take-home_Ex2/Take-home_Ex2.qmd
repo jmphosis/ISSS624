@@ -50,7 +50,7 @@ The detailed tasks are:
 
 1.  [Geospatial Data Science]{.underline}:
 
-    -   Derive an analytical hexagon data of 325m (i.e., perpendicular distance between the centre of the hexagon and its edges) to represent the traffic analysis zone (TAZ).
+    -   Derive an analytical hexagon data of 375m (i.e., perpendicular distance between the centre of the hexagon and its edges) to represent the traffic analysis zone (TAZ).
 
     -   Construct an origin-destination (O-D) matrix of commuter flows aggregated at the analytics hexagon level for one of the following time intervals by integrating *Passenger Volume by Origin Destination Bus Stops* and *Bus Stop Location* from the LTA DataMall:
 
@@ -61,6 +61,8 @@ The detailed tasks are:
         | Weekend/Holiday Morning Peak | 11am to 2pm     |
         | Weekend/Holiday Evening Peak | 4pm to 7pm      |
 
+        ***Note**: The selected peak hour period for this take-home exercise is the [Weekday Morning Peak]{.underline}.*
+
     -   Display the O-D flows of the passenger trips using the appropriate geovisualisation methods.
 
     -   Describe the spatial patterns revealed by the geovisualisation.
@@ -68,8 +70,6 @@ The detailed tasks are:
     -   Assemble at least three propulsive and three attractiveness variables using the aspatial and geospatial data from publicly available sources.
 
     -   Compute a distance matrix using the analytical hexagon data derived.
-
-<!-- -->
 
 2.  [Spatial Interaction Modelling (SIM)]{.underline}:
 
@@ -91,6 +91,12 @@ The R packages used in this hands-on exercise are:
 
 -   **tidyverse** (i.e. readr, tidyr, dplyr) for performing data science tasks such as importing, tidying, and wrangling data;
 
+-   **future.apply** package
+
+-   **rvest** package;
+
+-   **httr** for making HTTP requests;
+
 -   **tmap** for thematic mapping;
 
 -   **reshape2** for handling matrix format;
@@ -106,7 +112,8 @@ The R packages used in this hands-on exercise are:
 They are loaded into the R environment:
 
 ```{r}
-pacman::p_load(sf, sp, tidyverse, tmap, 
+pacman::p_load(sf, sp, tidyverse, future.apply, 
+               rvest, httr, tmap, 
                reshape2, DT, stplanr,
                performance, ggpubr)
 ```
@@ -123,13 +130,19 @@ The data sets used in this take-home exercise are:
 
 2.  [Bus Stop Location]{.underline} from the LTA DataMall that was last updated in July 2023. This is a geospatial data set in ESRI shapefile format. It contains point representations that indicate the position of each bus stop where buses stop to pick up or drop off passengers.
 
-3.  [Master Plan 2019 Subzone Boundary]{.underline} from Data.gov. This is a geospatial data set in ESRI shapefile format. It contains polygon representations that outline the Urban Redevelopment Authority's planning subzones.
+3.  [(Push/Pull) MRT/LRT Station Exits Location]{.underline} by the LTA from Data.gov.sg that was last updated in July 2019. This is a geospatial data set in GEOJSON format. It contains point representations that indicate the position of each MRT/LRT exit.
+
+4.  [(Push) HDB Property Information]{.underline} by the Housing Development Board from Data.gov.sg that was last updated in October 2023. The data set is in csv format and has been geocoded with the longitude and latitude of the addresses.
+
+5.  [(Push/Pull) School Directory and Information]{.underline} by the Ministry of Education that was last updated in March 2021. The data set is in csv format and contains the list of school names.
+
+6.  [Master Plan 2019 Subzone Boundary]{.underline} by the Urban Redevelopment Authority (URA) from Data.gov.sg. This is a geospatial data set in ESRI shapefile format. It contains polygon representations that outline the URA's planning subzones.
 
 [**Specially Collected Data**]{.underline}
 
-1.  [Locations]{.underline} of the following six categories:
+1.  [Locations of Activities]{.underline} for the following six categories:
 
-    -   Businesses,
+    -   (Push/Pull) Businesses,
 
     -   Entertainment,
 
@@ -141,53 +154,1437 @@ The data sets used in this take-home exercise are:
 
     -   Retail.
 
-2.  [Property Information]{.underline} by HDB from Data.gov from June 2023 (last updated on 8 October 2023). The data set is in csv format and has been geocoded with the longitude and latitude of the addresses.
-
 The data sets are placed under two sub-folders:
 
--   geospatial (Bus Stop Location, Master Plan Subzone Boundary, and Locations), and
+-   geospatial (Bus Stop Location, MRT/LRT Exits Location, HDB Property Information, School Directory and Information, Master Plan Subzone Boundary, and Locations of Activities), and
 
 -   aspatial (Passenger Volume by Origin Destination Bus Stops, and Property Information).
 
 These two sub-folders are within the data folder of my Take-home_Ex2 folder.
 
-## 3 Data Wrangling
+## 3 Data Wrangling - Bus Passengers Flow
 
-### 3.1 Preparing the Aspatial Data - Passenger Volume
+### 3.1 Preparing the Geospatial Data - Bus Stop Location
 
-3.2 Preparing the Aspatial Data - Property Information
+#### 3.1.1 Importing and Transforming Data
 
-3.3 Preparing the Geospatial Data - Bus Stop Location
+The Bus Stop Location shapefile is imported using `st_read()` in the **sf** package. The output is a simple feature data frames, `busstop`, which is in the SVY21 projected coordinates systems. It has 5,161 observations and 4 fields, including the geometry points indicating the bus stop locations.
 
-3.4 Preparing the Geospatial Data - Subzone Boundary
+```{r}
+busstop = st_read(dsn = "data/geospatial",                                      
+                  layer = "BusStop")
+```
 
-3.5 Preparing the Geospatial Data - Locations
+```{r}
+glimpse(busstop)
+```
 
-3.6 Performing Relational Join
+The `st_crs()` function in the **sf** package is then used to check the coordinate system of the `busstop` simple feature data frame. The output shows that although it is projected in SVY21, the EPSG is indicated as 9001, which is incorrect given that it should be 3414 instead.
 
-3.7 Creating Spatial Hexagon Grid
+```{r}
+st_crs(busstop)
+```
 
-4 Geospatial Data Science
+To correct the EPSG, the `st_set_crs()` function in the **sf** package is applied. A check to confirm that the projection transformation has been applied is then made using the `st_crs()` function again.
 
-4.1 Computing Origin-Destination Matrix of Bus Commuter Flows
+```{r}
+busstop = st_set_crs(busstop, 3414)  
 
-4.2 Visualising Origin-Destination Bus Commuter Flows
+st_crs(busstop)
+```
 
-4.3 Deriving Insights from Origin-Destination Bus Commuter Flows
+#### 3.1.2 Checking for Duplicates and Missing Values
 
-4.4 Selection of Push (Propulsion) and Pull (Attraction) Variables
+The data sets from the LTA DataMall are expected to be relatively clean. Nevertheless, due diligence checks for duplicates and missing values are still made to confirm the assumptions.
 
-4.5 Computing Distance Matrix Using Analytical Hexagon Data
+The `duplicated()` function in the **base** package and `st_geometry()` function in the **sf** package are used to check for duplicates in `busstop`. The output returned Bus Stop No. 96319 at row 3265. On closer inspection of the simple feature data frame, rows 3264 and 3265 are found to be duplicates. Hence, the row 3264 is removed using the `row_number()` function in the **dplyr** package. The same check is conducted again to confirm that there are no more duplicates.
 
-5 Spatial Interaction Models
+```{r}
+busstop[duplicated(st_geometry(busstop)), ]
+```
 
-5.1 Visualising Dependent Variable
+```{r}
+busstop = busstop %>%   
+  filter(row_number() != 3264)    
 
-5.2 Building Unconstrained Spatial Interaction Model
+busstop[duplicated(st_geometry(busstop)), ]
+```
 
-5.3 Building
+The `colSums()` function in the **base** package is used to check for missing values in `busstop`. There are no missing values in the simple feature data frame for all columns except "LOC_DESC". On closer inspection, there are several bus stops without location descriptions but they are retained because they have "BUS_STOP_N" values.
 
--   Compute a distance matrix using the analytical hexagon data derived.
+```{r}
+colSums(is.na(busstop))
+```
+
+#### 3.1.3 Selecting Columns and Removing Bus Stops in Malaysia
+
+The `select()` function in **dplyr** package is used to drop the "BUS_ROOF_N" column in `busstop` since it is not required. As there are bus stops situated in Johor Bahru, Malaysia, they are removed using the `filter()` function in the **dplyr** package.
+
+```{r}
+busstop = busstop %>%   
+  select(-BUS_ROOF_N) %>%   
+  filter(LOC_DESC != "JOHOR BAHRU CHECKPT" & LOC_DESC != "LARKIN TER")
+```
+
+The "BUS_STOP_N" is converted to integer data type.
+
+```{r}
+busstop$BUS_STOP_N = as.integer(busstop$BUS_STOP_N)
+```
+
+The output is saved in rds file format and imported into the R environment.
+
+```{r}
+#| code-fold: true  
+#| code-summary: "Show the code"   
+write_rds(busstop, "data/rds/busstop.rds")  
+busstop = read_rds("data/rds/busstop.rds")
+```
+
+### 3.2 Preparing the Aspatial Data - Bus Passenger Volume
+
+#### 3.2.1 Importing and Exploring Data
+
+The csv file is imported into a tibble data frame, `odbus`, using the `read.csv()` function in the **readr** package.
+
+```{r}
+odbus = read.csv("data/aspatial/origin_destination_bus_202308.csv")
+```
+
+Once the combined data set has been obtained, the `n_distinct()` function in the **dplyr** package and the `sapply()` function in the **base** package are applied to uncover the following observations regarding `odbus`:
+
+-   Overall, there are 5,709,512 rows (observations) and 7 columns.
+
+-   The "YEAR_MONTH" column has one unique value, reflecting the observations from August 2023. Hence, it may be dropped.
+
+-   The "DAY_TYPE" column has two unique values, reflecting observations from weekday or weekends/holiday.
+
+-   The "TIME_PER_HOUR" has 24 unique values, reflecting that the observations are broken down into each of the 24 hours of a day.
+
+-   The "PT_TYPE" column refers only has the value of "BUS" as the public transport type. Hence, it may be dropped.
+
+-   The "ORIGIN_PT_CODE" and "DESTINATION_PT_CODE" columns have 5,067 and 5,071 unique values respectively, reflecting the number of bus stops with bus routes passing through them.
+
+-   The "TOTAL_TRIPS" column contains values that reflect the number of passengers for each unique type of day, origin bus stop, destination bus stop. The minimum value is 1, i.e., there are no rows with zero values.
+
+```{r}
+sapply(odbus, function(x) n_distinct(x))
+```
+
+#### 3.2.2 Checking for Duplicates and Missing Values
+
+The data sets from the LTA DataMall are expected to be relatively clean. Nevertheless, due diligence checks for duplicates and missing values are still made to confirm the assumptions.
+
+The `duplicated()` function in the **base** package is used to check for duplicates in `odbus`. There are no duplicates in the tibble data frame.
+
+```{r}
+odbus[duplicated(odbus), ]
+```
+
+The `colSums()` function in the **base** package is used to check for missing values in `odbus`. There are no missing values in the tibble data frame, `odbus`.
+
+```{r}
+colSums(is.na(odbus))
+```
+
+#### 3.2.3 Filtering for Peak Hours Period and Selecting Columns
+
+The `filter()` and `select()` functions in the **dplyr** package are used to filter for the rows with the "DAY_TYPE" (i.e., weekdays) and "TIME_PER_HOUR" (i.e., 6-9am) that are studied in this take-home exercise, and select the columns required (i.e., "ORIGIN_PT_CODE", "DESTINATION_PT_CODE", and "TOTAL_TRIPS"). The `group_by()` and `summarise()` functions in the **dplyr** package and the `sum()` function in the **base** package are used to total up the number of bus passenger trips by unique origin-destination combinations (241,503 pairs).
+
+```{r}
+odbus = odbus %>%      
+  filter(DAY_TYPE == "WEEKDAY" & TIME_PER_HOUR %in% c(6, 7, 8, 9)) %>%
+  select(ORIGIN_PT_CODE, DESTINATION_PT_CODE, TOTAL_TRIPS) %>%
+  group_by(ORIGIN_PT_CODE, DESTINATION_PT_CODE) %>%
+  summarise(TRIPS = sum(TOTAL_TRIPS))
+```
+
+The "ORIGIN_PT_CODE" and "DESTINATION_PT_CODE" are converted to integer data type.
+
+```{r}
+odbus$ORIGIN_PT_CODE = as.integer(odbus$ORIGIN_PT_CODE)
+odbus$DESTINATION_PT_CODE = as.integer(odbus$DESTINATION_PT_CODE)
+```
+
+The output is saved in rds file format and imported into the R environment.
+
+```{r}
+#| code-fold: true 
+#| #| code-summary: "Show the code" 
+write_rds(odbus, "data/rds/odbus.rds") 
+odbus = read_rds("data/rds/odbus.rds")
+```
+
+### 3.3 Preparing Analytical Hexagon Data
+
+#### 3.3.1 Filtering for List of Unique Bus Stops and Performing Join for List of Relevant Bus Stops for Spatial Grid
+
+A list of unique bus stops that appeared in either the "ORIGIN_PT_CODE" column or the "DESTINATION_PT_CODE" column, or both, is obtained. This is in preparation for creating the spatial hexagon grid. There are 5,046 unique bus stops with passenger trips during the weekday peak hour period.
+
+```{r}
+busstop_o = odbus %>% 
+  select(ORIGIN_PT_CODE) %>%
+  rename(busstop = ORIGIN_PT_CODE)
+
+busstop_d = odbus %>%
+  select(DESTINATION_PT_CODE) %>%
+  rename(busstop = DESTINATION_PT_CODE) %>%
+  select(busstop)
+
+busstop_list = rbind(busstop_o, busstop_d) %>%
+  select(busstop) %>%
+  unique()
+
+rm(busstop_o, busstop_d)
+```
+
+The simple feature data frame, `busstop`, and the tibble data frame, `busstop_list`, are combined using the `inner_join()` function in the **dplyr** package, by matching the "BUS_STOP_N" column in `busstop` with the "busstop" in `busstop_list`. The geographical locations of 4,998 bus stops are matched. Some bus stop locations were not included in the `busstop` that was last updated in July 2023. This means that the analysis in this take-home exercise is limited in this aspect.
+
+```{r}
+busstop_grid = inner_join(busstop, busstop_list,
+                       by = c("BUS_STOP_N" = "busstop"))
+```
+
+#### 3.3.2 Creating Spatial Hexagon Grid
+
+Spatial grids are commonly used in spatial analysis. Regularly shaped grids may comprise of equilateral triangles, squares, or hexagons. The hexagon is the most circular-shaped polygon that can tessellate to form an evenly spaced grid, providing a low perimeter-to-area ratio that reduces sampling bias due to edge effects of the grid shape.
+
+A more circular polygon means that points near the border are closer to the centroid. Hexagons are often used when the analysis involves aspects of connectivity or movement paths. Locating neighbours is simpler using a hexagon grid because the contact edge or length is consistent on each side, resulting in equidistant centroids for each neighbour.
+
+A spatial hexagon grid, `hgrid`, for the study area of Singapore based on the `busstop_grid` simple feature data frame is created using the `st_make_grid()` and `st_sf()` functions in the **sf** package, the `mutate()` function in the **dplyr** package, and the `lengths()` function in the **base** package.
+
+```{r}
+geo = st_make_grid(busstop_grid, c(750, 750), what = "polygons", square = FALSE)
+
+hgrid = st_sf(geo) %>%
+  mutate(grid_id = 1:length(lengths(geo)))
+
+rm(geo, busstop, busstop_list)
+```
+
+## 4 Geospatial Data Science
+
+### 4.1 Computing Origin-Destination Matrix of Bus Commuter Flows
+
+The grid_id of the `hgrid` simple feature data frame are populated into the `busstop_grid` simple feature data frame using `st_intersection()` function in the **sf** package. The output of the `st_intersection()` function contains the geometry spatial objects that intersect between `hgrid` and `busstop_grid`. Since one contains points, and the other contains polygons, the output will contain points (as the points are the common overlapping spatial objects).
+
+The `select()` function in the **dplyr** package is then used to retain only the "BUS_STOP_N" and "grid_id" columns in the combined simple feature data frame, `busstop_hgrid`.
+
+The `st_drop_geometry()` function is used to remove the geometry column from `busstop_hgrid`. The output is a regular data frame with only information of attributes.
+
+```{r}
+busstop_hgrid = st_intersection(busstop_grid, hgrid) %>%
+  select(BUS_STOP_N, grid_id) %>%
+  st_drop_geometry()
+```
+
+Both outputs (with and without the geometry column) are saved in rds file format and imported into the R environment.
+
+```{r}
+#| code-fold: true 
+#| #| code-summary: "Show the code" 
+write_rds(busstop_hgrid, "data/rds/busstop_hgrid.rds")
+busstop_hgrid = read_rds("data/rds/busstop_hgrid.rds")
+```
+
+Next, the grid_id from the `busstop_hgrid` are matched to the `odbus` tibble data frame's origin bus stops. The columns are renamed accordingly.
+
+```{r}
+odbus = left_join(odbus, busstop_hgrid,
+                       by = c("ORIGIN_PT_CODE" = "BUS_STOP_N")) %>%
+  rename(ORIGIN_BS = ORIGIN_PT_CODE,
+         ORIGIN_GRID = grid_id)
+```
+
+A check for duplicates is conducted. Since 754 records are found to be duplicates, they are removed and a confirmatory check is conducted.
+
+```{r}
+duplicate1 = odbus %>%
+  group_by_all() %>%
+  filter(n()>1) %>%
+  ungroup()  
+
+duplicate1
+```
+
+```{r}
+odbus = unique(odbus)
+
+duplicate2 = odbus %>%
+  group_by_all() %>%
+  filter(n()>1) %>%
+  ungroup()
+
+duplicate2
+```
+
+The grid_id from the `busstop_hgrid` are then matched to the `odbus` tibble data frame's destination bus stops. The columns are renamed accordingly.
+
+```{r}
+odbus = left_join(odbus, busstop_hgrid,
+                       by = c("DESTINATION_PT_CODE" = "BUS_STOP_N")) %>%
+  rename(DESTIN_BS = DESTINATION_PT_CODE,
+         DESTIN_GRID = grid_id)
+```
+
+Another check for duplicates is then conducted. Since 828 records are found to be duplicates, they are removed and a confirmatory check is conducted.
+
+```{r}
+duplicate3 = odbus %>%
+  group_by_all() %>%
+  filter(n()>1) %>%
+  ungroup()  
+
+duplicate3
+```
+
+```{r}
+odbus = unique(odbus)
+
+duplicate4 = odbus %>%
+  group_by_all() %>%
+  filter(n()>1) %>%
+  ungroup()
+
+duplicate4
+```
+
+The data frame is then tidied up, saved in rds format, and imported into the R environment.
+
+```{r}
+#| code-fold: true  
+#| code-summary: "Show the code"   
+rm(duplicate1, duplicate2, duplicate3, duplicate4)
+
+odbus = odbus %>%   
+  drop_na() %>%
+  group_by(ORIGIN_GRID, DESTIN_GRID) %>%
+  summarise(TRIPS = sum(TRIPS))
+
+write_rds(odbus, "data/rds/odbus.rds")  
+odbus = read_rds("data/rds/odbus.rds")
+```
+
+### 4.2 Visualising Origin-Destination Bus Commuter Flows
+
+#### 4.2.1 Separating Intra- and Inter-zonal Flows
+
+The intra- and inter-zonal flows are separated into two data sets, `odbus_intraflow` and `odbus_interflow`, respectively. There 633 observations of intra-zonal flows, and 64,888 observations of inter-zonal flows.
+
+```{r}
+odbus_interflow = odbus[odbus$ORIGIN_GRID!=odbus$DESTIN_GRID,]
+odbus_intraflow = odbus[odbus$ORIGIN_GRID==odbus$DESTIN_GRID,]
+```
+
+#### 4.2.2 Creating Inter-zonal Desire Lines
+
+The `od2line()` function in the **stplanr** package is used to create the desire lines. The function is specifically used to convert origin-destination flow data into lines, typically referred to as desire lines. Desire lines represent the flow of movement between different zones or locations.
+
+-   The "flow" argument represents the origin-destination flow data. It could be a data frame or a matrix containing information about the number of trips (flow) between pairs of zones or locations.
+
+-   The "zone" argument represents the spatial information of the zones. It is usually a spatial dataset (e.g., points, polygons) that defines the zones involved in the OD flow.
+
+-   The "zone_code" argument specifies the column in the zone data set that contains the zone or location codes.
+
+The output is a simple feature data frame, representing the desire lines - stored as linestrings under the geometry column.
+
+```{r}
+interflowLine = od2line(flow = odbus_interflow,                      
+                   zones = hgrid,                     
+                   zone_code = "grid_id")
+```
+
+#### 4.2.3 Visualising and Deriving Insights on Origin-Destination Bus Commuter Flows
+
+The `inner_join()` and `select()` functions in the **dplyr** package, and the `unique()` function in the **base** package are used to join the earlier prepared `hgrid` and `busstop_hgrid` to produce a hexagon grid with the unique bus stops of relevance, `busstop_hgrid_geo`.
+
+```{r}
+busstop_hgrid_geo = inner_join(hgrid, busstop_hgrid) %>%
+  select(grid_id) %>%
+  unique()
+```
+
+The inter-zonal desire lines are then visualised using functions in the **tmap** package.
+
+-   The "lwd" argument means that the values in the "TRIPS" column are used to determine the line width.
+
+-   The "scale" argument serve as thresholds that define the ranges of quantiles (six in total, corresponding to "n" argument). The first and last values mean:
+
+    -   **0.1:** Lines with values up to 0.1 (10% quantile).
+
+    -   **10:** Lines with values between 7 and 10 (90-100% quantile).
+
+```{r}
+tmap_mode("plot")
+
+tm_shape(busstop_hgrid_geo) +
+  tm_polygons(alpha = 0.1) +
+interflowLine %>%
+tm_shape() +
+  tm_lines(lwd = "TRIPS",
+           style = "quantile",
+           scale = c(0.1, 1, 3, 5, 7, 10),
+           n = 6,
+           alpha = 0.3)
+```
+
+The map above is not particularly useful given that it shows all the desire lines for the morning peak hour period. Due to overcrowding of the lines, no clear pattern is observed.
+
+In order to gather better insights, a quick summary of the distribution of the desire lines by number of trips is obtained using the `summary()` function in the **base** package. We can see that the number of trips is highly skewed given that the median and mean values are 38.0 and 379.8 respectively.
+
+```{r}
+summary(interflowLine$TRIPS)
+```
+
+The cut-off value of 179.0 (third quartile) is then used to map the desire lines.
+
+```{r}
+tmap_mode("plot")
+
+tm_shape(busstop_hgrid_geo) +
+  tm_polygons(alpha = 0.1) +
+interflowLine %>%
+  filter(TRIPS > 179.0) %>%
+tm_shape() +
+  tm_lines(lwd = "TRIPS",
+           style = "quantile",
+           scale = c(0.1, 1, 3, 5, 7, 10),
+           n = 6,
+           alpha = 0.3)
+```
+
+A slightly improved map was obtained, revealing that the west and northwest regions do not have high flows relative to the rest of Singapore. Nevertheless, the hexagons with Joo Koon MRT and Boon Lay MRT emerge as the hubs in the west region.
+
+Another round of filtering is done to visualise the desire lines with at least 5,000 trips.
+
+```{r}
+tmap_mode("plot")
+
+tm_shape(busstop_hgrid_geo) +
+  tm_polygons(alpha = 0.1) +
+interflowLine %>%
+  filter(TRIPS >= 5000) %>%
+tm_shape() +
+  tm_lines(lwd = "TRIPS",
+           style = "quantile",
+           scale = c(0.1, 1, 3, 5, 7, 10),
+           n = 6,
+           alpha = 0.3)
+```
+
+Based on the map above, a few regional hubs are identified:
+
+-   West: Boon Lay MRT, Choa Chu Kang MRT;
+
+-   North: Woodlands MRT, Yishun MRT, Khatib MRT;
+
+-   Central: Ang Mo Kio MRT, Toa Payoh MRT, Serangoon MRT; and
+
+-   East: Bedok MRT, Pasir Ris MRT, Tampines MRT.
+
+The lack of high bus commuter flows in the city area indicates that travel to/fro the city are likely to be effectively serviced by the MRT system during the morning peak hour period.
+
+Interestingly, the bus commuter flows in the towns of Punggol and Sengkang are not as high despite having a young adult population. This is likely because the LRT systems in the two towns (instead of buses) are used to commute to the MRT hubs.
+
+Also, the "longest" desire line by absolute distance (not commuting distance) is between Woodlands and Tampines. This indicates that buses are likely to be preferred to MRT when travelling between the north and east regions in the morning peak hour period. This is likely because commuting by MRT is deemed less convenient as it requires commuters to make several transfers (e.g., at Bishan and Paya Lebar or MacPherson MRT interchanges). This may be one of the underlying considerations for the development of the Cross-Island MRT line that would link Ang Mo Kio (on the North-South MRT line) to Pasir Ris (on the East-West MRT line) to improve public transport commuting for those travelling between Woodlands and Tampines.
+
+A final round of filtering is done to visualise the desire lines with at least 30,000 trips to identify areas with potential overcrowding during the morning peak hour period.
+
+-   The argument "set.zoom.limits = c(11, 16)" allows for the zoom out limit to show the entire Singapore, and the zoom in limit to show the street names.
+
+```{r}
+tmap_mode("view")
+
+tm_shape(busstop_hgrid_geo) +
+  tm_polygons(alpha = 0.1) +
+interflowLine %>%
+  filter(TRIPS >= 30000) %>%
+tm_shape() +
+  tm_lines(lwd = "TRIPS",
+           style = "quantile",
+           scale = c(0.1, 1, 3, 5, 7, 10),
+           n = 6,
+           alpha = 0.3) +
+  tm_view(set.zoom.limits = c(11, 16))
+```
+
+Based on the map above, some of the problem areas that are especially overcrowded during the morning peak hour period are:
+
+-   West: Boon Lay MRT, Lakeside MRT, Choa Chu Kang MRT;
+
+-   North: Woodlands MRT, Kranji MRT, Yishun MRT;
+
+-   Central: Ang Mo Kio MRT, Bishan MRT, Serangoon MRT; and
+
+-   East: Pasir Ris MRT, Bedok MRT.
+
+In particular, the large flows to/fro Kranji MRT is likely due to bus commuters from Johor Bahru, Malaysia who enter into Singapore during the morning peak hour period and commute to Kranji MRT in order to take the MRT to their workplaces or schools.
+
+There are two important implications based on the observations above:
+
+1.  Bus deployments in these overcrowded areas during the morning peak hour periods would need to be maintained at high levels to service the large numbers of commuters.
+
+2.  For commuter flows between hexagons that are next to each other, the Government may wish to consider if the provision of more sheltered walkways or cycling paths may encourage people to walk or cycle to the MRT hubs instead of relying on buses for the short commutes.
+
+To better visualise the direction of flows (origin to destination), the *destination* hexagons are plotted as dots on the map, with the intensity of the colour reflecting the number of trips. The `st_centroid()` function in the **sf** package is used to find the centroids of the hexagons to form the dots on the map.
+
+```{r}
+destin_dots = odbus_interflow %>% 
+  filter(TRIPS >= 30000) %>%
+  select(DESTIN_GRID, TRIPS) %>%
+  left_join(., busstop_hgrid_geo, by = c("DESTIN_GRID" = "grid_id")) %>%
+  st_as_sf(.) %>%
+  st_centroid(.)
+
+tmap_mode("view")
+
+tm_shape(busstop_hgrid_geo) +
+  tm_polygons(alpha = 0.1) +
+tm_shape(destin_dots) +
+  tm_dots(size = 0.5,
+          col = "TRIPS",
+          style = "jenks",
+          alpha = 0.3) +
+interflowLine %>%
+  filter(TRIPS >= 30000) %>%
+tm_shape() +
+  tm_lines(lwd = "TRIPS",
+           style = "jenks",
+           scale = c(0.1, 1, 3, 5, 7, 10),
+           n = 6,
+           alpha = 0.3) +
+  tm_view(set.zoom.limits = c(11, 16))
+```
+
+Based on the map above, the earlier observations that the MRT hubs are attractions (destinations) for the bus commuters are confirmed.
+
+### 4.3 Visualising Intra-zonal Bus Commuter Flows
+
+The intra-zonal bus commuter flows is visualised to gather insights on short-distance bus commuting trips during the morning peak hour period. The `left_join()` function in the **dplyr** package is used to join the `odbus_intraflow` tibble data frame with the `busstop_hgrid_geo` simple feature data frame. The output is a tibble data frame, `intraflowPt`, which matches the grids to the hexagons.
+
+The `select()` and `rename()` functions in the **dplyr** package are used to clean up `intraflowPt`.
+
+```{r}
+intraflowPt =  left_join(odbus_intraflow, busstop_hgrid_geo,
+                         by = c("ORIGIN_GRID" = "grid_id"))
+
+
+intraflowPt = intraflowPt %>%
+  select(-DESTIN_GRID) %>%
+  rename(GRID = ORIGIN_GRID)
+```
+
+The tibble data frame is then converted to a simple feature data frame using the `st_as_sf()` function in the **sf** package.
+
+```{r}
+intraflowPt = st_as_sf(intraflowPt)
+```
+
+The number of trips for each intra-zonal flow is then visualised using functions in the **tmap** package.
+
+-   The argument style = "jenks" produces a map based on natural breaks.
+
+-   The intensity of the colour corresponds to the number of trips, i.e., dark red means higher number of trips.
+
+```{r}
+tmap_mode("view")
+
+tm_shape(busstop_hgrid_geo) +
+  tm_polygons(alpha = 0.1) +
+tm_shape(intraflowPt) +
+  tm_fill(col = "TRIPS",
+          palette = "Reds",
+           style = "jenks",
+           alpha = 0.3) +
+  tm_view(set.zoom.limits = c(11, 16))
+```
+
+Based on the map above, one hexagon stood out as the only one in the last category (22,925 to 63,219 trips): Woodlands Avenue 6/Admiralty MRT. Similar to the suggestion for commuter flows between hexagons that are next to each other, the Government may wish to consider if the Woodlands Avenue 6/Admiralty MRT hexagon should have more sheltered walkways or cycling paths to encourage people to walk or cycle within the hexagon instead of relying on buses for the short commutes.
+
+There are other hexagons with large numbers of trips, in the category of 12,005 to 22925 trips, that may also be considered for the abovementioned suggestion:
+
+-   West: Bukit Batok MRT (22,102 trips);
+
+-   North/North-east: Woodlands MRT (20,038 trips), Punggol MRT (20,877 trips); and
+
+-   Central: Tiong Bahru MRT (22,925 trips).
+
+## 5 Computing Distance Matrix Using Analytical Hexagon Data
+
+The earlier prepared simple feature data frame, `busstop_hgrid_geo`, containing the "grid_id" and "geometry" of the hexagons with relevant bus stops, is used to compute the distance matrix at the analytical hexagon level.
+
+### 5.1 Converting from Simple Feature Data Frame to Spatial Polygons Data Frame
+
+There are at least two ways to compute the required distance matrix. One is based on **sf** and the other is based on **sp**. Past experience shown that computing distance matrix by using **sf** function took a relatively longer time than the **sp** method, especially when the data set is large. In view of this, the **sp** method is used in the code chunks below.
+
+The `as()` function with "Class" argument set as "Spatial" is used to convert `busstop_hgrid_geo` from simple feature data frame to SpatialPolygonsDataFrame of **sp** object.
+
+```{r}
+busstop_hgrid_geosp = as(busstop_hgrid_geo, "Spatial")   
+busstop_hgrid_geosp
+```
+
+### 5.2 Computing the Distance Matrix
+
+The `spDists()` function in the **sp** package is then used to compute the Euclidean distance between the centroids of the hexagons.
+
+-   The argument "longlat = FALSE" means that longitude and latitude are not used to calculate the distance.
+
+> ***Note***: Calculating the distance between centroids is computationally less intensive compared to more detailed spatial analyses. However, using centroid-to-centroid distance is a simplification and may not always capture the full complexity of spatial relationships.
+
+The output `dist` is a matrix object (817 by 817), and the column and row headers are not labeled with the "grid_id".
+
+```{r}
+dist = spDists(busstop_hgrid_geosp,                
+               longlat = FALSE)   
+
+head(dist, n=c(10, 10))
+```
+
+### 5.3 Labelling Column and Row Headers of a Distance Matrix
+
+A list sorted according to the the distance matrix by hexagon is created to hold the "grid_id".
+
+```{r}
+gridID = busstop_hgrid_geo$grid_id
+```
+
+Next, the "grid_id" are attached to row and column to facilitate distance matrix matching later on.
+
+```{r}
+colnames(dist) = paste0(gridID)  
+rownames(dist) = paste0(gridID)
+```
+
+### 5.4 Pivoting Distance Value by Grid ID
+
+The distance matrix is then pivoted into a long table using the row and column "grid_id". Within the same zone (i.e., when Var1 and Var2 are the same) distance is 0.
+
+```{r}
+distPair = melt(dist) %>%
+  rename(dist = value)   
+
+head(distPair, 10)
+```
+
+### 5.5 Updating Intra-zonal Distances
+
+A constant value is then used to replace the intra-zonal distance of 0.
+
+The minimum value of the inter-zonal distance is derived using the `filter()` function in the **dplyr** package and the `summary()` function in the **base** package. The value is 750. Hence, by quick estimation, an intra-zonal distance proxy value of less than half of 750 would be appropriate.
+
+```{r}
+distPair %>%   
+  filter(dist > 0) %>%   
+  summary()
+```
+
+Hence, a constant distance value of 100m is added as the intra-zonal distance. The resulting data frame is checked using the `summary()` function, showing that the minimum distance is now 100m.
+
+```{r}
+distPair$dist = ifelse(distPair$dist == 0,
+                       100, distPair$dist)    
+
+summary(distPair)
+```
+
+The origin (Var1) and destination (Var2) fields are renamed. The output is saved in rds file format and imported into the R environment.
+
+```{r}
+distPair = distPair %>%
+  rename(orig = Var1,           
+         dest = Var2)
+```
+
+```{r}
+#| code-fold: true    
+#| code-summary: "Show the code"     
+write_rds(distPair, "data/rds/distPair.rds")    
+distPair = read_rds("data/rds/distPair.rds")
+```
+
+### 5.6 Distinguishing Intra-zonal and Inter-zonal Flows
+
+A new field, "FlowNoIntra", is created to differentiate between inter- and intra-zonal flows in the `odbus` tibble data frame containing the origin-destination flows. The value of 0 denotes intra-zonal flows, while the value of the number of trips denotes inter-zonal flows.
+
+Another new field, "offset", is created to hold the value of 0.000001 if there was intra-zonal flow, or hold the value of 1 if there was no inter-zonal flow.
+
+```{r}
+odbus$FlowNoIntra = ifelse(odbus$ORIGIN_GRID == odbus$DESTIN_GRID,
+                           0, odbus$TRIPS)    
+
+odbus$offset = ifelse(odbus$ORIGIN_GRID == odbus$DESTIN_GRID,
+                      0.000001, 1)
+```
+
+### 5.7 Combining Passenger Volume Data with Distance Values
+
+The `left_join()` function in the **dplyr** package is used to combine the `odbus` tibble data frame and the `distPair` data frame. The output is `odbus_dist`.
+
+```{r}
+odbus_dist = odbus %>%   
+  left_join(distPair,             
+            by = c("ORIGIN_GRID" = "orig",
+                   "DESTIN_GRID" = "dest"))
+```
+
+## 6 Preparing Propulsive and Attractiveness Variables
+
+### 6.1 Preparing the Geospatial Data - MRT/LRT Exits Location
+
+#### 6.1.1 Importing and Transforming Data
+
+The MRT/LRT Exits Location geojson file are imported using `st_read()` in the **sf** package. The output is a simple feature data frame, `mrtlrtexits`, which is in WGS84 geographic coordinate system. It has 563 observations and 3 fields, including the geometry points indicating the MRT/LRT exits locations.
+
+```{r}
+mrtlrtexits = st_read("data/geospatial/LTAMRTStationExitGEOJSON.geojson")
+```
+
+```{r}
+glimpse(mrtlrtexits)
+```
+
+The `st_crs()` function in the **sf** package is then used to check the coordinate system of the `mrtlrtexits` simple feature data frame. The output shows that it is projected in WGS84, with EPSG as 4326, which is incorrect.
+
+```{r}
+st_crs(mrtlrtexits)
+```
+
+The `st_transform()` function in the **sf** package is used to transform the geographic coordinate system to the projected coordinate system. This facilitates analysis based on measurements such as distance and area. A check to confirm that the projection transformation has been applied is then made using the `st_crs()` function again.
+
+```{r}
+mrtlrtexits = st_transform(mrtlrtexits,
+                           crs = 3414)  
+
+st_crs(mrtlrtexits)
+```
+
+#### 6.1.2 Checking for Duplicates and Missing Values
+
+The data sets from the LTA DataMall are expected to be relatively clean. Nevertheless, due diligence checks for duplicates and missing values are still made to confirm the assumptions.
+
+The `duplicated()` function in the **base** package and `st_geometry()` function in the **sf** package are used to check for duplicates in `mrtlrtexits`. There are no duplicates in the simple feature data frame.
+
+```{r}
+mrtlrtexits[duplicated(st_geometry(mrtlrtexits)), ]
+```
+
+The `colSums()` function in the **base** package is used to check for missing values in `mrtlrtexits`. There are no missing values in the simple feature data frame.
+
+```{r}
+colSums(is.na(mrtlrtexits))
+```
+
+#### 6.1.3 Extracting Attributes and Selecting Columns
+
+The `future_lapply()` function in the **future_apply** package, the `slice()`, `pull()` and `as.tibble()` functions in the **dplyr** package, the `read_html()`, `html_node()` and `html_table()` functions in the **rvest** package, and the `pivot_wider()` function in the **tidyr** package are used to extract the attributes (e.g., station name, exit code) from the "Description" column of `mrtlrtexits`.
+
+The `bind_cols()`, `mutate()` and `select()` functions in the **dplyr** package are then used to bind the required attributes to the `mrtlrtexits`, combine the station name and exit code, and select the required column.
+
+```{r}
+attributes = future_lapply(X = 1:nrow(mrtlrtexits), 
+                           FUN = function(x) {
+                             mrtlrtexits %>% 
+                               slice(x) %>%
+                               pull(Description) %>%
+                               read_html() %>%
+                               html_node("table") %>%
+                               html_table(header = TRUE, trim = TRUE, dec = ".", fill = TRUE) %>% as_tibble(.name_repair = ~ make.names(c("Attribute", "Value"))) %>% pivot_wider(names_from = Attribute, values_from = Value)})
+
+mrtlrtexits = 
+  mrtlrtexits %>%
+  bind_cols(bind_rows(attributes)) %>%
+  mutate(STATION_EXIT = paste(STATION_NA, EXIT_CODE, sep = " ")) %>%
+  select(STATION_EXIT)
+
+rm(attributes)
+```
+
+The output is saved in rds file format and imported into the R environment.
+
+```{r}
+#| code-fold: true  
+#| code-summary: "Show the code"   
+write_rds(mrtlrtexits, "data/rds/mrtlrtexits.rds")  
+mrtlrtexits = read_rds("data/rds/mrtlrtexits.rds")
+```
+
+#### 6.1.4 Performing Point in Hexagon Grid Count
+
+The number of MRT/LRT exits in each hexagon is then counted using the `lengths()` function in the **base** package and the `st_intersects()` function in the **sf** package. As the analysis is concerned with whether the bus stop locations are near to MRT/LRT exits or not (i.e., binary), the values are converted to 0 (no exit) and 1 (at least one exit) using the `mutate()` in the **dplyr** package and the `ifelse()` function in the **base** package. The output is a data frame, `vars_attract`, with the first attractiveness variable - MRT/LRT exits.
+
+```{r}
+vars_attract = busstop_hgrid_geo
+
+vars_attract$`MRTLRTEXITS` = lengths(st_intersects(busstop_hgrid_geo, mrtlrtexits))
+
+vars_attract = vars_attract %>%
+  mutate(MRTLRTEXITS = ifelse(MRTLRTEXITS == 0, 0, 1))
+```
+
+### 6.2 Preparing the Geospatial Data - Business Activities Location
+
+#### 6.2.1 Importing Data and Selecting Columns
+
+The Business geospatial data set is imported the using st_read() function in the sf package. There are 6,550 features and 4 fields, including the geometry points indicating business activities locations. The select() function is then used to select only the points of interest, since the street numbers and street names are not required. The output is a simple feature data frame, biz.
+
+```{r}
+biz = st_read(dsn = "data/geospatial",
+              layer = "Business") %>%
+  select(POI_NAME)
+```
+
+#### 6.2.2 Checking for Duplicates and Missing Values
+
+The `duplicated()` function in the **base** package is used to check for duplicates in `biz`. The output returned Keppel Distripark at row 5019. On closer inspection of the simple feature data frame, rows 3886 and 5019 are found to be duplicates. Hence, the row 5019 is removed using the `row_number()` function in the **dplyr** package. The same check is conducted again to confirm that there are no more duplicates.
+
+```{r}
+biz[duplicated(biz), ]
+```
+
+```{r}
+biz = biz %>%   
+  filter(row_number() != 5019)    
+
+biz[duplicated(biz), ]
+```
+
+The `colSums()` function in the **base** package is used to check for missing values in `biz`. There are no missing values in the simple feature data frame.
+
+```{r}
+colSums(is.na(biz))
+```
+
+The output is saved in rds file format and imported into the R environment.
+
+```{r}
+#| code-fold: true   
+#| code-summary: "Show the code"    
+write_rds(biz, "data/rds/biz.rds")   
+biz = read_rds("data/rds/biz.rds")
+```
+
+#### 6.2.3 Performing Point in Hexagon Grid Count
+
+The number of business activities locations in each hexagon is then counted using the `lengths()` function in the **base** package and the `st_intersects()` function in the **sf** package. The output is a simple feature data frame, `vars_attract`, with the second attractiveness variable - business activities.
+
+```{r}
+vars_attract$`BIZ` = lengths(st_intersects(busstop_hgrid_geo, biz))
+```
+
+### 6.3 Preparing the Aspatial Data - Number of Schools
+
+#### 6.3.1 Importing and Geocoding with OneMap API
+
+Geocoding is the process of taking an aspatial description of a location, such as an address or postcode, and returning geographic coordinates, frequently latitude-longitude pair, to identify a location on the Earth's surface. The Singapore Land Authority (SLA) supports an online geocoding service called OneMap API. The Search API looks up the address data or 6-digit postal code for an entered value. It then returns both latitude, longitude and x,y coordinates of the searched location.
+
+The School Directory and Information csv is imported using the `read_csv()` function in the **readr** package. A collection of http call functions in the **httr** package is then used to pass the individual records to the geocoding server on OneMap. The output is two tibble data frames - `found` and `not_found`. The `found` data frame contains all records that are geocoded correctly, and the `not_found` data frame contains postal code(s) that fail to be geocoded.
+
+The `found` data table is joined with the original csv data table using a unique identifier (i.e. "POSTAL") that is common to both data tables. The output data table is saved as a csv file, `found`.
+
+```{r}
+#| eval: false
+url = "https://www.onemap.gov.sg/api/common/elastic/search"
+
+csv = read_csv("data/aspatial/Generalinformationofschools.csv")
+postcodes = csv$`postal_code`
+
+found = data.frame()
+not_found = data.frame()
+
+for(postcode in postcodes){
+  query = list('searchVal' = postcode, 'returnGeom' = 'Y', 'getAddrDetails' = 'Y', 'pageNum' = '1')
+  res = GET(url, query = query)
+  if((content(res)$found)!=0){
+  found = rbind(found, data.frame(content(res))[4:13])
+  } else{
+  not_found = data.frame(postcode)
+  }
+}
+```
+
+Next, both the `found` and `not_found` data frames are combined into a single tibble data.frame, `merged` and saved as a csv file, `schools`.
+
+```{r}
+#| eval: false
+merged = merge(csv, found, by.x = 'postal_code', by.y = 'results.POSTAL', all = TRUE)
+write.csv(merged, file = 'data/aspatial/schools.csv')
+```
+
+The schools.csv is then imported into the R environment and only the necessary fields are selected and renamed.
+
+```{r}
+schools = read_csv('data/aspatial/schools.csv') %>%
+  rename(LATITUDE = "results.LATITUDE", 
+         LONGITUDE = "results.LONGITUDE",
+         POSTAL_CODE = "postal_code",
+         SCHOOL = "school_name") %>%
+  select(POSTAL_CODE, SCHOOL, LATITUDE, LONGITUDE)
+```
+
+Using Google Maps, the latitude and longitude of the school (Zhenghua Secondary School) that was not geocoded successfully are 1.389279 and 103.7651 respectively. This is manually coded into the schools data frame using the `mutate()` function in the **dplyr** package.
+
+```{r}
+schools = schools %>%
+  mutate(LATITUDE = ifelse(SCHOOL == "ZHENGHUA SECONDARY SCHOOL", 1.389279, LATITUDE)) %>%
+  mutate(LONGITUDE = ifelse(SCHOOL == "ZHENGHUA SECONDARY SCHOOL", 103.7651, LONGITUDE))
+
+rm(csv, query, res, found, not_found, merged)
+```
+
+#### 6.3.2 Converting into Simple Feature Tibble Data Frame
+
+Next, the `schools` tibble data frame is converted into a simple feature tibble data frame using the `st_as_sf()` function in the **sf** package and the values in the latitude and longitude fields. The `st_transform()` function in the **sf** package is then used to set the CRS value as 3414.
+
+```{r}
+schools = st_as_sf(schools,
+                      coords = c("LONGITUDE", "LATITUDE"),
+                      crs = 4326) %>%
+  st_transform(crs = 3414)
+```
+
+The output is saved in rds file format and imported into the R environment.
+
+```{r}
+#| code-fold: true    
+#| code-summary: "Show the code"     
+write_rds(schools, "data/rds/schools.rds")    
+schools = read_rds("data/rds/schools.rds")
+```
+
+#### 6.3.3 Performing Point in Hexagon Grid Count
+
+The number of schools in each planning subzone is then counted using the `lengths()` function in the **base** package and the `st_intersects()` function in the **sf** package. The output is a simple feature data frame, `vars_attract`, with the third attractiveness variable - schools.
+
+```{r}
+vars_attract$`SCHOOLS` = lengths(st_intersects(busstop_hgrid_geo, schools))
+```
+
+The geometry feature of vars_attract is then dropped, giving a data frame.
+
+```{r}
+vars_attract = vars_attract %>% st_drop_geometry()
+```
+
+The output is saved in rds file format and imported into the R environment.
+
+```{r}
+#| code-fold: true     
+#| code-summary: "Show the code"    
+write_rds(vars_attract, "data/rds/vars_attract.rds")     
+vars_attract = read_rds("data/rds/vars_attract.rds")
+```
+
+### 6.4 Preparing the Aspatial Data - Number of Residents
+
+#### 6.4.1 Importing and Geocoding with OneMap API
+
+Similar to the schools dataset, geocoding is conducted for the residential dataset. The HDB Property Information csv is imported using the `read_csv()` function in the **readr** package.
+
+```{r}
+#| eval: false
+residents = read_csv("data/aspatial/HDBPropertyInformation.csv")
+```
+
+A collection of http call functions in the **httr** package is then used to pass the individual records to the geocoding server on OneMap.
+
+```{r}
+#| eval: false
+geocode = function(blk_no, street) {
+  url = "https://www.onemap.gov.sg/api/common/elastic/search"
+  address = paste(blk_no, street, sep = " ")
+  query = list("searchVal" = address, 
+                "returnGeom" = "Y",
+                "getAddrDetails" = "N",
+                "pageNum" = "1")
+  
+  res = GET(url, query = query)
+  restext = content(res, as="text")
+  
+  output = fromJSON(restext) %>%
+    as.data.frame %>%
+    select(results.LATITUDE, results.LONGITUDE)
+
+  return(output)
+}
+```
+
+```{r}
+#| eval: false
+residents$LATITUDE = 0
+residents$LONGITUDE = 0
+
+for (i in 0:nrow(residents)+1){
+  temp_output = geocode(residents[i, 1], residents[i, 2])
+  
+  residents$LATITUDE[i] = temp_output$results.LATITUDE
+  residents$LONGITUDE[i] = temp_output$results.LONGITUDE
+}
+```
+
+The output is a tibble data frame, `residents` and is saved as a csv file, `residents`.
+
+```{r}
+#| eval: false
+write.csv(residents, file = 'data/aspatial/residents.csv')
+```
+
+The residents.csv is then imported into the R environment and only the necessary fields are selected and renamed.
+
+```{r}
+residents = read_csv('data/aspatial/residents.csv')
+```
+
+```{r}
+#| eval: false
+residents = residents %>%
+  select("blk_no", "street", "total_dwelling_units", "1room_sold", "2room_sold", 
+  "3room_sold", "4room_sold", "5room_sold", "exec_sold", 
+  "multigen_sold", "studio_apartment_sold", "1room_rental",
+  "2room_rental", "3room_rental", "other_room_rental", 
+  "LATITUDE", "LONGITUDE") %>%
+  rename(HDB1R = "1room_sold",
+         HDB2R = "2room_sold",
+         HDB3R = "3room_sold",
+         HDB4R = "4room_sold",
+         HDB5R = "5room_sold",
+         HDBExec = "exec_sold",
+         HDBMultiGen = "multigen_sold",
+         HDBStudio = "studio_apartment_sold",
+         HDB1R_rent = "1room_rental",
+         HDB2R_rent = "2room_rental",
+         HDB3R_rent = "3room_rental",
+         HDBOther_rent = "other_room_rental")
+```
+
+#### 6.4.2 Deriving Number of Residents for Different Types of HDB Units
+
+Given that the number of household members for different types of HDB properties differ, the number of HDB units for each type is multiplied by the average household size for the specific type based on information from the Department of Statistics on [Resident Households by Household Size, Annual](https://tablebuilder.singstat.gov.sg/table/TS/M810371).
+
+```{r}
+#| eval: false
+residents = residents %>%
+  mutate(HDB1R = (HDB1R)*2.05,
+         HDB2R = (HDB2R)*2.05,
+         HDB3R = (HDB3R)*2.46,
+         HDB4R = (HDB4R)*3.15,
+         HDB5R = (HDB5R)*3.56,
+         HDBExec = (HDBExec)*3.56,
+         HDBMultiGen = (HDBMultiGen)*3.56,
+         HDBStudio = (HDBStudio)*2.05,
+         HDB1R_rent = (HDB1R_rent)*2.05,
+         HDB2R_rent = (HDB2R_rent)*2.05,
+         HDB3R_rent = (HDB3R_rent)*2.46,
+         HDBOther_rent = (HDBOther_rent)*3.02)
+```
+
+The `mutate()` function in the **dplyr** package are then used to consolidate the various categories to obtain a selection of five propulsive variables:
+
+1.  Number of dwelling units;
+
+2.  Number of residents in 1- or 2-room HDB units;
+
+3.  Number of residents in 3- or 4-room HDB units;
+
+4.  Number of residents in 5-room, executive or multi-generation HDB units; and
+
+5.  Number of residents in HDB rental units.
+
+The relevant columns are selected using the `select()` function in the **dplyr** package.
+
+```{r}
+#| eval: false
+residents = residents %>%
+  mutate(HDB12R = HDB1R+HDB2R+HDBStudio,
+         HDB34R = HDB3R+HDB4R,
+         HDB5RMore = HDB5R+HDBExec+HDBMultiGen,
+         HDBRent = HDB1R_rent+HDB2R_rent+HDB3R_rent+HDBOther_rent) %>%
+  select(blk_no, street, total_dwelling_units,
+         HDB12R, HDB34R, HDB5RMore, HDBRent,
+         LATITUDE, LONGITUDE)
+```
+
+The output is saved in rds file format and imported into the R environment.
+
+```{r}
+#| eval: false
+write_rds(residents, "data/rds/residents.rds")  
+residents = read_rds("data/rds/residents.rds")
+```
+
+#### 6.4.3 Converting into Simple Feature Tibble Data Frame
+
+Next, the `residents` tibble data frame is converted into a simple feature tibble data frame using the `st_as_sf()` function in the **sf** package and the values in the latitude and longitude fields. The `st_transform()` function in the **sf** package is then used to set the CRS value as 3414.
+
+```{r}
+residents = st_as_sf(residents,
+                      coords = c("LONGITUDE", "LATITUDE"),
+                      crs = 4326) %>%
+  st_transform(crs = 3414)
+```
+
+The `residents` simple feature tibble data frame is then matched to the "grid_id" in `busstop_hgrid_geo` using the `st_intersection()` function in the sf package. The output is a data frame, `residents_grid`.
+
+```{r}
+residents_grid = st_intersection(busstop_hgrid_geo, residents) %>%
+  select(-c(...1, blk_no, street)) %>%
+  st_drop_geometry() %>%
+  group_by(grid_id) %>%
+  summarise(DU = sum(total_dwelling_units),
+            HDB12R = sum(HDB12R),
+            HDB34R = sum(HDB34R),
+            HDB5RMore = sum(HDB5RMore),
+            HDBRent = sum(HDBRent))
+```
+
+### 6.5 Preparing Origin and Destination Attributes
+
+The origin attributes (i.e., number of residents of different groups) in the `residents_grid` data frame are then added to the `odbus_dist` tibble data frame by matching to the "ORIGIN_GRID".
+
+```{r}
+SIM = odbus_dist %>%
+  left_join(residents_grid,
+            by = c(ORIGIN_GRID = "grid_id"))
+```
+
+The destination attributes (i.e., existence of MRT/LRT exits, number of business activities, and number of schools) in the `vars_attract` data frame are then added to the SIM tibble data frame by matching to the "DESTIN_GRID".
+
+```{r}
+SIM = SIM %>%
+  left_join(vars_attract,
+            by = c(DESTIN_GRID = "grid_id"))
+```
+
+The "ORIGIN_GRID" and "DESTIN_GRID" variables are converted to character data type.
+
+```{r}
+SIM$ORIGIN_GRID = as.character(SIM$ORIGIN_GRID)
+SIM$DESTIN_GRID = as.character(SIM$DESTIN_GRID)
+```
+
+The output is saved in rds file format and imported into the R environment.
+
+```{r}
+#| code-fold: true     
+#| code-summary: "Show the code"    
+write_rds(SIM, "data/rds/SIM.rds")     
+SIM = read_rds("data/rds/SIM.rds")
+```
+
+## 7 Spatial Interaction Modelling
+
+The spatial interaction models (SIMs) are calibrated by applying the Poisson Regression methods on the `SIM` tibble data frame.
+
+### 7.1 Visualising the Dependent Variable
+
+The distribution of the dependent variable (i.e. "TRIPS") is plotted by using the histogram method. The histogram shows that the distribution is highly skewed and does not resemble normal distribution.
+
+```{r}
+ggplot(data = SIM,
+       aes(x = TRIPS)) +
+  geom_histogram()
+```
+
+The relation between the dependent variable and one of the key independent variable in SIM, namely distance is then visualised using the scatterplot method. The scatterplot shows that their relationship does not appear to be a linear one.
+
+```{r}
+ggplot(data = SIM,
+       aes(x = dist,
+           y = TRIPS)) +
+  geom_point() +
+  geom_smooth(method = lm)
+```
+
+However, if the log transformed version of both variables are plotted, the result better resembles a linear relationship.
+
+```{r}
+ggplot(data = SIM,
+       aes(x = log(dist),
+           y = log(TRIPS))) +   
+  geom_point() +   
+  geom_smooth(method = lm)
+```
+
+### 7.2 Checking for Variables with Zero or Missing Values
+
+Since Poisson Regression is based on log transformation, and log 0 is undefined, it is important to ensure that there are no zero values in the explanatory variables.
+
+The `summary()` function in the **base** package revealed that both propulsive and attractiveness variables have zero values.
+
+```{r}
+summary(SIM)
+```
+
+Hence, the `ifelse()` function in the **base** package is used to replace the zero values with 0.99.
+
+```{r}
+SIM$DU = ifelse(SIM$DU == 0, 0.99, SIM$DU)
+SIM$HDB12R = ifelse(SIM$HDB12R == 0, 0.99, SIM$HDB12R)
+SIM$HDB34R = ifelse(SIM$HDB34R == 0, 0.99, SIM$HDB34R)
+SIM$HDB5RMore = ifelse(SIM$HDB5RMore == 0, 0.99, SIM$HDB5RMore)
+SIM$HDBRent = ifelse(SIM$HDBRent == 0, 0.99, SIM$HDBRent)
+SIM$MRTLRTEXITS = ifelse(SIM$MRTLRTEXITS == 0, 0.99, SIM$MRTLRTEXITS)
+SIM$BIZ = ifelse(SIM$BIZ == 0, 0.99, SIM$BIZ)
+SIM$SCHOOLS = ifelse(SIM$SCHOOLS == 0, 0.99, SIM$SCHOOLS)
+```
+
+A confirmatory check is then made to ensure that the replacements have been made.
+
+```{r}
+summary(SIM)
+```
+
+A check for missing values using the `colSums()` and `is.na()` functions in the **base** package revealed that the variables containing the number of residents in the different HDB housing types have NA values.
+
+```{r}
+colSums(is.na(SIM))
+```
+
+Hence, the `ifelse()` function in the **base** package is used to replace the missing values with 0.99.
+
+```{r}
+SIM$DU = ifelse(is.na(SIM$DU), 0.99, SIM$DU)
+SIM$HDB12R = ifelse(is.na(SIM$HDB12R), 0.99, SIM$HDB12R)
+SIM$HDB34R = ifelse(is.na(SIM$HDB34R), 0.99, SIM$HDB34R)
+SIM$HDB5RMore = ifelse(is.na(SIM$HDB5RMore), 0.99, SIM$HDB5RMore)
+SIM$HDBRent = ifelse(is.na(SIM$HDBRent), 0.99, SIM$HDBRent)
+```
+
+A confirmatory check is then made to ensure that the replacements have been made.
+
+```{r}
+colSums(is.na(SIM))
+```
+
+### 7.3 Unconstrained Spatial Interaction Model
+
+An unconstrained SIM, `uncSIM`, is calibrated below by using the `glm()` function of the **stats** package. The explanatory variables are origin populations by different HDB housing types, the existence of MRT/LRT exits, the counts of business activities and schools, and the distance between the origin and destination.
+
+Based on the output below, the number of trips is more positively correlated to the existence of MRT/LRT exits (attractiveness variable), and most negatively correlated to distance (i.e., the greater the distance between origin and destination, the lower the number of trips). Between the number of business activities and the number of schools, the latter is more correlated to the number of trips than the latter.
+
+```{r}
+uncSIM = glm(formula = TRIPS ~ 
+               log(DU) + 
+               log(HDB12R) +
+               log(HDB34R) +
+               log(HDB5RMore) +
+               log(HDBRent) +
+               log(MRTLRTEXITS) +
+               log(BIZ) +
+               log(SCHOOLS) +
+               log(dist),
+              family = poisson(link = "log"),
+              data = SIM,
+              na.action = na.exclude)
+
+uncSIM
+```
+
+The R-squared values are calculated to measure how much variation of the trips can be accounted for by the unconstrained SIM.
+
+-   Based on the outcome from the `cor()` function in the **stats** package, the R-squared value is 0.09206193. This means that about 9.25% of the variation in the number of trips can be accounted for by the unconstrained SIM.
+
+-   Based on the [**performance** package](https://cran.r-project.org/web/packages/performance/performance.pdf), the R-squared values for generalised linear models are computed using the `r2_kullback()` and `r2_mcfadden()` functions. The results are 0.4032871 and 0.402 respectively, i.e., that about 39.9% or 50.6% of the variation in the number of trips can be accounted for by the unconstrained SIM.
+
+```{r}
+CalcRSquared = function(observed, estimated){
+  r = cor(observed, estimated)
+  R2 = r^2
+  R2
+}
+
+CalcRSquared(uncSIM$data$TRIPS, uncSIM$fitted.values)
+
+r2_kullback(uncSIM)
+r2_mcfadden(uncSIM)
+```
+
+### 7.4 Origin (Production) Constrained Spatial Interaction Model
+
+An origin constrained SIM, `orcSIM`, is calibrated below by using the `glm()` function of the **stats** package. The explanatory variables are the existence of MRT/LRT exits, the counts of business activities and schools, and the distance between the origin and destination.
+
+Similar to the unconstrained SIM, based on the output below, the number of trips is more positively correlated to the existence of MRT/LRT exits (attractiveness variable), and most negatively correlated to distance (i.e., the greater the distance between origin and destination, the lower the number of trips). Between the number of business activities and the number of schools, the latter is more correlated to the number of trips than the latter.
+
+```{r}
+orcSIM = glm(formula = TRIPS ~ 
+               ORIGIN_GRID +
+               log(MRTLRTEXITS) +
+               log(BIZ) +
+               log(SCHOOLS) +
+               log(dist),
+              family = poisson(link = "log"),
+              data = SIM,
+              na.action = na.exclude)
+
+summary(orcSIM)
+```
+
+The R-squared values are calculated to measure how much variation of the trips can be accounted for by the origin constrained SIM.
+
+-   Based on the outcome from the `cor()` function in the **stats** package, the R2 is 0.1397128. This means that about 14.0% of the variation in the number of trips can be accounted for by the origin constrained SIM.
+
+-   Based on the **performance** package, the R-squared values for generalised linear models are computed using the `r2_kullback()` and `r2_mcfadden()` functions. The results are 0.5043682 and 0.509 respectively, i.e., that about 50.4% or 50.9% of the variation in the number of trips can be accounted for by the origin constrained SIM.
+
+-   Compared to the unconstrained SIM, the origin constrained SIM has improved R-squared values, meaning that the latter model is better fitted to the data.
+
+```{r}
+CalcRSquared(orcSIM$data$TRIPS, orcSIM$fitted.values)
+
+r2_kullback(orcSIM)
+r2_mcfadden(orcSIM)
+```
+
+### 7.5 Destination (Attraction) Constrained Spatial Interaction Model
+
+A destination constrained SIM, `decSIM`, is calibrated below by using the `glm()` function of the **stats** package. The explanatory variables are origin populations by different HDB housing types, and the distance between the origin and destination.
+
+```{r}
+decSIM = glm(formula = TRIPS ~ 
+               DESTIN_GRID +
+               log(DU) + 
+               log(HDB12R) +
+               log(HDB34R) +
+               log(HDB5RMore) +
+               log(HDBRent) +
+               log(dist),
+              family = poisson(link = "log"),
+              data = SIM,
+              na.action = na.exclude)
+
+summary(decSIM)
+```
+
+The R-squared values are calculated to measure how much variation of the trips can be accounted for by the destination constrained SIM.
+
+-   Based on the outcome from the `cor()` function in the **stats** package, the R2 is 0.1934442. This means that about 20.3% of the variation in the number of trips can be accounted for by the destination constrained SIM.
+
+-   Based on the **performance** package, the R-squared values for generalised linear models are computed using the `r2_kullback()` and `r2_mcfadden()` functions. The results are 0.5328245 and 0.537 respectively, i.e., that about 54.9% or 63.6% of the variation in the number of trips can be accounted for by the destination constrained SIM.
+
+-   Compared to the unconstrained SIM and the origin constrained SIM, the destination constrained SIM has improved R-squared values, meaning that it is better fitted to the data.
+
+```{r}
+CalcRSquared(decSIM$data$TRIPS, decSIM$fitted.values)
+
+r2_kullback(decSIM)
+r2_mcfadden(decSIM)
+```
+
+### 7.6 Doubly Constrained Spatial Interaction Model
+
+A doubly constrained SIM, `dbcSIM`, is calibrated below by using the `glm()` function of the **stats** package. The explanatory variable is the distance between the origin and destination.
+
+```{r}
+dbcSIM = glm(formula = TRIPS ~ 
+               ORIGIN_GRID +
+               DESTIN_GRID +
+               log(dist),
+              family = poisson(link = "log"),
+              data = SIM,
+              na.action = na.exclude)
+
+summary(dbcSIM)
+```
+
+The R-squared values are calculated to measure how much variation of the trips can be accounted for by the doubly constrained SIM.
+
+-   Based on the outcome from the `cor()` function in the **stats** package, the R2 is 0.2167286. This means that about 20.3% of the variation in the number of trips can be accounted for by the doubly constrained SIM.
+
+-   Based on the **performance** package, the R-squared values for generalised linear models are computed using the `r2_kullback()` and `r2_mcfadden()` functions. The results are 0.6159739 and 0.623 respectively, i.e., that about 61.6% or 62.3% of the variation in the number of trips can be accounted for by the doubly constrained SIM.
+
+-   Compared to the three other models, the doubly constrained SIM has improved R-squared values, meaning that it is the best fitted to the data.
+
+```{r}
+CalcRSquared(dbcSIM$data$TRIPS, dbcSIM$fitted.values)
+
+r2_kullback(dbcSIM)
+r2_mcfadden(dbcSIM)
+```
+
+### 7.7 Model Comparison
+
+Another useful model performance measure for continuous dependent variable is the Root Mean Squared Error (RMSE). The `compare_performance()` in the **performance** package is used to compare the different models.
+
+A list called `models` is created to hold the four models.
+
+```{r}
+models = list(unconstrained = uncSIM,
+              originConstrained = orcSIM,
+              destinationConstrained = decSIM,
+              doublyConstrained = dbcSIM)
+```
+
+The RMSE of the models are computed using the `compare_performance()` function in the **performance** package. Based on the RMSE, the destination constrained SIM is the best model among the four SIMs because it has the smallest RMSE value of 1740.001.
+
+```{r}
+compare_performance(models,                     
+                    metrics = "RMSE")
+```
+
+### 7.8 Visualising Fitted Values
+
+The observed values and the fitted values for the four models are visualised below.
+
+The fitted values are extracted using the `as.data.frame()` function in the **base** package.
+
+```{r}
+df_uncSIM = as.data.frame(uncSIM$fitted.values) %>%   
+  round(digits = 0)
+
+df_orcSIM = as.data.frame(orcSIM$fitted.values) %>%   
+  round(digits = 0)
+
+df_decSIM = as.data.frame(decSIM$fitted.values) %>%   
+  round(digits = 0)
+
+df_dbcSIM = as.data.frame(dbcSIM$fitted.values) %>%   
+  round(digits = 0)
+```
+
+The fitted values are then added to the `SIM` data frame.
+
+```{r}
+SIM_vis = SIM %>%
+  cbind(df_uncSIM) %>%
+  rename(uncTRIPS = "uncSIM$fitted.values")%>%
+  cbind(df_orcSIM) %>%
+  rename(orcTRIPS = "orcSIM$fitted.values")%>%
+  cbind(df_decSIM) %>%
+  rename(decTRIPS = "decSIM$fitted.values")%>%
+  cbind(df_dbcSIM) %>%
+  rename(dbcTRIPS = "dbcSIM$fitted.values")
+```
+
+The plots are then visualised using functions in the **ggplot** package.
+
+```{r}
+unc_p = ggplot(data = SIM_vis,
+                aes(x = uncTRIPS,
+                    y = TRIPS)) +
+  geom_point() +
+  geom_smooth(method = lm)
+
+orc_p = ggplot(data = SIM_vis,
+                aes(x = orcTRIPS,
+                    y = TRIPS)) +
+  geom_point() +
+  geom_smooth(method = lm)
+
+dec_p = ggplot(data = SIM_vis,
+                aes(x = decTRIPS,
+                    y = TRIPS)) +
+  geom_point() +
+  geom_smooth(method = lm)
+
+dbc_p = ggplot(data = SIM_vis,
+                aes(x = dbcTRIPS,
+                    y = TRIPS)) +
+  geom_point() +
+  geom_smooth(method = lm)
+
+ggarrange(unc_p, orc_p, dec_p, dbc_p,
+          ncol = 2,
+          nrow = 2)
+```
 
 2.  [Spatial Interaction Modelling (SIM)]{.underline}:
 
@@ -196,3 +1593,5 @@ These two sub-folders are within the data folder of my Take-home_Ex2 folder.
     -   Present the modelling results using the appropriate geovisualisation and graphical visualisation methods.
 
     -   Describe the modelling results based on the spatial interaction model output tables, maps, and data visualisations prepared.
+
+[**\~\~\~ End of Take-home Exercise 2 \~\~\~**]{.smallcaps}
