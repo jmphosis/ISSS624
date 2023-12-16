@@ -12,11 +12,25 @@ background-color: lightgrey;
 font-family:  Palatino Linotype;
 ---
 
-# Spatial Econometric Interaction Models
+# Spatial Econometric Interaction Modelling
 
-Overview
+## 1 Overview
 
-## Getting Started
+Spatial Interaction Models (SIMs) are often used to explain origin-destination (OD) flows that arise in fields such as public bus commuting. These models rely on a function of the distance between the origin and destination as well as explanatory variables pertaining to characteristics of both origin and destination locations.
+
+SIMs assume that the use of distance as an explanatory variable will eradicate the spatial dependence among the sample of OD flows between pairs of locations. The notion that the use of distance functions in conventional SIMs effectively captures spatial dependence in inter-regional flows has long been challenged. In view of the limitation of SIMs in accounting for spatial dependence, Spatial Econometric Interaction Models (SEIMs) have been introduce by James P. LeSage and R. Kelley Pace (2009).
+
+In this in-class exercise, the **spflow** package (an R library specially developed for calibrating SEIMs) is used, alongside other relevant packages, to:
+
+-   Extract explanatory variables from secondary source;
+
+-   Assemble and derive explanatory variables from publicly available geospatial data;
+
+-   Integrate these explanatory variable into a tidy variables tibble data frame; and
+
+-   Calibrate SEIMs.
+
+## 2 Getting Started
 
 The following packages are loaded into the R environment:
 
@@ -29,6 +43,8 @@ The following packages are loaded into the R environment:
 -   **spdep** for analysing spatial dependence and spatial relationships in data;
 
 -   **spflow** for efficient estimation of spatial econometric models of origin-destination flows;
+
+    -   ***Note***: The development version (0.1.0.9010) is used instead of the CRAN-released version (0.1.0).
 
 -   **tmap** for thematic mapping;
 
@@ -44,24 +60,27 @@ The latest development version of the **spflow** package is installed first.
 devtools::install_github("LukeCe/spflow")
 ```
 
-xxx
+The spflow package and other packages mentioned above are loaded into the R environment.
 
 ```{r}
 pacman::p_load(tmap, sf, spdep, sp, Matrix, 
-               spflow, reshape2, knitr, tidyverse)
+               spflow, reshape2, knitr,
+               tidyverse)
 ```
 
-## Data Preparation
+## 3 Data Preparation
 
-Three data sets are required:
+Three data sets are required for this in-class exercise:
 
-1.  A set of spatial weights;
+1.  Spatial weights;
 
 2.  A tibble data frame consisting of the origins, destinations, flows and distances between the origins and destinations; and
 
 3.  A tibble data frame consisting of the explanatory variables.
 
-The 2019 Master Plan Subzone boundary shapefile is imported as a simple feature data frame, `mpsz`.
+### 3.1 Building the Geographic Area
+
+The 2019 URA Master Plan Subzone boundary shapefile is imported into the R environment as a simple feature data frame, `mpsz`, using the `st_read()` and `st_transform()` functions in the **sf** package.
 
 ```{r}
 mpsz = st_read(dsn = "data/geospatial",
@@ -69,7 +88,7 @@ mpsz = st_read(dsn = "data/geospatial",
   st_transform(crs = 3414)
 ```
 
-The Bus Stop location shapefile is imported as a simple feature data frame, `busstop`.
+Similarly, the same functions are used to import the Bus Stop location shapefile into the R environment as a simple feature data frame, `busstop`.
 
 ```{r}
 busstop = st_read(dsn = "data/geospatial",
@@ -77,62 +96,389 @@ busstop = st_read(dsn = "data/geospatial",
   st_transform(crs = 3414)
 ```
 
-A count of the number of bus stops in each subzone is made using the `lengths()` function in the **base** package and the `st_intersects()` function in the **sf** package.
+The `lengths()` function in the **base** package and the `st_intersects()` function in the **sf** package are used to count the number of bus stops in each planning subzone.
 
 ```{r}
 mpsz$`BUSSTOP_COUNT` = lengths(st_intersects(mpsz, busstop))
 ```
 
-The `filter()` function in the **dplyr** package is then used to filter for subzones with at least one bus stop.
+The `filter()` function in the **dplyr** package is then used to filter for subzones with at least one bus stop. There are 313 planning subzones left.
 
 ```{r}
 mpsz_busstop = mpsz %>% filter(BUSSTOP_COUNT > 0)
+
+mpsz_busstop
 ```
 
-The centroids for the subzones are generated using the `st_point_on_surface()` ad `st_geometry()` functions in the **sf** package.
+### 3.2 Preparing the Spatial Weights
+
+There are three different matrices that can be used to describe the connectivity between planning subzones. They are contiguity, fixed distance, and adaptive distance. All three types of spatial weights are computed using the `st_point_on_surface()` ad `st_geometry()` functions in the **sf** package.
 
 ```{r}
 centroids = suppressWarnings({st_point_on_surface(st_geometry(mpsz_busstop))})
-```
 
-A list of three sets of weight values are generated for:
-
--   "by contiguity Neighbours by contiguity
-
-by knn - 3 neighbours (for hexagon, can use 6 since each hexagon is surrounded by 6 hexagons)
-
-```{r}
 mpsz_nb = list(
   "by_contiguity" = poly2nb(mpsz_busstop),
-  "by_distance" = dnearneigh(centroids,
+  "by_distance" = dnearneigh(centroids, 
                              d1 = 0, d2 = 5000),
-  "by knn" = knn2nb(knearneigh(centroids, 3))
-)
+  "by_knn" = knn2nb(knearneigh(centroids, 3)))
 ```
 
-xxx
+The list of three sets of weight values, `mpsz_nb`, is generated using functions in the **spdep** package for:
+
+-   [Neighbours by contiguity]{.underline}: using the `poly2nb()` function to build a neighbours list based on regions with contiguous boundaries.
+-   [Neighbours by fixed distance]{.underline}: using the `dnearneigh()` function to identify neighbours of region centroids by Euclidean distance between the lower and upper bounds (0 and 5000 m).
+-   [Neighbours by adpative distance]{.underline}: using the `knn2nb()` and `knearneigh()` functions to build adaptive spatial weights.
+
+The output reveals that for neighbours by fixed distance, there is one planning subzone with no neighbours.
 
 ```{r}
-mpsz_nb$by_contiguity
-mpsz_nb$by_distance
-mpsz_nb$`by knn`
+mpsz_nb
 ```
 
-------------------------------------------------------------------------
+The spatial weights are plotted for visual inspection.
 
-The relevant data sets are retrieved:
+[Contiguity]{.underline}
 
 ```{r}
-mpsz_flow = read_rds("data/rds/mpsz_flow.rds")
+plot(st_geometry(mpsz))
+plot(mpsz_nb$by_contiguity, 
+     centroids, 
+     add = T, 
+     col = rgb(0,0,0,
+               alpha=0.5))
+title("Contiguity") 
+```
+
+[Fixed Distance]{.underline}
+
+```{r}
+plot(st_geometry(mpsz))
+plot(mpsz_nb$by_distance,
+     centroids, 
+     add = T, 
+     col = rgb(0,0,0,
+               alpha=0.5)) 
+title("Distance") 
+```
+
+[Adaptive Distance (3 Nearest Neighbours)]{.underline}
+
+```{r}
+plot(st_geometry(mpsz))
+plot(mpsz_nb$by_knn, 
+     centroids, 
+     add = T, 
+     col = rgb(0,0,0,
+               alpha=0.5))
+title("3 Nearest Neighbors") 
+```
+
+The list of three sets of spatial weights is then saved in the rds format.
+
+```{r}
+write_rds(mpsz_nb, "data/rds/mpsz_nb.rds")
+```
+
+### 3.3 Preparing the Flow Data
+
+The flow data at the planning subzone level is prepared.
+
+The tibble data frame, `odbus6_9`, containing the origin-destination matrix and number of trips are imported into the R environment.
+
+```{r}
+odbus6_9 = read_rds("data/rds/odbus6_9.rds")
+```
+
+The `st_intersection()` function in the **sf** package is used to match the match the bus stop numbers to the subzone codes via the intersections between the points representing the bus stop locations and the polygons representing the planning subzones. The bus stop number and subzone code variables are selected using the `select()` function in the **dplyr** package, and the geometry feature is dropped using the `st_drop_geometry function()` in the **sf** package.
+
+```{r}
+busstop_mpsz = st_intersection(busstop, mpsz) %>%
+  select(BUS_STOP_N, SUBZONE_C) %>%
+  st_drop_geometry()
+```
+
+The planning subzone codes in the `busstop_mpsz` data frame are matched with the origin bus stop numbers in the `odbus6_9` tibble data frame.
+
+```{r}
+od_data = left_join(odbus6_9 , busstop_mpsz,
+            by = c("ORIGIN_PT_CODE" = "BUS_STOP_N")) %>%
+  rename(ORIGIN_BS = ORIGIN_PT_CODE,
+         ORIGIN_SZ = SUBZONE_C,
+         DESTIN_BS = DESTINATION_PT_CODE)
+```
+
+A check for duplicates is made. The unique records are retained, and a confirmatory check is made again.
+
+```{r}
+duplicate = od_data %>%
+  group_by_all() %>%
+  filter(n()>1) %>%
+  ungroup()
+```
+
+```{r}
+od_data = unique(od_data)
+
+duplicate = od_data %>%
+  group_by_all() %>%
+  filter(n()>1) %>%
+  ungroup()
+```
+
+The above steps are repeated by matching the planning subzone codes in the `busstop_mpsz` data frame with the destination bus stop numbers in the `odbus6_9` tibble data frame. The output tibble data frame is then grouped by the origin and destination subzones.
+
+```{r}
+od_data = left_join(od_data , busstop_mpsz,
+            by = c("DESTIN_BS" = "BUS_STOP_N")) 
+```
+
+```{r}
+duplicate = od_data %>%
+  group_by_all() %>%
+  filter(n()>1) %>%
+  ungroup()
+```
+
+```{r}
+od_data = unique(od_data)
+
+duplicate = od_data %>%
+  group_by_all() %>%
+  filter(n()>1) %>%
+  ungroup()
+```
+
+```{r}
+od_data = od_data %>%
+  rename(DESTIN_SZ = SUBZONE_C) %>%
+  drop_na() %>%
+  group_by(ORIGIN_SZ, DESTIN_SZ) %>%
+  summarise(TRIPS = sum(TRIPS))
+```
+
+The output tibble data frame, `od_data`, is obtained.
+
+```{r}
+kable(head(od_data, n = 5))
+```
+
+The output is saved in the rds format.
+
+```{r}
+write_rds(od_data, "data/rds/od_data.rds")
+```
+
+### 3.4 Computing Distance Matrix
+
+In spatial interaction, a distance matrix is a table that shows the distance between pairs of locations. By definition, an location's distance from itself is 0.
+
+#### 3.4.1 Converting sf data table to SpatialPolygonsDataFrame
+
+There are at least two ways to compute the required distance matrix. One is using the **sf** package and the other is using the **sp** package. Past experience show that computing the distance matrix using **sf** functions took relatively longer that **sp** functions, especially when the data set is large. In view of this, the **sp** functions are used.
+
+The `as.Spatial()` function is used to convert mpsz from a simple feature tibble data frame to a SpatialPolygonsDataFrame of sp object.
+
+```{r}
+mpsz_sp = as(mpsz_busstop, "Spatial")
+mpsz_sp
+```
+
+#### 3.4.2 Computing the Distance Matrix
+
+The `spDists()` function is then used to compute the Euclidean distance between the centroids of the planning subzones.
+
+The output is a matrix object class of R, `DISTANCE`. The column headers and row headers are not labelled with the planning subzone codes.
+
+```{r}
+DISTANCE = spDists(mpsz_sp, 
+                    longlat = FALSE)
+
+head(DISTANCE, n=c(10, 10))
+```
+
+#### 3.4.3 Labelling Column and Row Headers of Distance Matrix
+
+A list sorted according to the distance matrix by planning subzone codes is created using the "SUBZONE_C" variable in `mpsz_busstop`.
+
+```{r}
+sz_names = mpsz_busstop$SUBZONE_C
+```
+
+Then, they are attached to the rows and columns of the distance matrix using the `colnames()`, `rownames()`, and `paste0()` functions in the **base** package.
+
+```{r}
+colnames(DISTANCE) = paste0(sz_names)
+rownames(DISTANCE) = paste0(sz_names)
+```
+
+#### 3.4.4 Pivoting Distance Values by "SUBZONE_C" Variable
+
+The `melt()` function in the **reshape2** package is then used to pivot the distance matrix into a long table, `distPair`, using the row and column subzone codes. The `rename()` function in the **dplyr** package is used to rename the origin, destination, and distance variables.
+
+```{r}
+distPair = melt(DISTANCE) %>%
+  rename(DISTANCE = value) %>%
+  rename(ORIGIN_SZ = Var1,
+         DESTIN_SZ = Var2)
+
+head(distPair, 10)
+```
+
+The `left_join()` function in the **dplyr** package is then used to join the `od_data` tibble data frame and the `distPair` data frame. The `mutate()` function in the **dplyr** package is used to replace NA values with 0. The output is the `flow_data` data frame.
+
+```{r}
+flow_data = distPair %>%
+  left_join (od_data) %>%
+  mutate(TRIPS = coalesce(TRIPS, 0))
+```
+
+The output data frame, `flow_data`, is obtained.
+
+```{r}
+kable(head(flow_data, n = 10))
+```
+
+The output is saved in the rds format as `mpsz_flow`.
+
+```{r}
+write_rds(flow_data, "data/rds/mpsz_flow.rds")
+```
+
+### 3.5 Preparing Explanatory Variables
+
+#### 3.5.1 Population by Age Group Variables
+
+Three population age groups are included as explanatory variables in this in-class exercise. They are population ages 7-12, 13-24, and 25-64. The csv file containing these information imported into the R environment as a tibble data frame, `pop`.
+
+```{r}
+pop = read_csv("data/aspatial/pop.csv")
+```
+
+The `left_join()` function of the **dplyr** package is used to append the population by the three age groups with the `mpsz_busstop` simple feature data frame. The output is a simple feature data frame, `mpsz_var`.
+
+```{r}
+mpsz_var = mpsz_busstop %>%
+  left_join(pop,
+            by = c("PLN_AREA_N" = "PA",
+                   "SUBZONE_N" = "SZ")) %>%
+  select(1:2, 7:11) %>%
+  rename(SZ_NAME = SUBZONE_N,
+         SZ_CODE = SUBZONE_C)
+```
+
+```{r}
+kable(head(mpsz_var[, 1:6], n = 6))
+```
+
+#### 3.5.2 Point-in-Polygon Count for Schools
+
+The information on schools is imported into the R environment as a simple feature tibble data frame, `schools`.
+
+```{r}
+schools = read_rds("data/rds/schools.rds")
+```
+
+The number of schools is counted using the `lengths()` function in the **base** package and the `st_intersects()` function in the **sf** package, and added to the `mpsz_var` simple feature data frame.
+
+```{r}
+mpsz_var$`SCHOOL_COUNT`= lengths(
+  st_intersects(mpsz_var, schools))
+```
+
+The shapefiles containing the locations of the various types of activities are then imported.
+
+```{r}
+business = st_read(dsn = "data/geospatial",
+                    layer = "Business") %>%
+  st_transform(crs = 3414)
+
+retails = st_read(dsn = "data/geospatial",
+                    layer = "Retails") %>%
+  st_transform(crs = 3414)
+
+finserv = st_read(dsn = "data/geospatial",
+                    layer = "FinServ") %>%
+  st_transform(crs = 3414)
+
+
+entertn = st_read(dsn = "data/geospatial",
+                    layer = "entertn") %>%
+  st_transform(crs = 3414)
+
+
+fb = st_read(dsn = "data/geospatial",
+                    layer = "F&B") %>%
+  st_transform(crs = 3414)
+
+lr = st_read(dsn = "data/geospatial",
+                    layer = "Liesure&Recreation") %>%
+  st_transform(crs = 3414)
+```
+
+The point-in-polygon analysis is then conducted for each of the simple feature data frames.
+
+```{r}
+mpsz_var$`BUSINESS_COUNT`= lengths(
+  st_intersects(
+    mpsz_var, business))
+
+mpsz_var$`RETAILS_COUNT`= lengths(
+  st_intersects(
+    mpsz_var, retails))
+
+mpsz_var$`FINSERV_COUNT`= lengths(
+  st_intersects(
+    mpsz_var, finserv))
+
+mpsz_var$`ENTERTN_COUNT`= lengths(
+  st_intersects(
+    mpsz_var, entertn))
+
+mpsz_var$`FB_COUNT`= lengths(
+  st_intersects(
+    mpsz_var, fb))
+
+mpsz_var$`LR_COUNT`= lengths(
+  st_intersects(
+    mpsz_var, lr))
+```
+
+The finalised set of explanatory variables, `mpsz_var`, is obtained.
+
+```{r}
+glimpse(mpsz_var)
+```
+
+The output is saved in the rds format.
+
+```{r}
+write_rds(mpsz_var, "data/rds/mpsz_var.rds")
+```
+
+## 4 Preparing spflow Objects
+
+To calibrate SEIMs, three **spflow** objects are required:
+
+1.  `spflow_network-class`, an S4 class that contains all information on a spatial network which is composed by a set of nodes that are linked by some neighborhood relation.
+
+2.  `spflow_network_pair-class`, an S4 class which holds information on origin-destination (OD) pairs. Each OD pair is composed of two nodes, each belonging to one network. All origin nodes must belong to the same origin network should be contained in one `spflow_network-class`, and likewise for the destinations.
+
+3.  `spflow_network_multi-class`, an S4 class that gathers information on multiple objects of types `spflow_network-class` and `spflow_network_pair-class`. Its purpose is to ensure that the identification between the nodes that serve as origins or destinations, and the OD-pairs is consistent (similar to relational data bases).
+
+They are imported into the R environment.
+
+```{r}
 mpsz_nb = read_rds("data/rds/mpsz_nb.rds")
+mpsz_flow = read_rds("data/rds/mpsz_flow.rds")
 mpsz_var = read_rds("data/rds/mpsz_var.rds")
 ```
 
-## Creating spflow_network-class objects
+### 4.1 Creating spflow_network-class Object
 
-`spflow_network-class` is an S4 class that contains all information on a spatial network which is composed by a set of nodes that are linked by some neighbourhood relation. It can be created by using \[`spflow_network()`\] function in the **spflow** package.
+The `spflow_network-class` is an S4 class that contains all information on a spatial network which is composed by a set of nodes that are linked by some neighbourhood relation.
 
-For the model, the contiguity based neighbourhood structure is chosen.
+It can be created by using the `spflow_network()` function. For the model, the contiguity based neighbourhood structure is chosen.
 
 ```{r}
 mpsz_net = spflow_network(
@@ -145,9 +491,11 @@ mpsz_net = spflow_network(
 mpsz_net
 ```
 
-## Creating spflow_network_pair objects
+### 4.2 Creating spflow_network_pair-class Object
 
-The `spflow_network_pair()` function in the **spflow** package is used to create the pairs between the origins and destinations.
+The `spflow_network_pair-class` is an S4 class which holds information on origin-destination (OD) pairs. Each OD pair is composed of two nodes, each belonging to one network. All origin nodes must belong to the same origin network should be contained in one `spflow_network-class`, and likewise for the destinations.
+
+The `spflow_network_pair()` function is used to create the OD pairs.
 
 ```{r}
 mpsz_net_pairs = spflow_network_pair(
@@ -160,11 +508,15 @@ mpsz_net_pairs = spflow_network_pair(
 mpsz_net_pairs
 ```
 
-## Creating spflow_network_multi objects
+### 4.3 Creating spflow_network_multi-class Object
 
-The spflow_network_mult() function in the spflow data is used to create the
+The `spflow_network_multi-class` is an S4 class that gathers information on multiple objects of types `spflow_network-class` and `spflow_network_pair-class`.
 
-> ***Note***: Do not reverse the order of the two arguments in the function, i.e., the node (neighbours and variables) object comes first, then the pairs (flow) object.
+Its purpose is to ensure that the identification between the nodes that serve as origins or destinations, and the OD-pairs is consistent (similar to relational data bases). For example, if some of the origins in the `sp_network_pair-class` are not identified with the nodes in the `sp_network_nodes-class`, an error will be raised.
+
+The `spflow_network_multi()` function is used to create the object.
+
+> ***Student Note***: Do not reverse the order of the two arguments in the function, i.e., the node (neighbours and variables) object comes first, then the pairs (flow) object.
 
 ```{r}
 mpsz_multi_net = spflow_network_multi(mpsz_net,
@@ -173,19 +525,29 @@ mpsz_multi_net = spflow_network_multi(mpsz_net,
 mpsz_multi_net
 ```
 
-## Correlation Analysis
+The `spflow_map()` function is used to plot a simple geographic representation of the largest flows.
+
+```{r}
+plot(mpsz$geometry)
+spflow_map(
+  mpsz_multi_net,
+  flow_var = "TRIPS",
+  add = TRUE, 
+  legend_position = "bottomleft",
+  filter_lowest = .999, 
+  remove_intra = TRUE,
+  cex = 1)
+```
+
+### 4.4 Correlation Analysis
 
 Multicollinearity refers to a situation in which more than two explanatory variables in a multiple regression model are highly linearly related. In this situation, the coefficient estimates of the multiple regression may change erratically in response to small changes in the data or the procedure used to fit the model.
 
 In order to avoid including explanatory variables that are highly correlated, spflow provides two functions:
 
--   pair_cor() to create a correlation matrix, and
+-   `pair_cor()` function to create a correlation matrix, and
 
--   cor_image() to plot the correlation matrix as a correlogram.
-
-P below stands for impedance (e.g., time, distance, cost).
-
-Below runs all variables for origin, destination and intra-zonal.
+-   `cor_image()` function to plot the correlation matrix as a correlogram.
 
 ```{r}
 cor_formula = log(1+TRIPS) ~
@@ -199,30 +561,42 @@ cor_formula = log(1+TRIPS) ~
   FINSERV_COUNT +
   P_(log(DISTANCE + 1))
 
-cor_mat = pair_cor(
-  mpsz_multi_net,
-  spflow_formula = cor_formula,
-  add_lags_x = FALSE)
+cor_mat = pair_cor(mpsz_multi_net,
+                   spflow_formula = cor_formula,
+                   add_lags_x = FALSE)
 
 colnames(cor_mat) = paste0(substr(colnames(cor_mat), 1, 3), "...")
 
 cor_image(cor_mat)
 ```
 
-1.  Check multicollinearity
-2.  Check whether explanatory variables are suitable (including which ones are better than others).
+## 5 Model Calibration
 
-## Model Calibration
+The core function of the **spflow** package is `spflow()`. It provides an interface to three different estimators of spatial econometric interaction models (Dargel 2021) that allow the user to estimate origin-destination flows with spatial autocorrelation.
 
-### The Base Model
+The three different estimators currently supported by **spflow** are:
+
+1.  **Maximum Likelihood Estimation (MLE)** which is the default estimation procedure. The matrix form estimation in the framework of this model was first developed by LeSage and Pace (2008) and then improved by Dargel (2021) . Spatial two-stage least squares (S2SLS)
+
+2.  **Spatial Two-stage Least Squares (S2SLS)** estimator is an adaptation of the one proposed by Kelejian and Prucha (1998), to the case of origin-destination flows, with up to three neighborhood matrices Dargel (2021). A similar estimation is done by Tamesue and Tsutsumi (2016). The user can activate the S2SLS estimation via the estimation_control argument using the input spflow_control(estimation_method = "s2sls").
+
+3.  **Bayesian Markov Chain Monte Carlo (MCMC)** estimator is based on the ideas of LeSage and Pace (2009) and incorporates the improvements proposed in Dargel (2021) . The estimation is based on a tuned Metropolis-Hastings sampler for the auto-regressive parameters, and for the remaining parameters it uses Gibbs sampling. The routine uses 5500 iterations of the sampling procedure and considers the first 2500 as burn-in period. The user can activate the S2SLS estimation via the estimation_control argument using the input spflow_control(estimation_method = "mcmc").
+
+Estimation with default settings requires two arguments: an **sp_multi_network-class** and a **flow_formula**. The flow_formula specifies the model to estimate. The function offers a formula interface adapted to spatial interaction models, which has the following structure: Y \~ O\_(X1) + D\_(X2) + I\_(X3) + P\_(X4). This structure reflects the different data sources involved in such a model. On the left hand is the independent variable Y which corresponds to the vector of flows. On the right, are all the explanatory variables. The functions O\_(...) and D\_(...) indicate which variables are used as characteristics of the origins and destinations respectively. Similarly, I\_(...) indicates variables that should be used for the intra-regional parameters. Finally, P\_(...) declares which variables describe origin-destination pairs, which most frequently will include a measure of distance.
+
+All the declared variables must be available in the provided `spflow_network_multi-class` object, which gathers information on the origins and destinations (inside `spflow_network-class` objects), as well as the information on the origin-destination pairs (inside a `spflow_network_pair-class` object).
+
+Using the short notation Y \~ . is possible and will be interpreted as usual, in the sense that we use all variables that are available for each data source. Also mixed formulas, such as Y \~ . + P\_(log(X4) + 1), are possible. When the dot (.) shortcut is combined with explicit declaration, it will only be used for the non-declared data sources.
+
+### 5.1 The Base Model
 
 A base model is calibrated with the following configuration:
 
--   Explanatory variables used as characteristics of the origins
+-   Explanatory variables used as characteristics of the origins: "BUSSTOP_COUNT" and "AGE25_64".
 
--   Explanatory variables used as characteristics of the destinations
+-   Explanatory variables used as characteristics of the destinations: "SCHOOL_COUNT", "BUSINESS_COUNT", "RETAILS_COUNT", "FINSERV_COUNT".
 
--   Explanatory
+-   Explanatory variable describing origin-destination pairs: "DISTANCE".
 
 ```{r}
 base_model = spflow(
@@ -238,26 +612,30 @@ base_model = spflow(
 base_model
 ```
 
-rho_o is origin constraints
-
-rho_d is destination constraints
-
-rho_w is the intra-zonal constraints
-
-D_SCHOOL_COUNT - significant; key is having schools within the zone
-
-D_SCHOOL_COUNT.lag1 - not significant; the schools in the neighbouring zones do not contribute to the attractiveness of the zone
-
-D_FINSERV_COUNT and D_FINSERV.lag1 - both significant; the financial services in the neighbouring zones contribute to the attractiveness of the zone
-
-xxx
+> ***Student Note***:
+>
+> -   rho_o represents origin constraints.
+>
+> -   rho_d represents destination constraints.
+>
+> -   rho_w represents the intra-zonal constraints.
+>
+> -   D_SCHOOL_COUNT - significant; key is having schools within the zone.
+>
+> -   D_SCHOOL_COUNT.lag1 - not significant; the schools in the neighbouring zones do not contribute to the attractiveness of the zone.
+>
+> -   D_FINSERV_COUNT and D_FINSERV.lag1 - both significant; the financial services in the neighbouring zones contribute to the attractiveness of the zone.
 
 ```{r}
 #| eval: false
 plot(base_model)
 ```
 
-### Residual Diagnostics
+### 5.2 Residual Diagnostics
+
+In building explanatory models, it is important to check if the model calibrated conforms to the statistical assumption of the statistical methods used.
+
+The `spflow_moran_plots()` function is used to support residual diagnostics.
 
 ```{r}
 old_par = par(mfrow = c(1,3),
@@ -268,9 +646,9 @@ spflow_moran_plots(base_model)
 par(old_par)
 ```
 
-Close to horizontal zero line, means there is lesser chance of
+The `pair_cor()` function is used to inspect the relationship of the residual and the explanatory variables.
 
-Next, the `pair_cor()` function is used to inspect the relationship of the residual and the explanatory variables.
+> ***Student Note***: Looking at RESID.d, RESID.o, and RESID.w, no multicollinearity is observed, and their contribution to the formula/model are confirmed.
 
 ```{r}
 corr_residual = pair_cor(base_model)
@@ -278,11 +656,29 @@ colnames(corr_residual) = substr(colnames(corr_residual), 1, 3)
 cor_image(corr_residual)
 ```
 
-Looking at RESID.d, RESID.o, and RESID.w, no multicollinearity is observed, and their contribution to the formulas/models are confirmed.
+```{r}
+model.df = as_tibble(base_model@spflow_indicators) %>%
+  mutate(FITTED_Y = round(exp(FITTED),0))
+```
 
-### Working With Model Control
+```{r}
+mpsz_flow1 = mpsz_flow %>%
+  left_join(model.df) %>%
+  select(1:4,8) %>%
+  mutate(diff = (FITTED_Y-TRIPS))
+```
 
-xxx
+```{r}
+plot(mpsz_flow1$diff)
+```
+
+### 5.3 Working With Model Control
+
+[Model 8]{.underline}
+
+-   To see how intra-zonal affects the model.
+
+-   R2_corr value slightly higher than base model's.
 
 ```{r}
 spflow_formula = log(1 + TRIPS) ~
@@ -295,17 +691,26 @@ spflow_formula = log(1 + TRIPS) ~
 
 model_control = spflow_control(
   estimation_method = "mle",
-  model = "model_1")
+  model = "model_8")
 
-mle_model1 = spflow(
+mle_model8 = spflow(
   spflow_formula,
   spflow_networks = mpsz_multi_net,
   estimation_control = model_control)
 
-mle_model1
+mle_model8
 ```
 
-xxx
+```{r}
+old_par = par(mfrow = c(1, 3), 
+               mar = c(2,2,2,2))
+
+spflow_moran_plots(mle_model8)
+
+par(old_par)
+```
+
+[Model 2]{.underline}
 
 ```{r}
 model_control = spflow_control(
@@ -320,25 +725,13 @@ mle_model2 = spflow(
 mle_model2
 ```
 
-Restricted Model (Model 8)
-
--   Isolate to see how intra-zonal affects the model
-
--   R2_corr value slightly higher than base model's
-
 ```{r}
-model_control = spflow_control(
-  estimation_method = "mle",
-  model = "model_8")
+old_par = par(mfrow = c(1, 3), 
+               mar = c(2,2,2,2))
 
-mle_model8 = spflow(
-  spflow_formula,
-  spflow_networks = mpsz_multi_net,
-  estimation_control = model_control)
+spflow_moran_plots(mle_model2)
 
-mle_model8
+par(old_par)
 ```
-
-xxx
 
 [**\~\~\~ End of In-class Exercise 5 \~\~\~**]{.smallcaps}

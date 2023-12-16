@@ -12,7 +12,7 @@ background-color: lightgrey;
 font-family:  Palatino Linotype;
 ---
 
-# In-class Exercise 4: Geospatial Data Science with R
+# Geospatial Data Science with R
 
 ## 1 Overview
 
