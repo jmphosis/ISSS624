@@ -12,4 +12,333 @@ background-color: lightgrey;
 font-family:  Palatino Linotype;
 ---
 
+# Spatial Econometric Interaction Models
+
+Overview
+
+## Getting Started
+
+The following packages are loaded into the R environment:
+
+-   **tidyverse** (i.e. readr, tidyr, dplyr) for performing data science tasks such as importing, tidying, and wrangling data;
+
+-   **sf** for importing, managing, and processing geospatial data;
+
+-   **sp** for handling geospatial data;
+
+-   **spdep** for analysing spatial dependence and spatial relationships in data;
+
+-   **spflow** for efficient estimation of spatial econometric models of origin-destination flows;
+
+-   **tmap** for thematic mapping;
+
+-   **reshape2** for handling matrix format;
+
+-   **Matrix** for handling matrices; and
+
+-   **knitr** for embedding R code in different document formats (e.g., HTML) to facilitate dynamic report generation.
+
+The latest development version of the **spflow** package is installed first.
+
+```{r}
+devtools::install_github("LukeCe/spflow")
+```
+
+xxx
+
+```{r}
+pacman::p_load(tmap, sf, spdep, sp, Matrix, 
+               spflow, reshape2, knitr, tidyverse)
+```
+
+## Data Preparation
+
+Three data sets are required:
+
+1.  A set of spatial weights;
+
+2.  A tibble data frame consisting of the origins, destinations, flows and distances between the origins and destinations; and
+
+3.  A tibble data frame consisting of the explanatory variables.
+
+The 2019 Master Plan Subzone boundary shapefile is imported as a simple feature data frame, `mpsz`.
+
+```{r}
+mpsz = st_read(dsn = "data/geospatial",
+               layer = "MPSZ-2019") %>%
+  st_transform(crs = 3414)
+```
+
+The Bus Stop location shapefile is imported as a simple feature data frame, `busstop`.
+
+```{r}
+busstop = st_read(dsn = "data/geospatial",
+               layer = "BusStop") %>%
+  st_transform(crs = 3414)
+```
+
+A count of the number of bus stops in each subzone is made using the `lengths()` function in the **base** package and the `st_intersects()` function in the **sf** package.
+
+```{r}
+mpsz$`BUSSTOP_COUNT` = lengths(st_intersects(mpsz, busstop))
+```
+
+The `filter()` function in the **dplyr** package is then used to filter for subzones with at least one bus stop.
+
+```{r}
+mpsz_busstop = mpsz %>% filter(BUSSTOP_COUNT > 0)
+```
+
+The centroids for the subzones are generated using the `st_point_on_surface()` ad `st_geometry()` functions in the **sf** package.
+
+```{r}
+centroids = suppressWarnings({st_point_on_surface(st_geometry(mpsz_busstop))})
+```
+
+A list of three sets of weight values are generated for:
+
+-   "by contiguity Neighbours by contiguity
+
+by knn - 3 neighbours (for hexagon, can use 6 since each hexagon is surrounded by 6 hexagons)
+
+```{r}
+mpsz_nb = list(
+  "by_contiguity" = poly2nb(mpsz_busstop),
+  "by_distance" = dnearneigh(centroids,
+                             d1 = 0, d2 = 5000),
+  "by knn" = knn2nb(knearneigh(centroids, 3))
+)
+```
+
+xxx
+
+```{r}
+mpsz_nb$by_contiguity
+mpsz_nb$by_distance
+mpsz_nb$`by knn`
+```
+
+------------------------------------------------------------------------
+
+The relevant data sets are retrieved:
+
+```{r}
+mpsz_flow = read_rds("data/rds/mpsz_flow.rds")
+mpsz_nb = read_rds("data/rds/mpsz_nb.rds")
+mpsz_var = read_rds("data/rds/mpsz_var.rds")
+```
+
+## Creating spflow_network-class objects
+
+`spflow_network-class` is an S4 class that contains all information on a spatial network which is composed by a set of nodes that are linked by some neighbourhood relation. It can be created by using \[`spflow_network()`\] function in the **spflow** package.
+
+For the model, the contiguity based neighbourhood structure is chosen.
+
+```{r}
+mpsz_net = spflow_network(
+  id_net = "sg",
+  node_neighborhood = 
+    nb2mat(mpsz_nb$by_contiguity),
+  node_data = mpsz_var,
+  node_key_column = "SZ_CODE")
+
+mpsz_net
+```
+
+## Creating spflow_network_pair objects
+
+The `spflow_network_pair()` function in the **spflow** package is used to create the pairs between the origins and destinations.
+
+```{r}
+mpsz_net_pairs = spflow_network_pair(
+  id_orig_net = "sg",
+  id_dest_net = "sg",
+  pair_data = mpsz_flow,
+  orig_key_column = "ORIGIN_SZ",
+  dest_key_column = "DESTIN_SZ")
+
+mpsz_net_pairs
+```
+
+## Creating spflow_network_multi objects
+
+The spflow_network_mult() function in the spflow data is used to create the
+
+> ***Note***: Do not reverse the order of the two arguments in the function, i.e., the node (neighbours and variables) object comes first, then the pairs (flow) object.
+
+```{r}
+mpsz_multi_net = spflow_network_multi(mpsz_net,
+                                      mpsz_net_pairs)
+
+mpsz_multi_net
+```
+
+## Correlation Analysis
+
+Multicollinearity refers to a situation in which more than two explanatory variables in a multiple regression model are highly linearly related. In this situation, the coefficient estimates of the multiple regression may change erratically in response to small changes in the data or the procedure used to fit the model.
+
+In order to avoid including explanatory variables that are highly correlated, spflow provides two functions:
+
+-   pair_cor() to create a correlation matrix, and
+
+-   cor_image() to plot the correlation matrix as a correlogram.
+
+P below stands for impedance (e.g., time, distance, cost).
+
+Below runs all variables for origin, destination and intra-zonal.
+
+```{r}
+cor_formula = log(1+TRIPS) ~
+  BUSSTOP_COUNT +
+  AGE7_12 +
+  AGE13_24 +
+  AGE25_64 +
+  SCHOOL_COUNT +
+  BUSINESS_COUNT +
+  RETAILS_COUNT +
+  FINSERV_COUNT +
+  P_(log(DISTANCE + 1))
+
+cor_mat = pair_cor(
+  mpsz_multi_net,
+  spflow_formula = cor_formula,
+  add_lags_x = FALSE)
+
+colnames(cor_mat) = paste0(substr(colnames(cor_mat), 1, 3), "...")
+
+cor_image(cor_mat)
+```
+
+1.  Check multicollinearity
+2.  Check whether explanatory variables are suitable (including which ones are better than others).
+
+## Model Calibration
+
+### The Base Model
+
+A base model is calibrated with the following configuration:
+
+-   Explanatory variables used as characteristics of the origins
+
+-   Explanatory variables used as characteristics of the destinations
+
+-   Explanatory
+
+```{r}
+base_model = spflow(
+  spflow_formula = log(1 + TRIPS) ~
+    O_(BUSSTOP_COUNT + AGE25_64) +
+    D_(SCHOOL_COUNT +
+         BUSINESS_COUNT +
+         RETAILS_COUNT +
+         FINSERV_COUNT) +
+    P_(log(DISTANCE + 1)),
+  spflow_networks = mpsz_multi_net)
+
+base_model
+```
+
+rho_o is origin constraints
+
+rho_d is destination constraints
+
+rho_w is the intra-zonal constraints
+
+D_SCHOOL_COUNT - significant; key is having schools within the zone
+
+D_SCHOOL_COUNT.lag1 - not significant; the schools in the neighbouring zones do not contribute to the attractiveness of the zone
+
+D_FINSERV_COUNT and D_FINSERV.lag1 - both significant; the financial services in the neighbouring zones contribute to the attractiveness of the zone
+
+xxx
+
+```{r}
+#| eval: false
+plot(base_model)
+```
+
+### Residual Diagnostics
+
+```{r}
+old_par = par(mfrow = c(1,3),
+              mar = c(2,2,2,2))
+
+spflow_moran_plots(base_model)
+
+par(old_par)
+```
+
+Close to horizontal zero line, means there is lesser chance of
+
+Next, the `pair_cor()` function is used to inspect the relationship of the residual and the explanatory variables.
+
+```{r}
+corr_residual = pair_cor(base_model)
+colnames(corr_residual) = substr(colnames(corr_residual), 1, 3)
+cor_image(corr_residual)
+```
+
+Looking at RESID.d, RESID.o, and RESID.w, no multicollinearity is observed, and their contribution to the formulas/models are confirmed.
+
+### Working With Model Control
+
+xxx
+
+```{r}
+spflow_formula = log(1 + TRIPS) ~
+    O_(BUSSTOP_COUNT + AGE25_64) +
+    D_(SCHOOL_COUNT +
+         BUSINESS_COUNT +
+         RETAILS_COUNT +
+         FINSERV_COUNT) +
+    P_(log(DISTANCE + 1))
+
+model_control = spflow_control(
+  estimation_method = "mle",
+  model = "model_1")
+
+mle_model1 = spflow(
+  spflow_formula,
+  spflow_networks = mpsz_multi_net,
+  estimation_control = model_control)
+
+mle_model1
+```
+
+xxx
+
+```{r}
+model_control = spflow_control(
+  estimation_method = "mle",
+  model = "model_2")
+
+mle_model2 = spflow(
+  spflow_formula,
+  spflow_networks = mpsz_multi_net,
+  estimation_control = model_control)
+
+mle_model2
+```
+
+Restricted Model (Model 8)
+
+-   Isolate to see how intra-zonal affects the model
+
+-   R2_corr value slightly higher than base model's
+
+```{r}
+model_control = spflow_control(
+  estimation_method = "mle",
+  model = "model_8")
+
+mle_model8 = spflow(
+  spflow_formula,
+  spflow_networks = mpsz_multi_net,
+  estimation_control = model_control)
+
+mle_model8
+```
+
+xxx
+
 [**\~\~\~ End of In-class Exercise 5 \~\~\~**]{.smallcaps}
