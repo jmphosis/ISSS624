@@ -145,10 +145,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex4/Hands-on_Ex4.html" rel="" target="">
  <span class="dropdown-text">Hands-on Exercise 4</span></a>
   </li>  
-        <li>
-    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5.html" rel="" target="">
- <span class="dropdown-text">Hands-on Exercise 5</span></a>
-  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -212,7 +208,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#in-class-exercise-5-spatial-econometric-interaction-modelling" id="toc-in-class-exercise-5-spatial-econometric-interaction-modelling" class="nav-link active" data-scroll-target="#in-class-exercise-5-spatial-econometric-interaction-modelling">In-class Exercise 5: Spatial Econometric Interaction Modelling</a>
+  <li><a href="#spatial-econometric-interaction-modelling" id="toc-spatial-econometric-interaction-modelling" class="nav-link active" data-scroll-target="#spatial-econometric-interaction-modelling">Spatial Econometric Interaction Modelling</a>
   <ul class="collapse">
   <li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview">1 Overview</a></li>
   <li><a href="#getting-started" id="toc-getting-started" class="nav-link" data-scroll-target="#getting-started">2 Getting Started</a></li>
@@ -273,8 +269,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<section id="in-class-exercise-5-spatial-econometric-interaction-modelling" class="level1">
-<h1>In-class Exercise 5: Spatial Econometric Interaction Modelling</h1>
+<section id="spatial-econometric-interaction-modelling" class="level1">
+<h1>Spatial Econometric Interaction Modelling</h1>
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">1 Overview</h2>
 <p>Spatial Interaction Models (SIMs) are often used to explain origin-destination (OD) flows that arise in fields such as public bus commuting. These models rely on a function of the distance between the origin and destination as well as explanatory variables pertaining to characteristics of both origin and destination locations.</p>
@@ -602,7 +598,7 @@ Non-symmetric neighbours list</code></pre>
 </section>
 <section id="computing-distance-matrix" class="level3">
 <h3 class="anchored" data-anchor-id="computing-distance-matrix">3.4 Computing Distance Matrix</h3>
-<p>In spatial interaction, a distance matrix is a table that shows the distance between pairs of locations. By definition, an location's distance from itself is 0.</p>
+<p>In spatial interaction, a distance matrix is a table that shows the distance between pairs of locations. By definition, an location’s distance from itself is 0.</p>
 <section id="converting-sf-data-table-to-spatialpolygonsdataframe" class="level4">
 <h4 class="anchored" data-anchor-id="converting-sf-data-table-to-spatialpolygonsdataframe">3.4.1 Converting sf data table to SpatialPolygonsDataFrame</h4>
 <p>There are at least two ways to compute the required distance matrix. One is using the <strong>sf</strong> package and the other is using the <strong>sp</strong> package. Past experience show that computing the distance matrix using <strong>sf</strong> functions took relatively longer that <strong>sp</strong> functions, especially when the data set is large. In view of this, the <strong>sp</strong> functions are used.</p>
@@ -1233,8 +1229,8 @@ Availability of origin-destination pair information:
 <p>The three different estimators currently supported by <strong>spflow</strong> are:</p>
 <ol type="1">
 <li><p><strong>Maximum Likelihood Estimation (MLE)</strong> which is the default estimation procedure. The matrix form estimation in the framework of this model was first developed by LeSage and Pace (2008) and then improved by Dargel (2021) . Spatial two-stage least squares (S2SLS)</p></li>
-<li><p><strong>Spatial Two-stage Least Squares (S2SLS)</strong> estimator is an adaptation of the one proposed by Kelejian and Prucha (1998), to the case of origin-destination flows, with up to three neighborhood matrices Dargel (2021). A similar estimation is done by Tamesue and Tsutsumi (2016). The user can activate the S2SLS estimation via the estimation_control argument using the input spflow_control(estimation_method = "s2sls").</p></li>
-<li><p><strong>Bayesian Markov Chain Monte Carlo (MCMC)</strong> estimator is based on the ideas of LeSage and Pace (2009) and incorporates the improvements proposed in Dargel (2021) . The estimation is based on a tuned Metropolis-Hastings sampler for the auto-regressive parameters, and for the remaining parameters it uses Gibbs sampling. The routine uses 5500 iterations of the sampling procedure and considers the first 2500 as burn-in period. The user can activate the S2SLS estimation via the estimation_control argument using the input spflow_control(estimation_method = "mcmc").</p></li>
+<li><p><strong>Spatial Two-stage Least Squares (S2SLS)</strong> estimator is an adaptation of the one proposed by Kelejian and Prucha (1998), to the case of origin-destination flows, with up to three neighborhood matrices Dargel (2021). A similar estimation is done by Tamesue and Tsutsumi (2016). The user can activate the S2SLS estimation via the estimation_control argument using the input spflow_control(estimation_method = “s2sls”).</p></li>
+<li><p><strong>Bayesian Markov Chain Monte Carlo (MCMC)</strong> estimator is based on the ideas of LeSage and Pace (2009) and incorporates the improvements proposed in Dargel (2021) . The estimation is based on a tuned Metropolis-Hastings sampler for the auto-regressive parameters, and for the remaining parameters it uses Gibbs sampling. The routine uses 5500 iterations of the sampling procedure and considers the first 2500 as burn-in period. The user can activate the S2SLS estimation via the estimation_control argument using the input spflow_control(estimation_method = “mcmc”).</p></li>
 </ol>
 <p>Estimation with default settings requires two arguments: an <strong>sp_multi_network-class</strong> and a <strong>flow_formula</strong>. The flow_formula specifies the model to estimate. The function offers a formula interface adapted to spatial interaction models, which has the following structure: Y ~ O_(X1) + D_(X2) + I_(X3) + P_(X4). This structure reflects the different data sources involved in such a model. On the left hand is the independent variable Y which corresponds to the vector of flows. On the right, are all the explanatory variables. The functions O_(…) and D_(…) indicate which variables are used as characteristics of the origins and destinations respectively. Similarly, I_(…) indicates variables that should be used for the intra-regional parameters. Finally, P_(…) declares which variables describe origin-destination pairs, which most frequently will include a measure of distance.</p>
 <p>All the declared variables must be available in the provided <code>spflow_network_multi-class</code> object, which gathers information on the origins and destinations (inside <code>spflow_network-class</code> objects), as well as the information on the origin-destination pairs (inside a <code>spflow_network_pair-class</code> object).</p>
@@ -1268,13 +1264,13 @@ Dependent variable: log(1 + TRIPS)
 --------------------------------------------------
 Coefficients:
                           est     sd   t.stat  p.val
-rho_d                   0.680  0.004  192.555  0.000
+rho_d                   0.680  0.004  192.554  0.000
 rho_o                   0.678  0.004  187.732  0.000
-rho_w                  -0.396  0.006  -65.592  0.000
-(Intercept)             0.410  0.065    6.267  0.000
-(Intra)                 1.312  0.081   16.262  0.000
+rho_w                  -0.396  0.006  -65.591  0.000
+(Intercept)             0.410  0.065    6.266  0.000
+(Intra)                 1.313  0.081   16.262  0.000
 D_SCHOOL_COUNT          0.017  0.002    7.885  0.000
-D_SCHOOL_COUNT.lag1     0.002  0.004    0.552  0.581
+D_SCHOOL_COUNT.lag1     0.002  0.004    0.551  0.581
 D_BUSINESS_COUNT        0.000  0.000    3.015  0.003
 D_BUSINESS_COUNT.lag1   0.000  0.000   -0.249  0.804
 D_RETAILS_COUNT         0.000  0.000   -0.306  0.759
@@ -1285,10 +1281,10 @@ O_BUSSTOP_COUNT         0.002  0.000    6.807  0.000
 O_BUSSTOP_COUNT.lag1   -0.001  0.000   -2.364  0.018
 O_AGE25_64              0.000  0.000    7.336  0.000
 O_AGE25_64.lag1         0.000  0.000   -2.797  0.005
-P_log(DISTANCE + 1)    -0.050  0.007   -6.794  0.000
+P_log(DISTANCE + 1)    -0.050  0.007   -6.793  0.000
 
 --------------------------------------------------
-R2_corr: 0.6942947  
+R2_corr: 0.6942945  
 Observations: 97969  
 Model coherence: Validated</code></pre>
 </div>
@@ -1442,7 +1438,7 @@ Dependent variable: log(1 + TRIPS)
 --------------------------------------------------
 Coefficients:
                           est     sd   t.stat  p.val
-rho_d                   0.731  0.003  218.602  0.000
+rho_d                   0.731  0.003  218.603  0.000
 (Intercept)             3.068  0.067   45.899  0.000
 (Intra)                -0.398  0.093   -4.291  0.000
 D_SCHOOL_COUNT          0.063  0.003   24.291  0.000

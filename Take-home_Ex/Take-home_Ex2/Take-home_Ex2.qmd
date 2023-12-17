@@ -164,7 +164,7 @@ These two sub-folders are within the data folder of my Take-home_Ex2 folder.
 
 ## 3 Data Wrangling - Bus Passengers Flow
 
-### 3.1 Preparing the Geospatial Data - Bus Stop Location
+### 3.1 Preparing the Geospatial Data - Bus Stop Locations
 
 #### 3.1.1 Importing and Transforming Data
 
@@ -239,6 +239,25 @@ There are a total of 5,149 bus stops. The output is saved in rds file format and
 #| code-summary: "Show the code"   
 write_rds(busstop, "data/rds/busstop.rds")  
 busstop = read_rds("data/rds/busstop.rds")
+```
+
+#### 3.1.4 Visualising Bus Stops Locations
+
+A quick visualisation of the locations of the bus stops is made using functions in the **tmap** package. To do so, the 2019 URA Master Plan Subzone boundary shapefile is imported into the R environment as a simple feature data frame, `mpsz`, using the `st_read()` and `st_transform()` functions in the **sf** package.
+
+Based on the visualisation, there is a lack of bus stops in the centre of Singapore. This is because it is the central water catchment area.
+
+```{r}
+mpsz = st_read(dsn = "data/geospatial",
+               layer = "MPSZ-2019") %>%
+  st_transform(crs = 3414)
+
+tmap_mode("plot")
+tm_shape(mpsz) +
+  tm_polygons() +
+tm_shape(busstop) +
+  tm_dots(size = 0.1,
+          alpha = 0.1)
 ```
 
 ### 3.2 Preparing the Aspatial Data - Bus Passenger Volume
@@ -802,7 +821,7 @@ vars_attract = busstop_hgrid_geo
 vars_attract$`BUSSTOPS` = lengths(st_intersects(busstop_hgrid_geo, busstop))
 ```
 
-### 6.1 Preparing the Geospatial Data - MRT/LRT Exits Location
+### 6.1 Preparing the Geospatial Data - MRT/LRT Exits Locations
 
 #### 6.1.1 Importing and Transforming Data
 
@@ -889,7 +908,20 @@ The number of MRT/LRT exits in each hexagon is then counted using the `lengths()
 vars_attract$`MRTLRTEXITS` = lengths(st_intersects(busstop_hgrid_geo, mrtlrtexits))
 ```
 
-### 6.2 Preparing the Geospatial Data - Business Activities Location
+#### 6.1.5 Visualising MRT/LRT Exits Locations
+
+A quick visualisation of the locations of the MRT/LRT exits is made using functions in the **tmap** package. Based on the visualisation, a rough outline of the various MRT lines in Singapore can be seen based on the exits.
+
+```{r}
+tmap_mode("plot") 
+tm_shape(mpsz) +   
+  tm_polygons() + 
+tm_shape(mrtlrtexits) +   
+  tm_dots(size = 0.3,
+          alpha = 0.3)
+```
+
+### 6.2 Preparing the Geospatial Data - Business Activities Locations
 
 #### 6.2.1 Importing Data and Selecting Columns
 
@@ -941,7 +973,20 @@ The number of business activities locations in each hexagon is then counted usin
 vars_attract$`BIZ` = lengths(st_intersects(busstop_hgrid_geo, biz))
 ```
 
-### 6.3 Preparing the Aspatial Data - Number of Schools
+#### 6.2.4 Visualising Business Activities Locations
+
+A quick visualisation of the locations of the business activities is made using functions in the **tmap** package. Based on the visualisation, business activities are mainly concentrated in the west and central regions of Singapore.
+
+```{r}
+tmap_mode("plot") 
+tm_shape(mpsz) +   
+  tm_polygons() + 
+tm_shape(biz) +   
+  tm_dots(size = 0.1,
+          alpha = 0.1)
+```
+
+### 6.3 Preparing the Aspatial Data - Schools
 
 #### 6.3.1 Importing and Geocoding with OneMap API
 
@@ -1032,7 +1077,8 @@ vars_attract$`SCHOOLS` = lengths(st_intersects(busstop_hgrid_geo, schools))
 The geometry feature of `vars_attract` is then dropped, giving a data frame.
 
 ```{r}
-vars_attract = vars_attract %>% st_drop_geometry()
+vars_attract = vars_attract %>% 
+  st_drop_geometry()
 ```
 
 The output is saved in rds file format and imported into the R environment.
@@ -1044,7 +1090,20 @@ write_rds(vars_attract, "data/rds/vars_attract.rds")
 vars_attract = read_rds("data/rds/vars_attract.rds")
 ```
 
-### 6.4 Preparing the Aspatial Data - Number of Residents
+#### 6.3.4 Visualising Schools Locations
+
+A quick visualisation of the locations of the schools is made using functions in the **tmap** package. Based on the visualisation, schools are generally well distributed across Singapore. There is some degree of concentration in the northeast region, given that these are newer towns, with relatively younger populations.
+
+```{r}
+tmap_mode("plot") 
+tm_shape(mpsz) +   
+  tm_polygons() + 
+tm_shape(schools) +   
+  tm_dots(size = 0.3,
+          alpha = 0.5)
+```
+
+### 6.4 Preparing the Aspatial Data - Residents
 
 #### 6.4.1 Importing and Geocoding with OneMap API
 
@@ -1233,7 +1292,7 @@ SIM = SIM %>%
   left_join(vars_attract,
             by = c(DESTIN_GRID = "grid_id")) %>%
   rename(d_BUSSTOPS = BUSSTOPS,
-         od_MRTLRTEXITS = MRTLRTEXITS)
+         d_MRTLRTEXITS = MRTLRTEXITS)
 ```
 
 The "ORIGIN_GRID" and "DESTIN_GRID" variables are converted to character data type.
@@ -1304,7 +1363,8 @@ SIM$HDB12R = ifelse(SIM$HDB12R == 0, 0.99, SIM$HDB12R)
 SIM$HDB34R = ifelse(SIM$HDB34R == 0, 0.99, SIM$HDB34R)
 SIM$HDB5RMore = ifelse(SIM$HDB5RMore == 0, 0.99, SIM$HDB5RMore)
 SIM$HDBRent = ifelse(SIM$HDBRent == 0, 0.99, SIM$HDBRent)
-SIM$MRTLRTEXITS = ifelse(SIM$MRTLRTEXITS == 0, 0.99, SIM$MRTLRTEXITS)
+SIM$o_MRTLRTEXITS = ifelse(SIM$o_MRTLRTEXITS == 0, 0.99, SIM$o_MRTLRTEXITS)
+SIM$d_MRTLRTEXITS = ifelse(SIM$d_MRTLRTEXITS == 0, 0.99, SIM$d_MRTLRTEXITS)
 SIM$BIZ = ifelse(SIM$BIZ == 0, 0.99, SIM$BIZ)
 SIM$SCHOOLS = ifelse(SIM$SCHOOLS == 0, 0.99, SIM$SCHOOLS)
 ```
@@ -1341,8 +1401,6 @@ colSums(is.na(SIM))
 
 An unconstrained SIM, `uncSIM`, is calibrated below by using the `glm()` function of the **R stats** package. The explanatory variables are origin populations by different HDB housing types, the number of bus stops, the number of MRT/LRT exits, the counts of business activities and schools, and the distance between the origin and destination.
 
-Based on the output below, the number of trips is more positively correlated to the existence of MRT/LRT exits (attractiveness variable), and most negatively correlated to distance (i.e., the greater the distance between origin and destination, the lower the number of trips). Between the number of business activities and the number of schools, the latter is more correlated to the number of trips than the latter.
-
 ```{r}
 uncSIM = glm(formula = TRIPS ~ 
                log(DU) + 
@@ -1350,7 +1408,10 @@ uncSIM = glm(formula = TRIPS ~
                log(HDB34R) +
                log(HDB5RMore) +
                log(HDBRent) +
-               log(MRTLRTEXITS) +
+               log(o_BUSSTOPS) +
+               log(d_BUSSTOPS) +
+               log(o_MRTLRTEXITS) +
+               log(d_MRTLRTEXITS) +
                log(BIZ) +
                log(SCHOOLS) +
                log(dist),
@@ -1361,11 +1422,13 @@ uncSIM = glm(formula = TRIPS ~
 uncSIM
 ```
 
+Based on the output, the number of trips is most positively correlated to the number of destination MRT/LRT exits (attractiveness variable) with a coefficient of 0.5086618, and most negatively correlated to distance (i.e., the greater the distance between origin and destination, the lower the number of trips), with a coefficient of -0.8451458. In fact, the number of destination MRT/LRT exits is more correlated to the number of trips than the number of origin bus stops (coefficient: 0.3596605) and of destination bus stops (coefficient: 0.2874071). This reflects the strong attractiveness of MRT stations in attracting bus commuters during the morning peak hour period.
+
+Between the number of business activities (coefficient: 0.0127605) and the number of schools (coefficient: 0.2537553), the latter is more correlated to the number of trips than the latter.
+
+The number of dwelling units and the number of residents for the different HDB housing types are not very strongly correlated to the number of trips.
+
 The R-squared values are calculated to measure how much variation of the trips can be accounted for by the unconstrained SIM.
-
--   Based on the outcome from the `cor()` function in the **R stats** package, the R-squared value is 0.09206193. This means that about 9.25% of the variation in the number of trips can be accounted for by the unconstrained SIM.
-
--   Based on the [**performance** package](https://cran.r-project.org/web/packages/performance/performance.pdf), the R-squared values for generalised linear models are computed using the `r2_kullback()` and `r2_mcfadden()` functions. The results are 0.4032871 and 0.402 respectively, i.e., that about 39.9% or 50.6% of the variation in the number of trips can be accounted for by the unconstrained SIM.
 
 ```{r}
 CalcRSquared = function(observed, estimated){
@@ -1380,16 +1443,19 @@ r2_kullback(uncSIM)
 r2_mcfadden(uncSIM)
 ```
 
+Based on the outcome from the `cor()` function in the **R stats** package, the R-squared value is 0.09956593. This means that about 9.96% of the variation in the number of trips can be accounted for by the unconstrained SIM.
+
+Based on the [**performance** package](https://cran.r-project.org/web/packages/performance/performance.pdf), the R-squared values for generalised linear models can be computed using the `r2_kullback()` and `r2_mcfadden()` functions. The results are 0.4263825 and 0.425 respectively, i.e., that about 42.6% or 42.5% of the variation in the number of trips can be accounted for by the unconstrained SIM.
+
 ### 7.4 Origin (Production) Constrained Spatial Interaction Model
 
 An origin constrained SIM, `orcSIM`, is calibrated below by using the `glm()` function of the **R stats** package. The explanatory variables are the existence of MRT/LRT exits, the counts of business activities and schools, and the distance between the origin and destination.
 
-Similar to the unconstrained SIM, based on the output below, the number of trips is more positively correlated to the existence of MRT/LRT exits (attractiveness variable), and most negatively correlated to distance (i.e., the greater the distance between origin and destination, the lower the number of trips). Between the number of business activities and the number of schools, the latter is more correlated to the number of trips than the latter.
-
 ```{r}
 orcSIM = glm(formula = TRIPS ~ 
                ORIGIN_GRID +
-               log(MRTLRTEXITS) +
+               log(d_BUSSTOPS) +
+               log(d_MRTLRTEXITS) +
                log(BIZ) +
                log(SCHOOLS) +
                log(dist),
@@ -1400,13 +1466,11 @@ orcSIM = glm(formula = TRIPS ~
 summary(orcSIM)
 ```
 
+Similar to the unconstrained SIM, based on the output, the number of trips is most positively correlated to the number of destination MRT/LRT exits (attractiveness variable) with a coefficient of 0.5631769, and most negatively correlated to distance (i.e., the greater the distance between origin and destination, the lower the number of trips), with a coefficient of -0.8442760.
+
+Between the number of business activities (coefficient: 0.0474138) and the number of schools (coefficient: 0.2598870), the latter is more correlated to the number of trips than the latter.
+
 The R-squared values are calculated to measure how much variation of the trips can be accounted for by the origin constrained SIM.
-
--   Based on the outcome from the `cor()` function in the **R stats** package, the R2 is 0.1397128. This means that about 14.0% of the variation in the number of trips can be accounted for by the origin constrained SIM.
-
--   Based on the **performance** package, the R-squared values for generalised linear models are computed using the `r2_kullback()` and `r2_mcfadden()` functions. The results are 0.5043682 and 0.509 respectively, i.e., that about 50.4% or 50.9% of the variation in the number of trips can be accounted for by the origin constrained SIM.
-
--   Compared to the unconstrained SIM, the origin constrained SIM has improved R-squared values, meaning that the latter model is better fitted to the data.
 
 ```{r}
 CalcRSquared(orcSIM$data$TRIPS, orcSIM$fitted.values)
@@ -1415,6 +1479,12 @@ r2_kullback(orcSIM)
 r2_mcfadden(orcSIM)
 ```
 
+Based on the outcome from the `cor()` function in the **R stats** package, the R2 is 0.1339851. This means that about 13.4% of the variation in the number of trips can be accounted for by the origin constrained SIM.
+
+Based on the **performance** package, the R-squared values for generalised linear models can be computed using the `r2_kullback()` and `r2_mcfadden()` functions. The results are 0.5150144 and 0.519 respectively, i.e., that about 51.5% or 51.9% of the variation in the number of trips can be accounted for by the origin constrained SIM.
+
+Compared to the unconstrained SIM, the origin constrained SIM has improved R-squared values, meaning that the latter model is better.
+
 ### 7.5 Destination (Attraction) Constrained Spatial Interaction Model
 
 A destination constrained SIM, `decSIM`, is calibrated below by using the `glm()` function of the **R stats** package. The explanatory variables are origin populations by different HDB housing types, and the distance between the origin and destination.
@@ -1422,6 +1492,8 @@ A destination constrained SIM, `decSIM`, is calibrated below by using the `glm()
 ```{r}
 decSIM = glm(formula = TRIPS ~ 
                DESTIN_GRID +
+               log(o_BUSSTOPS) +
+               log(o_MRTLRTEXITS) +
                log(DU) + 
                log(HDB12R) +
                log(HDB34R) +
@@ -1435,13 +1507,11 @@ decSIM = glm(formula = TRIPS ~
 summary(decSIM)
 ```
 
+Unlike the unconstrained SIM and origin constrained SIM, based on the output, the number of trips is most positively correlated to the number of origin bus stops (propulsiveness variable) with a relatively low coefficient of 0.322, and most negatively correlated to distance (i.e., the greater the distance between origin and destination, the lower the number of trips), with a coefficient of -0.8329.
+
+The number of dwelling units and the number of residents for the different HDB housing types are not very strongly correlated to the number of trips. Out of these five variables, the number of residents in HDB 5-room, executive or multi-generation units has the highest absolute coefficient of 0.1158.
+
 The R-squared values are calculated to measure how much variation of the trips can be accounted for by the destination constrained SIM.
-
--   Based on the outcome from the `cor()` function in the **R stats** package, the R2 is 0.1934442. This means that about 20.3% of the variation in the number of trips can be accounted for by the destination constrained SIM.
-
--   Based on the **performance** package, the R-squared values for generalised linear models are computed using the `r2_kullback()` and `r2_mcfadden()` functions. The results are 0.5328245 and 0.537 respectively, i.e., that about 54.9% or 63.6% of the variation in the number of trips can be accounted for by the destination constrained SIM.
-
--   Compared to the unconstrained SIM and the origin constrained SIM, the destination constrained SIM has improved R-squared values, meaning that it is better fitted to the data.
 
 ```{r}
 CalcRSquared(decSIM$data$TRIPS, decSIM$fitted.values)
@@ -1449,6 +1519,12 @@ CalcRSquared(decSIM$data$TRIPS, decSIM$fitted.values)
 r2_kullback(decSIM)
 r2_mcfadden(decSIM)
 ```
+
+Based on the outcome from the `cor()` function in the **R stats** package, the R2 is 0.1693522. This means that about 16.9% of the variation in the number of trips can be accounted for by the destination constrained SIM.
+
+Based on the **performance** package, the R-squared values for generalised linear models can be computed using the `r2_kullback()` and `r2_mcfadden()` functions. The results are 0.5419814 and 0.546 respectively, i.e., that about 54.2% or 54.6% of the variation in the number of trips can be accounted for by the destination constrained SIM.
+
+Compared to the unconstrained SIM and the origin constrained SIM, the destination constrained SIM has improved R-squared values, meaning that it is a better model.
 
 ### 7.6 Doubly Constrained Spatial Interaction Model
 
@@ -1466,13 +1542,9 @@ dbcSIM = glm(formula = TRIPS ~
 summary(dbcSIM)
 ```
 
+Similar to the other three models, the number of trips is most negatively correlated to distance (i.e., the greater the distance between origin and destination, the lower the number of trips), with a coefficient of -0.8431581.
+
 The R-squared values are calculated to measure how much variation of the trips can be accounted for by the doubly constrained SIM.
-
--   Based on the outcome from the `cor()` function in the **R stats** package, the R2 is 0.2167286. This means that about 20.3% of the variation in the number of trips can be accounted for by the doubly constrained SIM.
-
--   Based on the **performance** package, the R-squared values for generalised linear models are computed using the `r2_kullback()` and `r2_mcfadden()` functions. The results are 0.6159739 and 0.623 respectively, i.e., that about 61.6% or 62.3% of the variation in the number of trips can be accounted for by the doubly constrained SIM.
-
--   Compared to the three other models, the doubly constrained SIM has improved R-squared values, meaning that it is the best fitted to the data.
 
 ```{r}
 CalcRSquared(dbcSIM$data$TRIPS, dbcSIM$fitted.values)
@@ -1480,6 +1552,12 @@ CalcRSquared(dbcSIM$data$TRIPS, dbcSIM$fitted.values)
 r2_kullback(dbcSIM)
 r2_mcfadden(dbcSIM)
 ```
+
+Based on the outcome from the `cor()` function in the **R stats** package, the R2 is 0.2167286. This means that about 20.3% of the variation in the number of trips can be accounted for by the doubly constrained SIM.
+
+Based on the **performance** package, the R-squared values for generalised linear models are computed using the `r2_kullback()` and `r2_mcfadden()` functions. The results are 0.6159739 and 0.623 respectively, i.e., that about 61.6% or 62.3% of the variation in the number of trips can be accounted for by the doubly constrained SIM.
+
+Compared to the three other models, the doubly constrained SIM has improved R-squared values, meaning that it is the best model.
 
 ### 7.7 Model Comparison
 
@@ -1494,14 +1572,14 @@ models = list(unconstrained = uncSIM,
               doublyConstrained = dbcSIM)
 ```
 
-The RMSE of the models are computed using the `compare_performance()` function in the **performance** package. Based on the RMSE, the destination constrained SIM is the best model among the four SIMs because it has the smallest RMSE value of 1740.001.
+The RMSE of the models are computed using the `compare_performance()` function in the **performance** package. Based on the RMSE, the doubly constrained SIM is the best model among the four SIMs because it has the smallest RMSE value of 1809.986. This corresponds to the earlier observations that the doubly constrained SIM is the best model out of the four models based on the R-squared values.
 
 ```{r}
 compare_performance(models,                     
                     metrics = "RMSE")
 ```
 
-### 7.8 Visualising Fitted Values
+### 7.8 Visualising Fitted Values Versus Observed Values
 
 The observed values and the fitted values for the four models are visualised below.
 
@@ -1535,30 +1613,38 @@ SIM_vis = SIM %>%
   rename(dbcTRIPS = "dbcSIM$fitted.values")
 ```
 
-The plots are then visualised using functions in the **ggplot** package.
+The plots are then visualised using functions in the **ggplot2** package.
 
 ```{r}
 unc_p = ggplot(data = SIM_vis,
                 aes(x = uncTRIPS,
                     y = TRIPS)) +
+  xlim(0, 75000) +
+  ylim(0, 75000) +
   geom_point() +
   geom_smooth(method = lm)
 
 orc_p = ggplot(data = SIM_vis,
                 aes(x = orcTRIPS,
                     y = TRIPS)) +
+  xlim(0, 75000) +
+  ylim(0, 75000) +
   geom_point() +
   geom_smooth(method = lm)
 
 dec_p = ggplot(data = SIM_vis,
                 aes(x = decTRIPS,
                     y = TRIPS)) +
+  xlim(0, 75000) +
+  ylim(0, 75000) +
   geom_point() +
   geom_smooth(method = lm)
 
 dbc_p = ggplot(data = SIM_vis,
                 aes(x = dbcTRIPS,
                     y = TRIPS)) +
+  xlim(0, 75000) +
+  ylim(0, 75000) +
   geom_point() +
   geom_smooth(method = lm)
 
@@ -1567,12 +1653,86 @@ ggarrange(unc_p, orc_p, dec_p, dbc_p,
           nrow = 2)
 ```
 
-2.  [Spatial Interaction Modelling (SIM)]{.underline}:
+When log transformation is applied to the observed and fitted values, the visualisations below show a clear positive linear relationship between the two set of log-transformed values for all four models.
 
-    -   Calibrate spatial interactive models to determine factors affecting urban commuting flows during the selected time interval.
+```{r}
+unc_p = ggplot(data = SIM_vis,
+                aes(x = log(uncTRIPS),
+                    y = log(TRIPS))) +
+  xlim(0, 12) +
+  ylim(0, 12) +
+  geom_point() +
+  geom_smooth(method = lm)
 
-    -   Present the modelling results using the appropriate geovisualisation and graphical visualisation methods.
+orc_p = ggplot(data = SIM_vis,
+                aes(x = log(orcTRIPS),
+                    y = log(TRIPS))) +
+  xlim(0, 12) +
+  ylim(0, 12) +
+  geom_point() +
+  geom_smooth(method = lm)
 
-    -   Describe the modelling results based on the spatial interaction model output tables, maps, and data visualisations prepared.
+dec_p = ggplot(data = SIM_vis,
+                aes(x = log(decTRIPS),
+                    y = log(TRIPS))) +
+  xlim(0, 12) +
+  ylim(0, 12) +
+  geom_point() +
+  geom_smooth(method = lm)
+
+dbc_p = ggplot(data = SIM_vis,
+                aes(x = log(dbcTRIPS),
+                    y = log(TRIPS))) +
+  xlim(0, 12) +
+  ylim(0, 12) +
+  geom_point() +
+  geom_smooth(method = lm)
+
+ggarrange(unc_p, orc_p, dec_p, dbc_p,
+          ncol = 2,
+          nrow = 2)
+```
+
+To consider how the four models perform at different distances, the log-transformed ratio of the fitted values to the observed values are also plotted against the distance of the flows. Based on the visualisations below, in general, the fitted values perform better over shorter distances and perform worse over longer distances for all four models.
+
+```{r}
+unc_p = ggplot(data = SIM_vis,
+                aes(x = dist,
+                    y = log(uncTRIPS/TRIPS))) +
+  geom_point() +
+  geom_smooth(method = lm)
+
+orc_p = ggplot(data = SIM_vis,
+                aes(x = dist,
+                    y = log(orcTRIPS/TRIPS))) +
+  geom_point() +
+  geom_smooth(method = lm)
+
+dec_p = ggplot(data = SIM_vis,
+                aes(x = dist,
+                    y = log(decTRIPS/TRIPS))) +
+  geom_point() +
+  geom_smooth(method = lm)
+
+dbc_p = ggplot(data = SIM_vis,
+                aes(x = dist,
+                    y = log(dbcTRIPS/TRIPS))) +
+  geom_point() +
+  geom_smooth(method = lm)
+
+ggarrange(unc_p, orc_p, dec_p, dbc_p,
+          ncol = 2,
+          nrow = 2)
+```
+
+## 8 Conclusion
+
+Overall, the objectives of this take-home exercise has been fulfilled by showing how a variety of publicly available data can be integrated, analysed, and modelled to support policy making using the case study of bus commuter flows. In addition, the application of techniques in geospatial data science and analysis (GDSA) has demonstrated the potential value of GDSA in integrating publicly available data from multiple sources for building spatial interaction models to determine the factors affecting urban mobility patterns of public bus commuters.
+
+Based on the outcome above, it can be seen that distance is a major factor affecting the number of bus trips in the morning peak hour period. However, as the distance is based on Euclidean distances between the analytical hexagons in the grid, it may be limited given that it may not accurately reflect the actual commuting distances. Hence, a possible area for further studies could be to incorporate commuting distances in the modelling.
+
+The number of MRT/LRT exits also emerged as an important attractiveness variable for modelling the number of bus trips in the morning peak hour period. This reflects the importance of the MRT system in the morning peak hour period commute.
+
+Another limitation of the outcomes above is that the role of the neighbouring hexagons of each hexagon was not included in the analysis. Hence, spatial econometric interaction modelling is another possible area for further studies.
 
 [**\~\~\~ End of Take-home Exercise 2 \~\~\~**]{.smallcaps}
