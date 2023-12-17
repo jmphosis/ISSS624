@@ -329,7 +329,7 @@ The output is saved in rds file format and imported into the R environment.
 
 ```{r}
 #| code-fold: true 
-#| #| code-summary: "Show the code" 
+#| code-summary: "Show the code" 
 write_rds(odbus, "data/rds/odbus.rds") 
 odbus = read_rds("data/rds/odbus.rds")
 ```
@@ -371,7 +371,7 @@ The output is saved in rds file format and imported into the R environment.
 
 ```{r}
 #| code-fold: true 
-#| #| code-summary: "Show the code" 
+#| code-summary: "Show the code" 
 write_rds(busstop_hgrid, "data/rds/busstop_hgrid.rds")
 busstop_hgrid = read_rds("data/rds/busstop_hgrid.rds")
 ```
